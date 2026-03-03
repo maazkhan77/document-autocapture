@@ -10,21 +10,21 @@ Guard OpenCV contour detection behavior against regressions using:
 ## Commands
 
 ```bash
-pnpm --filter @docuscan/eval-harness build
-pnpm --filter @docuscan/eval-harness opencv:regression
+pnpm --filter @document-autocapture/eval-harness build
+pnpm --filter @document-autocapture/eval-harness opencv:regression
 ```
 
 Optional external fixture directory:
 
 ```bash
-DOCUSCAN_OPENCV_FIXTURE_PATH=/abs/path/to/opencv-fixtures \
-pnpm --filter @docuscan/eval-harness opencv:regression
+DOCUMENT_AUTOCAPTURE_OPENCV_FIXTURE_PATH=/abs/path/to/opencv-fixtures \
+pnpm --filter @document-autocapture/eval-harness opencv:regression
 ```
 
 ## Outputs
 
 - Regression output JSON:
-  - `apps/eval-harness/output/opencv-regression/latest.json`
+  - `apps-autocapture/eval-harness/output/opencv-regression/latest.json`
 - Markdown report:
   - `docs/opencv-regression-report.md`
 
@@ -55,6 +55,6 @@ CI runs `pnpm perf:gates:strict`, which includes:
 
 To satisfy strict verification, provide:
 
-- `apps/eval-harness/output/physical-android/latest.json`
+- `apps-autocapture/eval-harness/output/physical-android/latest.json`
 
-or set `DOCUSCAN_PHYSICAL_ANDROID_REPORT` to your report path.
+or set `DOCUMENT_AUTOCAPTURE_PHYSICAL_ANDROID_REPORT` to your report path.

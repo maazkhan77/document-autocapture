@@ -1,27 +1,42 @@
-# Vanilla JS integration (`/js`)
+# JavaScript Integration (`/js`)
 
-This route demonstrates imperative `@docuscan/sdk-headless` usage without React hooks.
+This route demonstrates imperative usage with `js-document-autocapture` (no React hooks).
 
-Mount API:
+## What This Page Demonstrates
 
-- `mount(container: HTMLElement): () => Promise<void>`
-- wires events: `frame`, `detection`, `guidance`, `capture`, `warning`, `error`
-- cleanup always calls `stop()` then `destroy()`
+- imperative mount lifecycle
+- event wiring: `frame`, `detection`, `guidance`, `capture`, `warning`, `error`
+- explicit teardown: `stop()` then `destroy()`
 
-## Run locally
+## Run Locally
 
 ```bash
-pnpm --filter @docuscan/demo-react dev
+pnpm --filter @document-autocapture/demo-react dev
 ```
 
 Open:
 
 - `http://localhost:4173/js`
 
-## Package usage shown
+## Install
 
 ```bash
-pnpm add @docuscan/sdk-headless
+pnpm add js-document-autocapture
 ```
 
-The sample uses ML primary (`doc-corner-v2`) and falls back to CV when ML misses/rejects.
+## Minimal Usage
+
+```ts
+import { createScanner } from 'js-document-autocapture';
+
+const scanner = createScanner({
+  videoElement: document.querySelector('video')!,
+  detectorMode: 'ml',
+  mlPipelineVersion: 'v2-graph',
+  mlModelId: 'doc-corner-v2',
+  warpValidationLevel: 'strict',
+  captureMimeType: 'image/png',
+});
+
+await scanner.start();
+```

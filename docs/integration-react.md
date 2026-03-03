@@ -1,27 +1,41 @@
-# React integration (`/react`)
+# React Integration (`/react`)
 
-This route demonstrates direct `@docuscan/sdk-react` hook usage in a browser page:
+This route shows production-style integration with `react-document-autocapture`.
+
+## What This Page Demonstrates
 
 - live camera preview
-- start / stop / capture controls
-- real-time guidance + detection/source chips
+- start / stop / capture actions
+- real-time guidance and source status
 - latest capture preview
 - copyable install and usage snippets
 
-## Run locally
+## Run Locally
 
 ```bash
-pnpm --filter @docuscan/demo-react dev
+pnpm --filter @document-autocapture/demo-react dev
 ```
 
 Open:
 
 - `http://localhost:4173/react`
 
-## Package usage shown
+## Install
 
 ```bash
-pnpm add @docuscan/sdk-react @docuscan/sdk-headless
+pnpm add react-document-autocapture js-document-autocapture
 ```
 
-The page config uses ML primary (`doc-corner-v2`) with strict warp validation and PNG capture defaults.
+## Minimal Hook Usage
+
+```tsx
+import { useDocumentAutoCapture } from 'react-document-autocapture';
+
+const { videoRef, start, stop, captureManual, detection, guidance } = useDocumentAutoCapture({
+  detectorMode: 'ml',
+  mlPipelineVersion: 'v2-graph',
+  mlModelId: 'doc-corner-v2',
+  warpValidationLevel: 'strict',
+  captureMimeType: 'image/png',
+});
+```

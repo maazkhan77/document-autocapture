@@ -1,4 +1,4 @@
-# Docuscan Bakeoff Report
+# Document Auto Capture Bakeoff Report
 
 Generated: 2026-03-01T17:29:12.123Z
 Artifacts analyzed: 9

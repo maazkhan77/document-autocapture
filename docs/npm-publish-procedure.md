@@ -1,58 +1,54 @@
-# Docuscan npm Publish Procedure
+# Document Auto Capture npm Publish Procedure
 
-This is the production publish flow for all public SDK packages under `@docuscan/*`.
+This repository publishes only two public packages:
+
+1. `js-document-autocapture`
+2. `react-document-autocapture`
+
+Internal `@document-autocapture/*` packages are workspace-only and non-publishable.
 
 ## 1. Preconditions
 
-1. npm scope exists and you have publish rights:
-- `@docuscan`
-2. Node and pnpm match workspace expectations:
-- `node -v` (recommended Node 20+)
-- `pnpm -v` (workspace uses pnpm 10)
-3. npm auth is configured:
-- `npm whoami`
-- If not logged in: `npm login --scope=@docuscan`
-4. If your account enforces 2FA, keep OTP ready for publish.
+- Node 20+ and pnpm 10+
+- npm login completed (`npm whoami`)
+- clean working tree
 
-## 2. Release Validation (Must Pass)
+## 2. Full Validation
 
-Run from repository root:
+From repo root:
 
 ```bash
 pnpm release:verify
 ```
 
-This runs typecheck, lint, tests, build, e2e, perf gates, and size gates.
+Includes:
+- brand check
+- no-onnx policy
+- lint/typecheck/tests/build
+- e2e + perf + size gates
 
-## 3. Versioning Strategy
+## 3. Versioning
 
-Use one aligned version for all publishable packages in `packages/*`.
-
-Example:
-
-```bash
-pnpm -r --filter './packages/**' exec npm version 0.2.0 --no-git-tag-version
-```
-
-Then rebuild once:
+Update only the two public package versions:
 
 ```bash
+pnpm --filter js-document-autocapture exec npm version 0.2.0 --no-git-tag-version
+pnpm --filter react-document-autocapture exec npm version 0.2.0 --no-git-tag-version
 pnpm build
 ```
 
-## 4. Dry Run (Mandatory)
+## 4. Dry Run
 
 ```bash
 pnpm publish:dry-run
 ```
 
-Confirm package contents and entrypoints are correct, especially:
-- `@docuscan/sdk-headless` subpath exports:
-  - `/core`
-  - `/webgl-warp`
-  - `/enhance`
-  - `/hybrid-corner` (preferred)
-  - `/ml-fallback`
+Verify output includes expected exports, especially:
+- `js-document-autocapture`
+- `js-document-autocapture/core`
+- `js-document-autocapture/enhance`
+- `js-document-autocapture/hybrid-corner`
+- `js-document-autocapture/ml-primary-v2-beta`
 
 ## 5. Publish
 
@@ -60,58 +56,28 @@ Confirm package contents and entrypoints are correct, especially:
 pnpm publish:npm
 ```
 
-If prompted for OTP, enter npm 2FA code.
+Publish order is headless first, then react.
 
-Notes:
-- `publishConfig.access=public` is already set in each package.
-- `pnpm -r` publishes in dependency-safe order.
-
-## 6. Post-Publish Verification
-
-1. Check metadata:
+## 6. Post-Publish Smoke Check
 
 ```bash
-npm view @docuscan/sdk-headless version
-npm view @docuscan/sdk-react version
-```
+npm view js-document-autocapture version
+npm view react-document-autocapture version
 
-2. Smoke install in a temp directory:
-
-```bash
-mkdir -p /tmp/docuscan-publish-check && cd /tmp/docuscan-publish-check
+mkdir -p /tmp/document-autocapture-publish-check && cd /tmp/document-autocapture-publish-check
 npm init -y
-npm i @docuscan/sdk-headless @docuscan/sdk-react
-node -e "import('@docuscan/sdk-headless').then(() => console.log('headless ok'))"
+npm i js-document-autocapture react-document-autocapture
+node -e "import('js-document-autocapture').then(() => console.log('headless ok'))"
+node -e "import('react-document-autocapture').then(() => console.log('react ok'))"
+node -e "import('js-document-autocapture/core').then(() => console.log('core ok'))"
 ```
 
-3. Verify subpath imports:
+## 7. Rollback
+
+If a bad version ships, deprecate immediately:
 
 ```bash
-node -e "import('@docuscan/sdk-headless/core').then(() => console.log('core ok'))"
-node -e "import('@docuscan/sdk-headless/hybrid-corner').then(() => console.log('hybrid corner ok'))"
-node -e "import('@docuscan/sdk-headless/ml-fallback').then(() => console.log('ml fallback ok'))"
+npm deprecate js-document-autocapture@0.2.0 "Broken release, use >=0.2.1"
 ```
 
-## 7. Rollback / Mitigation
-
-If a bad release ships:
-
-1. Immediately deprecate affected versions:
-
-```bash
-npm deprecate @docuscan/sdk-headless@0.2.0 "Broken release, use >=0.2.1"
-```
-
-2. Publish a fixed patch (recommended) rather than relying on unpublish.
-
-## 8. Publishable Packages
-
-The publish workflow targets all packages in `packages/*`:
-
-1. `@docuscan/core-engine`
-2. `@docuscan/warp-cpu`
-3. `@docuscan/warp-webgl`
-4. `@docuscan/worker-runtime`
-5. `@docuscan/runtime-web`
-6. `@docuscan/sdk-headless`
-7. `@docuscan/sdk-react`
+Then publish a fixed patch.

@@ -1,7 +1,7 @@
-# Docuscan v2 Enhanced PRD - Remaining Production Plan
+# Document Auto Capture v2 Enhanced PRD - Remaining Production Plan
 
 Generated: 2026-02-28
-Source PRD: /Users/mukesh.shelke/Downloads/docuscan_prd_v_2_enhanced.md
+Source PRD: /Users/mukesh.shelke/Downloads/document-autocapture_prd_v_2_enhanced.md
 
 ## 1) Current Baseline (Concrete)
 
@@ -31,7 +31,7 @@ Source PRD: /Users/mukesh.shelke/Downloads/docuscan_prd_v_2_enhanced.md
 - Remaining gap: physical Android validation still missing (emulation is provisional).
 
 2. Phase 4 packaging and productization:
-- Status: package flavor entrypoints are implemented in `@docuscan/sdk-headless` exports.
+- Status: package flavor entrypoints are implemented in `js-document-autocapture` exports.
 
 3. CI release gates:
 - Remaining gap: none for synthetic gates (phase0/bakeoff/realclip + size now enforced).
@@ -42,7 +42,7 @@ Source PRD: /Users/mukesh.shelke/Downloads/docuscan_prd_v_2_enhanced.md
 ### Milestone A - Close Phase 0 Hard Failures (P0 Blocker) ✅
 
 1. Warp ladder conformance work:
-- Optimize `@docuscan/warp-cpu` to consistently meet `<200ms` in benchmark harness.
+- Optimize `@document-autocapture/warp-cpu` to consistently meet `<200ms` in benchmark harness.
 - Add fast-path downsampled pre-warp fallback when full-res CPU budget will exceed threshold.
 - Add deterministic budget guardrails and explicit bailout reason fields.
 
@@ -85,11 +85,11 @@ Source PRD: /Users/mukesh.shelke/Downloads/docuscan_prd_v_2_enhanced.md
 
 1. Build flavors and exports:
 - Define official package entrypoints:
-  - `@docuscan/sdk-headless/core`
-  - `@docuscan/sdk-headless/webgl-warp`
-  - `@docuscan/sdk-headless/enhance`
-  - `@docuscan/sdk-headless/hybrid-corner` (preferred)
-  - `@docuscan/sdk-headless/ml-fallback` (deprecated alias of `hybrid-corner`)
+  - `js-document-autocapture/core`
+  - `js-document-autocapture/webgl-warp`
+  - `js-document-autocapture/enhance`
+  - `js-document-autocapture/hybrid-corner` (preferred)
+  - `js-document-autocapture/ml-fallback` (deprecated alias of `hybrid-corner`)
 - Document flavor tradeoffs and default recommendation.
 
 2. Bundle governance:
@@ -142,7 +142,7 @@ Source PRD: /Users/mukesh.shelke/Downloads/docuscan_prd_v_2_enhanced.md
 ## 6) ML v2 Staged Rollout (Current)
 
 1. Beta flavor:
-- Use `@docuscan/sdk-headless/ml-primary-v2-beta`.
+- Use `js-document-autocapture/ml-primary-v2-beta`.
 - Defaults: `detectorMode='ml'`, `mlPipelineVersion='v2-graph'`, `mlModelId='doc-corner-v2'`, `warpValidationLevel='strict'`.
 
 2. Runtime behavior:

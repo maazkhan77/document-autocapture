@@ -1,52 +1,40 @@
-# docuscan v1 architecture
+# Document Auto Capture Architecture
 
-## Runtime layers
+## Public Packages
 
-1. `@docuscan/core-engine`
-- Pure TypeScript detection pipeline and scoring logic.
-- Stability tracking and quality checks.
-- No browser API imports.
+1. `js-document-autocapture`
+- Framework-agnostic scanner API
+- Event-driven runtime (`frame`, `detection`, `guidance`, `capture`)
+- ML-first + CV fallback orchestration
 
-2. `@docuscan/worker-runtime`
-- Worker message protocol.
-- Off-main-thread frame processing via `core-engine`.
-
-3. `@docuscan/runtime-web`
-- Capability probes and mode selection (`best`, `standard`, `fallback`).
-- Camera session orchestration and latest-frame-only scheduling.
-- Best-mode ingestion path: main-thread OffscreenCanvas -> `transferToImageBitmap()` -> worker.
-- Capture warp ladder orchestration: WebGL -> CPU -> raw.
-
-4. `@docuscan/sdk-headless`
-- Public headless API facade.
-
-5. `@docuscan/sdk-react`
-- React hooks/components:
-  - `useDocuscan`
-  - `DocuscanCamera`
+2. `react-document-autocapture`
+- React hook and UI primitives:
+  - `useDocumentAutoCapture`
+  - `DocumentAutoCaptureCamera`
   - `CornerAdjustModal`
 
-## Warp ladder
+## Internal Workspace Packages (Not Published Directly)
 
-- Tier 1 (`@docuscan/warp-webgl`): WebGL fragment shader with homography mapping.
-- Tier 2 (`@docuscan/warp-cpu`): CPU perspective resampling with homography and bilinear sampling.
-- Tier 3: Raw output fallback with detected quad metadata.
+- `@document-autocapture/core-engine`
+- `@document-autocapture/runtime-web`
+- `@document-autocapture/worker-runtime`
+- `@document-autocapture/warp-cpu`
+- `@document-autocapture/warp-webgl`
+- `@document-autocapture/ml-tf-fallback`
 
-## Evaluation harness
+## Runtime Flow
 
-- `apps/eval-harness` computes:
-  - IoU distribution
-  - FPS distribution
-  - median time-to-stable
-  - false-positive rate
-  - auto-capture success rate
-  - rejection reason distribution
+1. Camera frame ingestion
+2. ML-first quad proposal (`doc-corner-v2` path)
+3. CV/Hough fallback on ML miss/reject
+4. Scoring + quality gates
+5. Stability gate
+6. Auto/manual capture
+7. Warp ladder (CPU-first policy with strict validation)
 
-- Sample manifest and output:
-  - `datasets/sample-manifest.json`
-  - `apps/eval-harness/output/summary.json`
+## Quality and Safety
 
-## Notes
-
-- v1 baseline is pure TS detection pipeline.
-- WASM integration remains an explicit Phase 3 escape hatch if profiling misses budgets.
+- strict warp validation to reject corrupted outputs
+- raw fallback when warp quality is risky
+- optional post-capture refinement path
+- explicit fallback telemetry for debugging
