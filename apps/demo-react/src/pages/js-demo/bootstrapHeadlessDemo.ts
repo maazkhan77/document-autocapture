@@ -1,5 +1,6 @@
 import { createScanner } from 'js-document-autocapture';
 import type { CaptureResult } from 'js-document-autocapture';
+import { createDemoScannerConfig } from '../../scanner-config';
 
 function createNode<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -68,31 +69,15 @@ export function mount(container: HTMLElement): () => Promise<void> {
   root.append(liveCard, outputCard);
   container.replaceChildren(root);
 
-  const scanner = createScanner({
-    preferredMode: 'best',
+  const scanner = createScanner(createDemoScannerConfig({
     detectorMode: 'ml',
     mlPipelineVersion: 'v2-graph',
     mlModelId: 'doc-corner-v2',
-    mlInputSize: 224,
-    mlFallbackEnabled: true,
-    mlFallbackFrameStride: 5,
-    mlFallbackTriggerConsecutiveMisses: 3,
-    mlFallbackMinCvConfidence: 0.55,
-    mlRescueEnabled: true,
-    mlRescueFrameStride: 2,
     postCaptureRefine: 'safe',
     warpValidationLevel: 'strict',
-    captureMimeType: 'image/png',
-    captureQuality: 1,
-    autoCapture: true,
     debugOverlayLevel: 'basic',
     videoElement: video,
-    videoConstraints: {
-      facingMode: 'environment',
-      width: { ideal: 1920 },
-      height: { ideal: 1080 },
-    },
-  });
+  }));
 
   let captureUrl: string | undefined;
 

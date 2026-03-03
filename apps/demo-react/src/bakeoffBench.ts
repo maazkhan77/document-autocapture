@@ -11,28 +11,14 @@ import {
 import { detectCapabilities, selectExecutionMode, type Capabilities } from '@document-autocapture/runtime-web';
 import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
 import { warpPerspectiveWebGL } from '@document-autocapture/warp-webgl';
+import type { WorkerDetectorConfig } from '@document-autocapture/worker-runtime';
+import { computeStats, type Stats } from './bench/shared/stats';
 import {
-  createScannerWorker,
-  type WorkerDetectorConfig,
-  type WorkerRequest,
-  type WorkerResponse,
-} from '@document-autocapture/worker-runtime';
+  createBenchmarkWorkerClient,
+  type WorkerFrameProcessResult,
+} from './bench/shared/worker-client';
 
 type CandidateId = 'candidate-a' | 'candidate-b' | 'candidate-c';
-type WorkerFrameTelemetry = Extract<WorkerResponse, { type: 'frame-result' }>['telemetry'];
-
-interface WorkerFrameProcessResult {
-  result: FrameProcessResult;
-  telemetry?: WorkerFrameTelemetry;
-}
-
-interface Stats {
-  min: number;
-  max: number;
-  mean: number;
-  median: number;
-  p95: number;
-}
 
 interface IngestionBenchmark {
   mode: 'standard' | 'best';
@@ -211,33 +197,6 @@ const CANDIDATES: Record<CandidateId, CandidateProfile> = {
     },
   },
 };
-
-function percentile(sorted: number[], pct: number): number {
-  if (sorted.length === 0) {
-    return 0;
-  }
-  const idx = Math.min(sorted.length - 1, Math.max(0, Math.floor((pct / 100) * sorted.length)));
-  return sorted[idx];
-}
-
-function computeStats(values: number[]): Stats {
-  if (values.length === 0) {
-    return { min: 0, max: 0, mean: 0, median: 0, p95: 0 };
-  }
-  const sorted = [...values].sort((a, b) => a - b);
-  const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
-  const median =
-    sorted.length % 2 === 0
-      ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
-      : sorted[(sorted.length - 1) / 2];
-  return {
-    min: sorted[0],
-    max: sorted[sorted.length - 1],
-    mean,
-    median,
-    p95: percentile(sorted, 95),
-  };
-}
 
 function createDetectorTelemetry(): DetectorTelemetry {
   return {
@@ -488,112 +447,6 @@ function quadIoU(a: Quad, b: Quad): number {
   return intersectionArea / union;
 }
 
-type PendingResolver = { resolve: (value: WorkerFrameProcessResult) => void; reject: (error: Error) => void };
-
-async function createWorkerClient(
-  engineConfig: EngineConfig,
-  detectorConfig?: Partial<WorkerDetectorConfig>,
-) {
-  const worker = createScannerWorker();
-  let frameId = 0;
-  const pending = new Map<number, PendingResolver>();
-
-  const ready = new Promise<void>((resolve, reject) => {
-    const timer = window.setTimeout(() => {
-      reject(new Error('Worker init timeout'));
-    }, 3000);
-
-    worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
-      const message = event.data;
-      if (message.type === 'ready') {
-        clearTimeout(timer);
-        resolve();
-        return;
-      }
-      if (message.type === 'error') {
-        const error = new Error(message.message);
-        if (typeof message.id === 'number') {
-          const slot = pending.get(message.id);
-          if (slot) {
-            pending.delete(message.id);
-            slot.reject(error);
-          }
-        } else {
-          for (const [id, slot] of pending.entries()) {
-            pending.delete(id);
-            slot.reject(error);
-          }
-        }
-        return;
-      }
-      if (message.type === 'frame-result') {
-        const slot = pending.get(message.id);
-        if (slot) {
-          pending.delete(message.id);
-          slot.resolve({
-            result: message.result,
-            telemetry: message.telemetry,
-          });
-        }
-        return;
-      }
-      if (message.type === 'warning') {
-        return;
-      }
-    };
-  });
-
-  worker.postMessage({
-    type: 'init',
-    config: engineConfig,
-    detectorConfig,
-  } satisfies WorkerRequest);
-  await ready;
-
-  return {
-    async processRgba(width: number, height: number, rgbaBuffer: ArrayBuffer): Promise<WorkerFrameProcessResult> {
-      const id = ++frameId;
-      const promise = new Promise<WorkerFrameProcessResult>((resolve, reject) => {
-        pending.set(id, { resolve, reject });
-      });
-      worker.postMessage(
-        {
-          type: 'process-frame',
-          id,
-          width,
-          height,
-          nowMs: performance.now(),
-          rgbaBuffer,
-        } satisfies WorkerRequest,
-        [rgbaBuffer],
-      );
-      return promise;
-    },
-
-    async processBitmap(bitmap: ImageBitmap): Promise<WorkerFrameProcessResult> {
-      const id = ++frameId;
-      const promise = new Promise<WorkerFrameProcessResult>((resolve, reject) => {
-        pending.set(id, { resolve, reject });
-      });
-      worker.postMessage(
-        {
-          type: 'process-image-bitmap',
-          id,
-          nowMs: performance.now(),
-          bitmap,
-        } satisfies WorkerRequest,
-        [bitmap],
-      );
-      return promise;
-    },
-
-    async destroy(): Promise<void> {
-      worker.terminate();
-      pending.clear();
-    },
-  };
-}
-
 async function benchmarkStandardIngestion(
   engineConfig: EngineConfig,
   detectorConfig: Partial<WorkerDetectorConfig>,
@@ -609,7 +462,10 @@ async function benchmarkStandardIngestion(
     throw new Error('Standard ingestion canvas context missing');
   }
 
-  const client = await createWorkerClient(engineConfig, detectorConfig);
+  const client = await createBenchmarkWorkerClient({
+    engineConfig,
+    detectorConfig,
+  });
   const roundtrip: number[] = [];
   const detectionMs: number[] = [];
 
@@ -672,7 +528,10 @@ async function benchmarkBestIngestion(
     };
   }
 
-  const client = await createWorkerClient(engineConfig, detectorConfig);
+  const client = await createBenchmarkWorkerClient({
+    engineConfig,
+    detectorConfig,
+  });
   const roundtrip: number[] = [];
   const detectionMs: number[] = [];
   const t0 = performance.now();
@@ -716,10 +575,13 @@ async function benchmarkDetectionLoop(
     throw new Error('Detection benchmark canvas context missing');
   }
 
-  const client = await createWorkerClient({
-    ...engineConfig,
-    debug: false,
-  }, detectorConfig);
+  const client = await createBenchmarkWorkerClient({
+    engineConfig: {
+      ...engineConfig,
+      debug: false,
+    },
+    detectorConfig,
+  });
 
   const timings: number[] = [];
   const frameResults: WorkerFrameProcessResult[] = [];
@@ -771,10 +633,13 @@ async function benchmarkDetectionQuality(
     throw new Error('Detection quality canvas context missing');
   }
 
-  const client = await createWorkerClient({
-    ...engineConfig,
-    debug: false,
-  }, detectorConfig);
+  const client = await createBenchmarkWorkerClient({
+    engineConfig: {
+      ...engineConfig,
+      debug: false,
+    },
+    detectorConfig,
+  });
   const ious: number[] = [];
   const frameResults: WorkerFrameProcessResult[] = [];
   const frameTimestampsMs: number[] = [];
@@ -882,10 +747,13 @@ async function benchmarkEndToEndFlow(
     };
   }
 
-  const client = await createWorkerClient({
-    ...engineConfig,
-    debug: false,
-  }, detectorConfig);
+  const client = await createBenchmarkWorkerClient({
+    engineConfig: {
+      ...engineConfig,
+      debug: false,
+    },
+    detectorConfig,
+  });
   let stableAtMs = 0;
   let detectorSourceAtLock: 'cv' | 'ml' | 'none' = 'none';
   let bestCandidate = undefined as FrameProcessResult['detection']['bestCandidate'];

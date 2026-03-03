@@ -2,20 +2,12 @@ import {
   createEngine,
   defaultEngineConfig,
   mergeEngineConfig,
-  type FrameProcessResult,
 } from '@document-autocapture/core-engine';
 import { detectCapabilities, selectExecutionMode, type Capabilities } from '@document-autocapture/runtime-web';
 import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
 import { warpPerspectiveWebGL } from '@document-autocapture/warp-webgl';
-import { createScannerWorker, type WorkerRequest, type WorkerResponse } from '@document-autocapture/worker-runtime';
-
-interface Stats {
-  min: number;
-  max: number;
-  mean: number;
-  median: number;
-  p95: number;
-}
+import { computeStats, type Stats } from './bench/shared/stats';
+import { createBenchmarkWorkerClient } from './bench/shared/worker-client';
 
 interface IngestionBenchmark {
   mode: 'standard' | 'best';
@@ -82,33 +74,6 @@ interface Phase0BenchResult {
   };
 }
 
-function percentile(sorted: number[], pct: number): number {
-  if (sorted.length === 0) {
-    return 0;
-  }
-  const idx = Math.min(sorted.length - 1, Math.max(0, Math.floor((pct / 100) * sorted.length)));
-  return sorted[idx];
-}
-
-function computeStats(values: number[]): Stats {
-  if (values.length === 0) {
-    return { min: 0, max: 0, mean: 0, median: 0, p95: 0 };
-  }
-  const sorted = [...values].sort((a, b) => a - b);
-  const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
-  const median =
-    sorted.length % 2 === 0
-      ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
-      : sorted[(sorted.length - 1) / 2];
-  return {
-    min: sorted[0],
-    max: sorted[sorted.length - 1],
-    mean,
-    median,
-    p95: percentile(sorted, 95),
-  };
-}
-
 function drawSyntheticDocument(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
@@ -157,109 +122,6 @@ function createSyntheticImageData(width: number, height: number): ImageData {
   return ctx.getImageData(0, 0, width, height);
 }
 
-type PendingResolver = { resolve: (value: FrameProcessResult) => void; reject: (error: Error) => void };
-
-async function createWorkerClient() {
-  const worker = createScannerWorker();
-  let frameId = 0;
-  const pending = new Map<number, PendingResolver>();
-
-  const ready = new Promise<void>((resolve, reject) => {
-    const timer = window.setTimeout(() => {
-      reject(new Error('Worker init timeout'));
-    }, 3000);
-
-    worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
-      const message = event.data;
-      if (message.type === 'ready') {
-        clearTimeout(timer);
-        resolve();
-        return;
-      }
-
-      if (message.type === 'error') {
-        const error = new Error(message.message);
-        if (typeof message.id === 'number') {
-          const slot = pending.get(message.id);
-          if (slot) {
-            pending.delete(message.id);
-            slot.reject(error);
-          }
-        } else {
-          for (const [id, slot] of pending.entries()) {
-            pending.delete(id);
-            slot.reject(error);
-          }
-        }
-        return;
-      }
-
-      if (message.type === 'frame-result') {
-        const slot = pending.get(message.id);
-        if (slot) {
-          pending.delete(message.id);
-          slot.resolve(message.result);
-        }
-      }
-    };
-  });
-
-  worker.postMessage({
-    type: 'init',
-    config: mergeEngineConfig({
-      ...defaultEngineConfig,
-      debug: false,
-    }),
-  } satisfies WorkerRequest);
-
-  await ready;
-
-  return {
-    async processRgba(width: number, height: number, rgbaBuffer: ArrayBuffer): Promise<FrameProcessResult> {
-      const id = ++frameId;
-      const promise = new Promise<FrameProcessResult>((resolve, reject) => {
-        pending.set(id, { resolve, reject });
-      });
-
-      worker.postMessage(
-        {
-          type: 'process-frame',
-          id,
-          width,
-          height,
-          nowMs: performance.now(),
-          rgbaBuffer,
-        } satisfies WorkerRequest,
-        [rgbaBuffer],
-      );
-      return promise;
-    },
-
-    async processBitmap(bitmap: ImageBitmap): Promise<FrameProcessResult> {
-      const id = ++frameId;
-      const promise = new Promise<FrameProcessResult>((resolve, reject) => {
-        pending.set(id, { resolve, reject });
-      });
-
-      worker.postMessage(
-        {
-          type: 'process-image-bitmap',
-          id,
-          nowMs: performance.now(),
-          bitmap,
-        } satisfies WorkerRequest,
-        [bitmap],
-      );
-      return promise;
-    },
-
-    async destroy(): Promise<void> {
-      worker.terminate();
-      pending.clear();
-    },
-  };
-}
-
 async function benchmarkStandardIngestion(frameCount = 120): Promise<IngestionBenchmark> {
   const width = 480;
   const height = 672;
@@ -271,7 +133,12 @@ async function benchmarkStandardIngestion(frameCount = 120): Promise<IngestionBe
     throw new Error('Standard ingestion canvas context missing');
   }
 
-  const client = await createWorkerClient();
+  const client = await createBenchmarkWorkerClient({
+    engineConfig: mergeEngineConfig({
+      ...defaultEngineConfig,
+      debug: false,
+    }),
+  });
   const roundtrip: number[] = [];
   const detectionMs: number[] = [];
 
@@ -280,7 +147,8 @@ async function benchmarkStandardIngestion(frameCount = 120): Promise<IngestionBe
     drawSyntheticDocument(ctx, width, height, i);
     const readStart = performance.now();
     const imageData = ctx.getImageData(0, 0, width, height);
-    const result = await client.processRgba(width, height, imageData.data.buffer);
+    const frame = await client.processRgba(width, height, imageData.data.buffer);
+    const result = frame.result;
     roundtrip.push(performance.now() - readStart);
     detectionMs.push(result.detection.timings?.totalMs ?? 0);
   }
@@ -330,7 +198,12 @@ async function benchmarkBestIngestion(frameCount = 120): Promise<IngestionBenchm
     };
   }
 
-  const client = await createWorkerClient();
+  const client = await createBenchmarkWorkerClient({
+    engineConfig: mergeEngineConfig({
+      ...defaultEngineConfig,
+      debug: false,
+    }),
+  });
   const roundtrip: number[] = [];
   const detectionMs: number[] = [];
 
@@ -339,7 +212,8 @@ async function benchmarkBestIngestion(frameCount = 120): Promise<IngestionBenchm
     drawSyntheticDocument(ctx, width, height, i);
     const start = performance.now();
     const bitmap = offscreen.transferToImageBitmap();
-    const result = await client.processBitmap(bitmap);
+    const frame = await client.processBitmap(bitmap);
+    const result = frame.result;
     roundtrip.push(performance.now() - start);
     detectionMs.push(result.detection.timings?.totalMs ?? 0);
   }
@@ -369,7 +243,12 @@ async function benchmarkDetectionLoop(frameCount = 200): Promise<DetectionLoopBe
     throw new Error('Detection benchmark canvas context missing');
   }
 
-  const client = await createWorkerClient();
+  const client = await createBenchmarkWorkerClient({
+    engineConfig: mergeEngineConfig({
+      ...defaultEngineConfig,
+      debug: false,
+    }),
+  });
 
   const timings: number[] = [];
   let hardCeilingViolations = 0;
@@ -379,7 +258,8 @@ async function benchmarkDetectionLoop(frameCount = 200): Promise<DetectionLoopBe
     for (let i = 0; i < frameCount; i += 1) {
       drawSyntheticDocument(ctx, width, height, i);
       const imageData = ctx.getImageData(0, 0, width, height);
-      const result = await client.processRgba(width, height, imageData.data.buffer);
+      const frame = await client.processRgba(width, height, imageData.data.buffer);
+      const result = frame.result;
       const totalMs = result.detection.timings?.totalMs ?? 0;
       timings.push(totalMs);
       if (totalMs > defaultEngineConfig.workerHardCeilingMs) {

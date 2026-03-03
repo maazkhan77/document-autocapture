@@ -2,36 +2,22 @@ import { useDocumentAutoCapture } from 'react-document-autocapture';
 import type { ScannerConfig } from 'js-document-autocapture';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { IntegrationShell } from './shared/IntegrationShell';
+import { createDemoScannerConfig } from '../scanner-config';
 
 export function ReactIntegrationPage() {
   const captureUrlRef = useRef<string | undefined>(undefined);
   const [capturePreviewUrl, setCapturePreviewUrl] = useState<string>('');
 
   const scannerConfig = useMemo<ScannerConfig>(
-    () => ({
-      preferredMode: 'best',
-      detectorMode: 'ml' as const,
-      mlPipelineVersion: 'v2-graph' as const,
-      mlModelId: 'doc-corner-v2',
-      mlInputSize: 224,
-      mlFallbackEnabled: true,
-      mlFallbackFrameStride: 5,
-      mlFallbackTriggerConsecutiveMisses: 3,
-      mlFallbackMinCvConfidence: 0.55,
-      mlRescueEnabled: true,
-      mlRescueFrameStride: 2,
-      postCaptureRefine: 'safe' as const,
-      warpValidationLevel: 'strict' as const,
-      captureMimeType: 'image/png',
-      captureQuality: 1,
-      autoCapture: true,
-      debugOverlayLevel: 'basic' as const,
-      videoConstraints: {
-        facingMode: 'environment' as const,
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-      },
-    }),
+    () =>
+      createDemoScannerConfig({
+        detectorMode: 'ml',
+        mlPipelineVersion: 'v2-graph',
+        mlModelId: 'doc-corner-v2',
+        postCaptureRefine: 'safe',
+        warpValidationLevel: 'strict',
+        debugOverlayLevel: 'basic',
+      }),
     [],
   );
 
