@@ -24,6 +24,8 @@ Open:
 pnpm add js-document-autocapture
 ```
 
+Note: `js-document-autocapture` is ESM-only. Use `import` syntax.
+
 ## Minimal Usage
 
 ```ts

@@ -7,6 +7,8 @@ This monorepo powers two public npm packages:
 - `react-document-autocapture`
 - `js-document-autocapture`
 
+`js-document-autocapture` is ESM-first (use `import`, not CommonJS `require`).
+
 ## Why This SDK
 
 - Free to use with no watermark overlays
