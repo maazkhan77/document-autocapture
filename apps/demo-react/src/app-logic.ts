@@ -37,7 +37,7 @@ const PRESETS: Record<PresetId, PresetConfig> = {
 };
 
 export function getPresetConfig(preset: PresetId): PresetConfig {
-  return PRESETS[preset];
+  return { ...PRESETS[preset] };
 }
 
 export function buildShareUrl(input: {

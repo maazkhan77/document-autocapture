@@ -95,7 +95,7 @@ export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoC
       for (const unsubscribe of unsubscribers) {
         unsubscribe();
       }
-      void session.destroy();
+      void session.destroy().catch(() => undefined);
       sessionRef.current = undefined;
     };
   }, []);
@@ -147,19 +147,21 @@ export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoC
 
   const stop = useCallback(async () => {
     if (!sessionRef.current) {
+      dispatch({ type: 'set-running', value: false });
       return;
     }
-    await sessionRef.current.stop();
-    dispatch({ type: 'set-running', value: false });
+    try {
+      await sessionRef.current.stop();
+    } finally {
+      dispatch({ type: 'set-running', value: false });
+    }
   }, []);
 
   const captureManual = useCallback(async () => {
     if (!sessionRef.current) {
       throw new Error('Scanner session unavailable');
     }
-    const capture = await sessionRef.current.captureManual();
-    dispatch({ type: 'set-last-capture', value: capture });
-    return capture;
+    return sessionRef.current.captureManual();
   }, []);
 
   const detection = useMemo(

@@ -63,12 +63,47 @@ export function defaultOpenCvScriptUrl(): string {
   }
 }
 
-export function createDemoScannerConfig(overrides: Partial<ScannerConfig> = {}): ScannerConfig {
+function isConstraintRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function mergeConstraintValue<T>(base: T | undefined, override: T | undefined): T | undefined {
+  if (override === undefined) {
+    return base;
+  }
+  if (isConstraintRecord(base) && isConstraintRecord(override)) {
+    return { ...base, ...override } as T;
+  }
+  return override;
+}
+
+function mergeVideoConstraints(
+  base: MediaTrackConstraints | undefined,
+  override: MediaTrackConstraints | undefined,
+): MediaTrackConstraints | undefined {
+  if (!base && !override) {
+    return undefined;
+  }
+  const safeBase = base ?? {};
+  const safeOverride = override ?? {};
   return {
-    ...DEFAULT_SCANNER_CONFIG,
-    ...overrides,
-    videoConstraints: overrides.videoConstraints ?? DEFAULT_VIDEO_CONSTRAINTS,
-    opencvScriptUrl: overrides.opencvScriptUrl ?? defaultOpenCvScriptUrl(),
+    ...safeBase,
+    ...safeOverride,
+    width: mergeConstraintValue(safeBase.width, safeOverride.width),
+    height: mergeConstraintValue(safeBase.height, safeOverride.height),
+    frameRate: mergeConstraintValue(safeBase.frameRate, safeOverride.frameRate),
+    aspectRatio: mergeConstraintValue(safeBase.aspectRatio, safeOverride.aspectRatio),
   };
 }
 
+export function createDemoScannerConfig(overrides: Partial<ScannerConfig> = {}): ScannerConfig {
+  const mergedVideoConstraints =
+    mergeVideoConstraints(DEFAULT_VIDEO_CONSTRAINTS, overrides.videoConstraints) ??
+    DEFAULT_VIDEO_CONSTRAINTS;
+  return {
+    ...DEFAULT_SCANNER_CONFIG,
+    ...overrides,
+    videoConstraints: mergedVideoConstraints,
+    opencvScriptUrl: overrides.opencvScriptUrl ?? defaultOpenCvScriptUrl(),
+  };
+}

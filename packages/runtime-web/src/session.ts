@@ -43,6 +43,39 @@ function defaultOpenCvScriptUrl(): string {
   }
 }
 
+function isConstraintRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function mergeConstraintValue<T>(base: T | undefined, override: T | undefined): T | undefined {
+  if (override === undefined) {
+    return base;
+  }
+  if (isConstraintRecord(base) && isConstraintRecord(override)) {
+    return { ...base, ...override } as T;
+  }
+  return override;
+}
+
+function mergeVideoConstraints(
+  base: MediaTrackConstraints | undefined,
+  override: MediaTrackConstraints | undefined,
+): MediaTrackConstraints | undefined {
+  if (!base && !override) {
+    return undefined;
+  }
+  const safeBase = base ?? {};
+  const safeOverride = override ?? {};
+  return {
+    ...safeBase,
+    ...safeOverride,
+    width: mergeConstraintValue(safeBase.width, safeOverride.width),
+    height: mergeConstraintValue(safeBase.height, safeOverride.height),
+    frameRate: mergeConstraintValue(safeBase.frameRate, safeOverride.frameRate),
+    aspectRatio: mergeConstraintValue(safeBase.aspectRatio, safeOverride.aspectRatio),
+  };
+}
+
 class StartAbortedError extends Error {
   constructor() {
     super('Scanner start aborted');
@@ -133,6 +166,11 @@ class ScannerSessionImpl implements ScannerSession {
   }
 
   constructor(config?: ScannerConfig) {
+    const defaultVideoConstraints: MediaTrackConstraints = {
+      facingMode: 'environment',
+      width: { ideal: 1920 },
+      height: { ideal: 1080 },
+    };
     const userProvidedModelId = config?.mlModelId !== undefined;
     this.config = {
       preferredMode: 'best',
@@ -184,13 +222,9 @@ class ScannerSessionImpl implements ScannerSession {
       warpValidationLevel: 'standard',
       postCaptureRefine: 'off',
       opencvScriptUrl: defaultOpenCvScriptUrl(),
-      videoConstraints: {
-        facingMode: 'environment',
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-      },
       debug: false,
       ...config,
+      videoConstraints: mergeVideoConstraints(defaultVideoConstraints, config?.videoConstraints),
     };
     if (!userProvidedModelId) {
       this.config.mlModelId =
@@ -216,12 +250,17 @@ class ScannerSessionImpl implements ScannerSession {
       ...(this.config.scoreWeights ?? {}),
       ...(partial.scoreWeights ?? {}),
     };
+    const mergedVideoConstraints = mergeVideoConstraints(
+      this.config.videoConstraints,
+      partial.videoConstraints,
+    );
 
     this.config = {
       ...this.config,
       ...partial,
       detectorMode: normalizeDetectorMode(partial.detectorMode ?? this.config.detectorMode),
       scoreWeights: mergedScoreWeights,
+      videoConstraints: mergedVideoConstraints,
     };
     if (partial.mlPipelineVersion !== undefined && partial.mlModelId === undefined) {
       this.config.mlModelId =

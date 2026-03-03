@@ -5,9 +5,13 @@ export async function waitForVideoLoadedData(
 ): Promise<void> {
   await new Promise<void>((resolve, reject) => {
     let settled = false;
+    let timeoutHandle = 0;
     const cleanup = () => {
       video.removeEventListener('loadeddata', onLoadedData);
       video.removeEventListener('error', onError);
+      if (timeoutHandle) {
+        window.clearTimeout(timeoutHandle);
+      }
     };
     const finish = (fn: () => void) => {
       if (settled) {
@@ -22,7 +26,7 @@ export async function waitForVideoLoadedData(
 
     video.addEventListener('loadeddata', onLoadedData, { once: true });
     video.addEventListener('error', onError, { once: true });
-    window.setTimeout(() => finish(resolve), timeoutMs);
+    timeoutHandle = window.setTimeout(() => finish(resolve), timeoutMs);
   });
 }
 
@@ -33,4 +37,3 @@ export function hasCurrentVideoFrame(video: HTMLVideoElement): boolean {
     video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
   );
 }
-

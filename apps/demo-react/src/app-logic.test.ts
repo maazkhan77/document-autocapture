@@ -19,6 +19,13 @@ describe('demo app logic', () => {
     expect(recommended.postCaptureRefine).toBe('off');
   });
 
+  it('returns a new preset object on each call', () => {
+    const first = getPresetConfig('recommended');
+    first.confidenceThreshold = 0.1;
+    const second = getPresetConfig('recommended');
+    expect(second.confidenceThreshold).toBe(0.42);
+  });
+
   it('builds share URL with scanner controls encoded', () => {
     const url = buildShareUrl({
       currentSearch: '?foo=1',

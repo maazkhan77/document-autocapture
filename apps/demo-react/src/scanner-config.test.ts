@@ -24,5 +24,21 @@ describe('createDemoScannerConfig', () => {
     expect(config.captureMimeType).toBe('image/png');
     expect(config.videoConstraints?.width).toEqual({ ideal: 1920 });
   });
-});
 
+  it('deep-merges video constraint overrides without mutating defaults', () => {
+    const customized = createDemoScannerConfig({
+      videoConstraints: {
+        width: { ideal: 1280 },
+        frameRate: { ideal: 30 },
+      },
+    });
+    expect(customized.videoConstraints?.facingMode).toBe('environment');
+    expect(customized.videoConstraints?.width).toEqual({ ideal: 1280 });
+    expect(customized.videoConstraints?.height).toEqual({ ideal: 1080 });
+    expect(customized.videoConstraints?.frameRate).toEqual({ ideal: 30 });
+
+    const freshDefaults = createDemoScannerConfig();
+    expect(freshDefaults.videoConstraints?.width).toEqual({ ideal: 1920 });
+    expect(freshDefaults.videoConstraints?.height).toEqual({ ideal: 1080 });
+  });
+});

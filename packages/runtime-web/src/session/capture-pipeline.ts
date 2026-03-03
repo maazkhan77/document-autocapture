@@ -33,6 +33,28 @@ async function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality?: n
   });
 }
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+function resolveCaptureEncoding(config: ScannerConfig): {
+  mimeType: 'image/png' | 'image/jpeg' | 'image/webp';
+  quality?: number;
+} {
+  const requested = (config.captureMimeType ?? 'image/png').toLowerCase();
+  const mimeType =
+    requested === 'image/jpeg' || requested === 'image/webp' || requested === 'image/png'
+      ? requested
+      : 'image/png';
+  return {
+    mimeType,
+    quality:
+      mimeType === 'image/png'
+        ? undefined
+        : clamp(config.captureQuality ?? 1, 0.1, 1),
+  };
+}
+
 function fullFrameQuad(width: number, height: number): Quad {
   return {
     topLeft: { x: 0, y: 0 },
@@ -333,11 +355,8 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
     emitWarning(`Warp rejected: ${stagePrefix}${rejectionReason}; used raw capture`);
   }
 
-  const blob = await canvasToBlob(
-    outputCanvas,
-    config.captureMimeType ?? 'image/jpeg',
-    config.captureQuality,
-  );
+  const encoding = resolveCaptureEncoding(config);
+  const blob = await canvasToBlob(outputCanvas, encoding.mimeType, encoding.quality);
   const outputQuad: Quad =
     tier === 'raw'
       ? sourceQuad
@@ -367,4 +386,3 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
     elapsedMs: nowMs() - t0,
   };
 }
-
