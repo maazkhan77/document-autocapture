@@ -1,0 +1,22 @@
+{
+  "id": "doc-corner-v2",
+  "kind": "tfjs-corner-graph",
+  "version": 2,
+  "modelVersion": "doc-corner-v2-mnv2-224",
+  "inputSize": 224,
+  "inputNormalization": "imagenet",
+  "minAreaFraction": 0.04,
+  "maxAreaFraction": 0.96,
+  "minConfidence": 0.42,
+  "outputFormat": "coords_score_logit",
+  "scoreMode": "logit",
+  "confidenceCalibration": {
+    "base": 0.05,
+    "scoreWeight": 0.67,
+    "edgeWeight": 0.18,
+    "sizeWeight": 0.15,
+    "min": 0,
+    "max": 1
+  },
+  "graphModelUrl": "model.json"
+}

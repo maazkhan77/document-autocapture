@@ -1,0 +1,12 @@
+{
+  "id": "doc-corner-v1",
+  "kind": "tfjs-corner-heuristic",
+  "version": 1,
+  "inputSize": 320,
+  "edgePercentile": 62,
+  "paddingRatio": 0.04,
+  "minAreaFraction": 0.05,
+  "maxAreaFraction": 0.96,
+  "minConfidence": 0.12,
+  "graphModelUrl": null
+}
