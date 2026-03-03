@@ -1,13 +1,11 @@
 {
-  "name": "@docuscan/runtime-web",
+  "name": "@document-autocapture/runtime-web",
+  "private": true,
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "publishConfig": {
-    "access": "public"
-  },
   "files": [
     "dist"
   ],
@@ -18,9 +16,9 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "@docuscan/core-engine": "workspace:*",
-    "@docuscan/warp-cpu": "workspace:*",
-    "@docuscan/warp-webgl": "workspace:*",
-    "@docuscan/worker-runtime": "workspace:*"
+    "@document-autocapture/core-engine": "workspace:*",
+    "@document-autocapture/warp-cpu": "workspace:*",
+    "@document-autocapture/warp-webgl": "workspace:*",
+    "@document-autocapture/worker-runtime": "workspace:*"
   }
 }

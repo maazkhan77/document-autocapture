@@ -1,13 +1,11 @@
 {
-  "name": "@docuscan/ml-tf-fallback",
+  "name": "@document-autocapture/ml-tf-fallback",
+  "private": true,
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "publishConfig": {
-    "access": "public"
-  },
   "files": [
     "dist",
     "models"
@@ -19,7 +17,7 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "@docuscan/core-engine": "workspace:*",
+    "@document-autocapture/core-engine": "workspace:*",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-wasm": "^4.22.0"
   }

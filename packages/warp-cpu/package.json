@@ -1,13 +1,11 @@
 {
-  "name": "@docuscan/warp-cpu",
+  "name": "@document-autocapture/warp-cpu",
+  "private": true,
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "publishConfig": {
-    "access": "public"
-  },
   "files": [
     "dist"
   ],
@@ -18,6 +16,6 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "@docuscan/core-engine": "workspace:*"
+    "@document-autocapture/core-engine": "workspace:*"
   }
 }

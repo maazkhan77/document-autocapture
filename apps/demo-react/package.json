@@ -1,5 +1,5 @@
 {
-  "name": "@docuscan/demo-react",
+  "name": "@document-autocapture/demo-react",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -15,13 +15,13 @@
     "bakeoff:bench": "playwright test e2e/bakeoff-bench.spec.ts --workers=1"
   },
   "dependencies": {
-    "@docuscan/core-engine": "workspace:*",
-    "@docuscan/runtime-web": "workspace:*",
-    "@docuscan/sdk-headless": "workspace:*",
-    "@docuscan/sdk-react": "workspace:*",
-    "@docuscan/warp-cpu": "workspace:*",
-    "@docuscan/warp-webgl": "workspace:*",
-    "@docuscan/worker-runtime": "workspace:*",
+    "@document-autocapture/core-engine": "workspace:*",
+    "@document-autocapture/runtime-web": "workspace:*",
+    "js-document-autocapture": "workspace:*",
+    "react-document-autocapture": "workspace:*",
+    "@document-autocapture/warp-cpu": "workspace:*",
+    "@document-autocapture/warp-webgl": "workspace:*",
+    "@document-autocapture/worker-runtime": "workspace:*",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   }

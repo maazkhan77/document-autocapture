@@ -4,7 +4,7 @@ import process from 'node:process';
 
 const rootDir = process.cwd();
 const modelDir = path.resolve(rootDir, 'packages/ml-tf-fallback/models/doc-corner-v2');
-const maxBytes = Number.parseInt(process.env.DOCUSCAN_ML_MODEL_MAX_BYTES ?? '2621440', 10);
+const maxBytes = Number.parseInt(process.env.DOCUMENT_AUTOCAPTURE_ML_MODEL_MAX_BYTES ?? '2621440', 10);
 
 const artifactPath = path.join(modelDir, 'artifact.json');
 const modelJsonPath = path.join(modelDir, 'model.json');

@@ -1,5 +1,5 @@
 {
-  "name": "@docuscan/sdk-react",
+  "name": "react-document-autocapture",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,14 +12,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
-    "@docuscan/core-engine": "workspace:*",
-    "@docuscan/sdk-headless": "workspace:*",
+    "js-document-autocapture": "workspace:*",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   }

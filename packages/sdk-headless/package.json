@@ -1,5 +1,5 @@
 {
-  "name": "@docuscan/sdk-headless",
+  "name": "js-document-autocapture",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
@@ -49,12 +49,17 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts src/core.ts src/webgl-warp.ts src/enhance.ts src/hybrid-corner.ts src/ml-fallback.ts src/ml-primary-v2-beta.ts src/flavors.ts --format esm,cjs --dts",
+    "build": "tsup src/index.ts src/core.ts src/webgl-warp.ts src/enhance.ts src/hybrid-corner.ts src/ml-fallback.ts src/ml-primary-v2-beta.ts src/flavors.ts --format esm,cjs --dts --dts-resolve --clean",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests",
     "lint": "eslint src --ext .ts"
   },
-  "dependencies": {
-    "@docuscan/runtime-web": "workspace:*"
+  "devDependencies": {
+    "@document-autocapture/core-engine": "workspace:*",
+    "@document-autocapture/ml-tf-fallback": "workspace:*",
+    "@document-autocapture/runtime-web": "workspace:*",
+    "@document-autocapture/warp-cpu": "workspace:*",
+    "@document-autocapture/warp-webgl": "workspace:*",
+    "@document-autocapture/worker-runtime": "workspace:*"
   }
 }

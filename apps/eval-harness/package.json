@@ -1,5 +1,5 @@
 {
-  "name": "@docuscan/eval-harness",
+  "name": "@document-autocapture/eval-harness",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -16,9 +16,9 @@
     "realclip:all": "pnpm build && pnpm realclip:ingest && pnpm realclip:tune",
     "opencv:regression": "node dist/opencv-regression.js",
     "verify:gates": "node dist/verify-gates.js",
-    "verify:gates:strict": "DOCUSCAN_REQUIRE_PHYSICAL_ANDROID=1 node dist/verify-gates.js"
+    "verify:gates:strict": "DOCUMENT_AUTOCAPTURE_REQUIRE_PHYSICAL_ANDROID=1 node dist/verify-gates.js"
   },
   "dependencies": {
-    "@docuscan/core-engine": "workspace:*"
+    "@document-autocapture/core-engine": "workspace:*"
   }
 }

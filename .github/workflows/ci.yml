@@ -1,4 +1,4 @@
-name: docuscan-ci
+name: document-autocapture-ci
 
 on:
   push:
@@ -43,6 +43,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Brand check
+        run: pnpm brand:check
+
       - name: Eval harness sample run
         run: pnpm harness
 
@@ -68,11 +71,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm --filter @docuscan/demo-react exec playwright install --with-deps chromium firefox
+        run: pnpm --filter @document-autocapture/demo-react exec playwright install --with-deps chromium firefox
 
       - name: Run perf gates
         env:
-          DOCUSCAN_PHYSICAL_ANDROID_REPORT: apps/eval-harness/output/physical-android/latest.json
+          DOCUMENT_AUTOCAPTURE_PHYSICAL_ANDROID_REPORT: apps/eval-harness/output/physical-android/latest.json
         run: pnpm perf:gates:strict
 
   e2e-smoke:
@@ -104,7 +107,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browser
-        run: pnpm --filter @docuscan/demo-react exec playwright install --with-deps ${{ matrix.browser }}
+        run: pnpm --filter @document-autocapture/demo-react exec playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run smoke tests
-        run: pnpm --filter @docuscan/demo-react exec playwright test --project=${{ matrix.browser }}
+        run: pnpm --filter @document-autocapture/demo-react exec playwright test --project=${{ matrix.browser }}

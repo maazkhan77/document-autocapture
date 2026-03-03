@@ -43,7 +43,7 @@ function normalizePath(inputPath) {
 }
 
 function parseAllowlist() {
-  const raw = process.env.DOCUSCAN_NO_ONNX_ALLOWLIST ?? '';
+  const raw = process.env.DOCUMENT_AUTOCAPTURE_NO_ONNX_ALLOWLIST ?? '';
   const allowlist = new Set([normalizePath(path.resolve(ROOT, 'scripts/verify-no-onnx.mjs'))]);
   for (const item of raw
     .split(',')
