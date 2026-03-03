@@ -526,7 +526,7 @@ export function proposeQuadCandidates(
   if (config.debug && proposals.length === 0 && components.length > 0) {
     const total = components.length;
     console.warn(
-      `[docuscan:detection] 0/${total} components passed | ` +
+      `[document-autocapture:detection] 0/${total} components passed | ` +
       `rej: box=${rejBox} boundary=${rejBoundary} ` +
       `quad=${rejQuad} area=${rejArea} areaFrac=${rejAreaFrac} aspect=${rejAspect} ` +
       `edgeTouch=${rejEdgeTouch} cornerBorder=${rejCornerBorder} ` +

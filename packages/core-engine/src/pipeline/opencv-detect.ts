@@ -803,7 +803,7 @@ export function detectWithOpenCV(
 
     if (config.debug) {
       console.warn(
-        `[docuscan:opencv] candidates=${merged.length} sources=${proposalSources.join(',') || 'none'} ` +
+        `[document-autocapture:opencv] candidates=${merged.length} sources=${proposalSources.join(',') || 'none'} ` +
           `edgeDensity=${edgeDensity.toFixed(3)} houghState=${fallbackState}`,
       );
     }

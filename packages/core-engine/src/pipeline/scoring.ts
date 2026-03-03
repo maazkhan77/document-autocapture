@@ -257,7 +257,7 @@ export function scoreCandidates(
         `homo=${c.metrics.interiorHomogeneity.toFixed(2)} corner=${c.metrics.cornerAngleCloseness.toFixed(2)} ` +
         `border=${c.metrics.borderPenalty.toFixed(2)} convex=${c.convexity.toFixed(2)} edgeStr=${c.edgeStrength.toFixed(2)} src=${c.source ?? 'contour'}`,
     );
-    console.warn(`[docuscan:scoring] ${scored.length} candidates | ${top.join(' | ')}`);
+    console.warn(`[document-autocapture:scoring] ${scored.length} candidates | ${top.join(' | ')}`);
   }
 
   return scored;
