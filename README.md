@@ -1,8 +1,121 @@
-# docuscan monorepo
+# React Document Auto Capture + JavaScript Document Auto Capture
 
-Phase-0-first implementation scaffold for the browser document auto-capture SDK.
+Free, no watermark, lightweight, fast, and accurate browser document auto-capture.
 
-## Quick start
+This monorepo powers two public npm packages:
+
+- `react-document-autocapture`
+- `js-document-autocapture`
+
+## Why This SDK
+
+- Free to use with no watermark overlays
+- Runs fully in the browser with local processing
+- Lightweight setup for React and vanilla JS apps
+- ML-first detection with CV fallback for hard scenes
+- Built-in auto-capture, strict warp validation, and manual corner adjust
+
+## Install
+
+```bash
+pnpm add react-document-autocapture js-document-autocapture
+```
+
+If you only need vanilla JS:
+
+```bash
+pnpm add js-document-autocapture
+```
+
+## Quick Start (React)
+
+```tsx
+import { useDocumentAutoCapture } from 'react-document-autocapture';
+
+export function CaptureWidget() {
+  const { videoRef, start, stop, captureManual, guidance, detection } = useDocumentAutoCapture({
+    detectorMode: 'ml',
+    mlPipelineVersion: 'v2-graph',
+    mlModelId: 'doc-corner-v2',
+    warpValidationLevel: 'strict',
+    captureMimeType: 'image/png',
+    autoCapture: true,
+  });
+
+  return (
+    <div>
+      <video ref={videoRef} autoPlay muted playsInline style={{ width: 420 }} />
+      <button onClick={() => void start()}>Start</button>
+      <button onClick={() => void stop()}>Stop</button>
+      <button onClick={() => void captureManual()}>Capture</button>
+      <p>{guidance}</p>
+      <p>{detection?.source}</p>
+    </div>
+  );
+}
+```
+
+## Quick Start (JavaScript)
+
+```ts
+import { createScanner } from 'js-document-autocapture';
+
+const video = document.querySelector('video');
+
+const scanner = createScanner({
+  videoElement: video,
+  detectorMode: 'ml',
+  mlPipelineVersion: 'v2-graph',
+  mlModelId: 'doc-corner-v2',
+  warpValidationLevel: 'strict',
+  captureMimeType: 'image/png',
+  autoCapture: true,
+});
+
+scanner.on('capture', (capture) => {
+  console.log('captured', capture.width, capture.height, capture.warpTierUsed);
+});
+
+await scanner.start();
+```
+
+## High-Intent Keywords
+
+### React document autocapture
+Use `react-document-autocapture` to add camera preview, guidance, and capture controls in React with minimal code.
+
+### JavaScript document autocapture
+Use `js-document-autocapture` for framework-agnostic browser integrations with direct session and event APIs.
+
+### Browser document scanner
+This SDK is designed for in-browser scanning workflows with perspective correction and quality gates.
+
+### Web document scanner
+Works in modern web apps with worker mode, ML detection, and fallback CV processing.
+
+### Auto document capture
+Supports automatic capture triggers based on detection confidence, stability, and quality checks.
+
+### ID card scanner SDK
+Handles cards and paper-like documents with corner-based capture and correction.
+
+### Webcam document scanner
+Built for live camera feeds from desktop and mobile browsers (secure context required).
+
+### Document scanner SDK
+Production-oriented architecture with test coverage, evaluation harness, and publish workflow.
+
+## Product Claims (What You Get)
+
+- No watermark added to captured output
+- Free and open workflow for developers
+- Lightweight integration path for React and JS
+- Fast runtime with worker support and CV/ML pipeline
+- Accurate document capture with strict warp validation
+
+## Demo Routes
+
+Run the demo app:
 
 ```bash
 pnpm install
@@ -10,141 +123,63 @@ pnpm build
 pnpm dev
 ```
 
-## Demo routes
+Open:
 
-- `http://localhost:4173/` -> studio demo
-- `http://localhost:4173/react` -> React SDK integration demo
-- `http://localhost:4173/js` -> vanilla JS headless integration demo
+- `http://localhost:4173/` - Studio
+- `http://localhost:4173/react` - React integration demo
+- `http://localhost:4173/js` - Vanilla JS integration demo
+
+## Monorepo Commands
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm e2e
+pnpm harness
+pnpm phase0
+pnpm bakeoff
+pnpm realclip
+pnpm opencv:regression
+pnpm brand:check
+pnpm release:verify
+```
+
+## Package Publish
+
+Only two public packages are published:
+
+1. `js-document-autocapture`
+2. `react-document-autocapture`
+
+Dry run:
+
+```bash
+pnpm publish:dry-run
+```
+
+Publish:
+
+```bash
+pnpm publish:npm
+```
+
+Detailed runbook:
+
+- `/Users/mukesh.shelke/Documents/New project/docs/npm-publish-procedure.md`
+
+## Migration (Hard Cut)
+
+Legacy scoped SDK names were removed with no compatibility alias.
+
+## Internal Architecture
+
+Internal runtime packages stay workspace-only under `@document-autocapture/*`.
+
+- `/Users/mukesh.shelke/Documents/New project/docs/architecture.md`
 
 Integration docs:
 
 - `/Users/mukesh.shelke/Documents/New project/docs/integration-react.md`
 - `/Users/mukesh.shelke/Documents/New project/docs/integration-js.md`
-
-## Validation commands
-
-```bash
-pnpm test
-pnpm typecheck
-pnpm lint
-pnpm harness
-pnpm phase0
-pnpm realclip
-pnpm opencv:regression
-pnpm ml:model:size
-pnpm no-onnx
-pnpm --filter @docuscan/eval-harness verify:gates
-# strict mode when physical Android artifact is available:
-# DOCUSCAN_REQUIRE_PHYSICAL_ANDROID=1 \
-# DOCUSCAN_PHYSICAL_ANDROID_REPORT=apps/eval-harness/output/physical-android/latest.json \
-# pnpm --filter @docuscan/eval-harness verify:gates
-```
-
-E2E smoke tests (Chromium/Firefox) require Playwright browsers:
-
-```bash
-pnpm exec playwright install
-pnpm --filter @docuscan/demo-react e2e
-```
-
-## Android Camera Testing (Secure Context Required)
-
-Camera APIs require a secure origin on mobile browsers.
-
-This often fails on:
-- `http://<your-local-ip>:4173`
-
-Use one of these:
-
-1. HTTPS tunnel (recommended for real phone testing):
-```bash
-pnpm --filter @docuscan/demo-react dev -- --host 0.0.0.0 --port 4173
-npx cloudflared tunnel --url http://127.0.0.1:4173
-```
-Open the generated `https://...trycloudflare.com` URL on Android.
-
-2. Localhost on desktop browser:
-- `http://localhost:4173` (works on your laptop browser, not remote phone)
-
-If scanner start fails, runtime now emits:
-- `Camera access requires a secure context (HTTPS). Open this app via HTTPS or localhost.`
-
-Phase 0 feasibility artifacts are generated at:
-
-- `apps/eval-harness/output/phase0/*.json`
-- `docs/phase0-feasibility-report.md`
-
-Real-clip ingestion and threshold auto-tuning artifacts are generated at:
-
-- `apps/eval-harness/output/realclip/ingested.json`
-- `apps/eval-harness/output/realclip/tuned-thresholds.json`
-- `docs/realclip-ingestion-report.md`
-- `docs/realclip-autotune-report.md`
-
-OpenCV regression artifacts are generated at:
-
-- `apps/eval-harness/output/opencv-regression/latest.json`
-- `docs/opencv-regression-report.md`
-
-Physical Android validation artifact expected by strict CI gate:
-
-- `apps/eval-harness/output/physical-android/latest.json`
-
-## Release and npm publish
-
-- Run full release validation:
-  - `pnpm release:verify`
-- Run package publish dry-run:
-  - `pnpm publish:dry-run`
-- Publish all SDK packages:
-  - `pnpm publish:npm`
-
-Detailed runbook:
-- `/Users/mukesh.shelke/Documents/New project/docs/npm-publish-procedure.md`
-
-Frontend UX research notes:
-- `/Users/mukesh.shelke/Documents/New project/docs/frontend-ux-research.md`
-
-## Workspace packages
-
-- `@docuscan/core-engine`
-- `@docuscan/runtime-web`
-- `@docuscan/worker-runtime`
-- `@docuscan/warp-webgl`
-- `@docuscan/warp-cpu`
-- `@docuscan/sdk-headless`
-- `@docuscan/sdk-react`
-- `@docuscan/demo-react`
-- `@docuscan/eval-harness`
-
-## SDK flavors (`@docuscan/sdk-headless`)
-
-```ts
-import { createScanner } from '@docuscan/sdk-headless';
-import { createScanner as createCoreScanner } from '@docuscan/sdk-headless/core';
-import { createScanner as createWebglScanner } from '@docuscan/sdk-headless/webgl-warp';
-import { createScanner as createEnhancedScanner } from '@docuscan/sdk-headless/enhance';
-import { createScanner as createHybridCornerScanner } from '@docuscan/sdk-headless/hybrid-corner';
-import { createScanner as createLegacyAliasScanner } from '@docuscan/sdk-headless/ml-fallback';
-import { createScanner as createMlPrimaryV2BetaScanner } from '@docuscan/sdk-headless/ml-primary-v2-beta';
-```
-
-- `core`: default OpenCV/CV profile.
-- `webgl-warp`: OpenCV/CV profile with `preferredMode='best'` for worker+WebGL capable environments.
-- `enhance`: higher-quality capture profile with hybrid fallback defaults.
-- `hybrid-corner`: preferred production profile (`detectorMode='hybrid'`) with TFJS corner fallback.
-- `ml-fallback`: deprecated alias of `hybrid-corner` (kept for backwards compatibility).
-- `ml-primary-v2-beta`: staged rollout profile (`detectorMode='ml'`, `mlPipelineVersion='v2-graph'`, strict warp validation).
-
-### Runtime note
-
-- Runtime supports `detectorMode: 'cv' | 'hybrid' | 'ml'`.
-- OpenCV remains primary; Hough is recovery-only; TFJS corner fallback is lazy-loaded in worker mode.
-- In `detectorMode='ml'`, ML runs first and CV/Hough are only used when ML misses/rejects or ML is unavailable (reported via fallback telemetry).
-- Alternate non-TFJS ML runtimes are unsupported and blocked by repository guard (`pnpm no-onnx`).
-- OpenCV worker bootstrap can be overridden with `opencvScriptUrl` (default `/opencv.js`).
-- Ensure your app serves `opencv.js` at the configured path; otherwise runtime falls back to the built-in non-OpenCV detector path.
-- Model licensing/attribution for bundled `doc-corner-v2`: `/Users/mukesh.shelke/Documents/New project/docs/ml-model-attribution.md`.
-
-OpenCV regression guide:
-- `/Users/mukesh.shelke/Documents/New project/docs/opencv-regression-benchmarking.md`
