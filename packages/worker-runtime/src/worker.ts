@@ -1,18 +1,8 @@
 /// <reference lib="webworker" />
 
 import {
-  clamp,
   createEngine,
-  type DetectionDebugStageTimings,
-  type DetectionCandidate,
-  type DetectionRejectionReason,
   type FrameProcessResult,
-  type Quad,
-  quadArea,
-  confidenceFromQuality,
-  pickGuidanceCode,
-  rgbaToGrayscale,
-  runQualityChecks,
   setOpenCVReady,
   StabilityTracker,
 } from '@document-autocapture/core-engine';
@@ -21,12 +11,19 @@ import {
   type MlQuadProvider,
 } from '@document-autocapture/ml-tf-fallback';
 import { FallbackStateMachine } from './fallback-state';
+import { buildMlRescueRgba } from './ml-rescue';
 import type {
   CvFallbackReason,
   WorkerDetectorConfig,
   WorkerRequest,
   WorkerResponse,
 } from './protocol';
+import {
+  createMlStageTimings,
+  fuseMlResult as fuseMlResultHelper,
+  isCvDetectionFound,
+  patchFallbackState,
+} from './worker-helpers';
 
 let engine = createEngine();
 let ingestCanvas: OffscreenCanvas | undefined;
@@ -417,186 +414,6 @@ async function ensureMlProvider(): Promise<void> {
   }
 }
 
-function patchFallbackState(
-  result: FrameProcessResult,
-  state: 'inactive' | 'armed' | 'active',
-): FrameProcessResult {
-  const debug = result.detection.debug;
-  if (!debug) {
-    return result;
-  }
-  return {
-    ...result,
-    detection: {
-      ...result.detection,
-      debug: {
-        ...debug,
-        fallbackState: state,
-      },
-    },
-  };
-}
-
-function isCvDetectionFound(result: FrameProcessResult): boolean {
-  return (
-    result.detection.status === 'found' &&
-    result.detection.rejectionReason === 'none' &&
-    Boolean(result.detection.bestCandidate)
-  );
-}
-
-function createMlStageTimings(
-  elapsedMs: number,
-  base?: DetectionDebugStageTimings,
-): DetectionDebugStageTimings {
-  if (base) {
-    return base;
-  }
-  const clamped = Math.max(0, elapsedMs);
-  return {
-    grayscaleMs: 0,
-    blurMs: 0,
-    edgesMs: 0,
-    candidateMs: clamped,
-    scoringMs: 0,
-    totalMs: clamped,
-  };
-}
-
-function calcAspect(quad: Quad): number {
-  const top = Math.hypot(quad.topRight.x - quad.topLeft.x, quad.topRight.y - quad.topLeft.y);
-  const bottom = Math.hypot(quad.bottomRight.x - quad.bottomLeft.x, quad.bottomRight.y - quad.bottomLeft.y);
-  const left = Math.hypot(quad.bottomLeft.x - quad.topLeft.x, quad.bottomLeft.y - quad.topLeft.y);
-  const right = Math.hypot(quad.bottomRight.x - quad.topRight.x, quad.bottomRight.y - quad.topRight.y);
-  const width = (top + bottom) / 2;
-  const height = (left + right) / 2;
-  if (height <= 0) {
-    return Number.POSITIVE_INFINITY;
-  }
-  return width / height;
-}
-
-function calcBorderPenalty(quad: Quad, width: number, height: number, margin: number): number {
-  const points = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
-  const touchCount = points.filter(
-    (point) =>
-      point.x <= margin ||
-      point.y <= margin ||
-      point.x >= width - 1 - margin ||
-      point.y >= height - 1 - margin,
-  ).length;
-  return touchCount / 4;
-}
-
-function sampleMlEdgeSupport(
-  rgba: Uint8ClampedArray,
-  width: number,
-  height: number,
-  quad: Quad,
-  threshold = 20,
-): number {
-  const points = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
-  let hits = 0;
-  let total = 0;
-
-  const luma = (x: number, y: number): number => {
-    const sx = Math.max(0, Math.min(width - 1, x));
-    const sy = Math.max(0, Math.min(height - 1, y));
-    const idx = (sy * width + sx) * 4;
-    return 0.299 * rgba[idx] + 0.587 * rgba[idx + 1] + 0.114 * rgba[idx + 2];
-  };
-
-  for (let edge = 0; edge < 4; edge += 1) {
-    const start = points[edge];
-    const end = points[(edge + 1) % 4];
-    for (let i = 0; i <= 24; i += 1) {
-      const t = i / 24;
-      const x = Math.round(start.x + (end.x - start.x) * t);
-      const y = Math.round(start.y + (end.y - start.y) * t);
-      const gx = Math.abs(luma(x + 1, y) - luma(x - 1, y));
-      const gy = Math.abs(luma(x, y + 1) - luma(x, y - 1));
-      total += 1;
-      if (gx + gy >= threshold) {
-        hits += 1;
-      }
-    }
-  }
-
-  return hits / Math.max(1, total);
-}
-
-function percentileFromHistogram(histogram: Uint32Array, percentile: number, total: number): number {
-  if (total <= 0) {
-    return 0;
-  }
-  const target = Math.max(0, Math.min(1, percentile)) * total;
-  let cumulative = 0;
-  for (let i = 0; i < histogram.length; i += 1) {
-    cumulative += histogram[i];
-    if (cumulative >= target) {
-      return i;
-    }
-  }
-  return histogram.length - 1;
-}
-
-function buildMlRescueRgba(
-  rgba: Uint8ClampedArray,
-  width: number,
-  height: number,
-): Uint8ClampedArray | undefined {
-  const pixelCount = width * height;
-  if (pixelCount <= 0) {
-    return undefined;
-  }
-
-  if (!mlRescueBuffer || mlRescueBuffer.length !== rgba.length) {
-    mlRescueBuffer = new Uint8ClampedArray(rgba.length);
-  }
-
-  const histogram = new Uint32Array(256);
-  let sumLuma = 0;
-
-  for (let i = 0; i < rgba.length; i += 4) {
-    const luma = Math.round(0.299 * rgba[i] + 0.587 * rgba[i + 1] + 0.114 * rgba[i + 2]);
-    histogram[luma] += 1;
-    sumLuma += luma;
-  }
-
-  const pLow = percentileFromHistogram(histogram, 0.03, pixelCount);
-  const pHigh = percentileFromHistogram(histogram, 0.97, pixelCount);
-  const spread = Math.max(1, pHigh - pLow);
-  const avgLuma = sumLuma / Math.max(1, pixelCount);
-  const lowContrast = spread < 80;
-  const darkScene = avgLuma < 125;
-  const highlightHeavy = pHigh > 245;
-
-  if (!lowContrast && !darkScene && !highlightHeavy) {
-    return undefined;
-  }
-
-  const scale = 220 / spread;
-  const gamma = darkScene ? 0.84 : highlightHeavy ? 1.08 : 0.95;
-
-  for (let i = 0; i < rgba.length; i += 4) {
-    const r = rgba[i];
-    const g = rgba[i + 1];
-    const b = rgba[i + 2];
-    const a = rgba[i + 3];
-    const luma = 0.299 * r + 0.587 * g + 0.114 * b;
-    const normalized = clamp((luma - pLow) * scale + 14, 0, 255);
-    const lifted = 255 * Math.pow(normalized / 255, gamma);
-    const ratio = luma > 1 ? lifted / luma : 1;
-
-    mlRescueBuffer[i] = clamp(Math.round(r * ratio), 0, 255);
-    mlRescueBuffer[i + 1] = clamp(Math.round(g * ratio), 0, 255);
-    mlRescueBuffer[i + 2] = clamp(Math.round(b * ratio), 0, 255);
-    mlRescueBuffer[i + 3] = a;
-  }
-
-  return mlRescueBuffer;
-}
-
 async function tryMlRescueInference(
   rgba: Uint8ClampedArray,
   width: number,
@@ -629,10 +446,11 @@ async function tryMlRescueInference(
     return undefined;
   }
 
-  const enhanced = buildMlRescueRgba(rgba, width, height);
+  const enhanced = buildMlRescueRgba(rgba, width, height, mlRescueBuffer);
   if (!enhanced) {
     return undefined;
   }
+  mlRescueBuffer = enhanced;
 
   if (detectorConfig.debug) {
     console.warn(
@@ -660,119 +478,32 @@ async function tryMlRescueInference(
 }
 
 function fuseMlResult(
-  mlQuad: Quad,
+  mlQuad: Parameters<typeof fuseMlResultHelper>[0]['mlQuad'],
   mlConfidence: number,
   rgba: Uint8ClampedArray,
   width: number,
   height: number,
   nowMs: number,
   elapsedMs: number,
-  baseTimings?: DetectionDebugStageTimings,
+  baseTimings?: Parameters<typeof createMlStageTimings>[1],
 ): FrameProcessResult {
-  const area = quadArea(mlQuad);
-  const areaFraction = area / Math.max(1, width * height);
-  const aspect = calcAspect(mlQuad);
-  const borderPenalty = calcBorderPenalty(mlQuad, width, height, engine.config.edgeTouchMarginPx);
-  const edgeSupport = sampleMlEdgeSupport(rgba, width, height, mlQuad);
-
-  let rejectionReason: DetectionRejectionReason = 'none';
-  // Use a lower threshold for ML fallback — it's a last-resort path,
-  // so applying the strict CV confidenceThreshold would defeat its purpose.
-  const mlConfidenceGate = Math.min(
-    engine.config.confidenceThreshold,
-    detectorConfig.mlFallbackMinCvConfidence,
-  );
-  if (mlConfidence < mlConfidenceGate) {
-    rejectionReason = 'low_confidence';
-  } else if (borderPenalty > 0.3) {
-    rejectionReason = 'edge_touch';
-  } else if (aspect < engine.config.minAspectRatio || aspect > engine.config.maxAspectRatio) {
-    rejectionReason = 'aspect_invalid';
-  }
-
-  mlGrayBuffer = rgbaToGrayscale(rgba, width, height, mlGrayBuffer);
-  const mlQualityConfig = {
-    ...engine.config,
-    // ML should surface earlier than CV so users can center/steady before full-size framing.
-    minAreaFraction: Math.max(0.04, Math.min(engine.config.minAreaFraction, 0.06)),
-  };
-  const quality = runQualityChecks(rgba, mlGrayBuffer, width, height, mlQuad, mlQualityConfig);
-  if (!quality.ok) {
-    rejectionReason = 'quality_fail';
-  }
-
-  const qualityConfidence = confidenceFromQuality(quality);
-  const dynamicMovementThresholdPx = Math.max(
-    engine.config.movementThresholdPx,
-    engine.config.movementThresholdRatio * Math.hypot(width, height),
-  );
-
-  const stability = mlStability.update({
+  const fused = fuseMlResultHelper({
+    mlQuad,
+    mlConfidence,
+    rgba,
+    width,
+    height,
     nowMs,
-    quad: rejectionReason === 'none' ? mlQuad : undefined,
-    confidence: mlConfidence * qualityConfidence,
-    movementThresholdPx: dynamicMovementThresholdPx,
+    elapsedMs,
+    engineConfig: engine.config,
+    minCvConfidence: detectorConfig.mlFallbackMinCvConfidence,
+    stabilityTracker: mlStability,
+    grayBuffer: mlGrayBuffer,
+    baseTimings,
+    debugEnabled: Boolean(detectorConfig.debug),
   });
-
-  const candidate: DetectionCandidate = {
-    quad: mlQuad,
-    source: 'ml',
-    score: mlConfidence,
-    confidence: mlConfidence,
-    metrics: {
-      areaFraction,
-      aspectPlausibility: clamp(1 - Math.abs(aspect - 1) / 1.8, 0, 1),
-      edgeContrast: edgeSupport,
-      interiorHomogeneity: 0.5,
-      cornerAngleCloseness: 0.8,
-      borderPenalty,
-    },
-    area,
-    perimeter: Math.hypot(mlQuad.topRight.x - mlQuad.topLeft.x, mlQuad.topRight.y - mlQuad.topLeft.y) +
-      Math.hypot(mlQuad.bottomRight.x - mlQuad.topRight.x, mlQuad.bottomRight.y - mlQuad.topRight.y) +
-      Math.hypot(mlQuad.bottomLeft.x - mlQuad.bottomRight.x, mlQuad.bottomLeft.y - mlQuad.bottomRight.y) +
-      Math.hypot(mlQuad.topLeft.x - mlQuad.bottomLeft.x, mlQuad.topLeft.y - mlQuad.bottomLeft.y),
-    convexity: 0.9,
-    edgeStrength: edgeSupport,
-  };
-
-  const timings = createMlStageTimings(elapsedMs, baseTimings);
-  const detected = rejectionReason === 'none';
-  const guidance = pickGuidanceCode({
-    detected,
-    quality,
-    stable: stability.stable,
-    areaFraction,
-    minAreaFraction: mlQualityConfig.minAreaFraction,
-    ambiguous: false,
-    rejectionReason,
-  });
-
-  return {
-    detection: {
-      source: 'ml',
-      status: detected ? 'found' : 'not_found',
-      bestCandidate: detected ? candidate : undefined,
-      candidates: detected ? [candidate] : [],
-      rejectionReason,
-      timings,
-      debug: detectorConfig.debug
-        ? {
-            candidateCount: detected ? 1 : 0,
-            topScores: detected ? [candidate.score] : [],
-            bestScore: detected ? candidate.score : 0,
-            secondBestScore: 0,
-            ambiguityMargin: detected ? candidate.score : 0,
-            proposalSources: ['ml'],
-            fallbackState: 'active',
-            stageMs: timings,
-          }
-        : undefined,
-    },
-    quality,
-    stability,
-    guidance,
-  };
+  mlGrayBuffer = fused.grayBuffer;
+  return fused.result;
 }
 
 async function applyDetectorMode(
