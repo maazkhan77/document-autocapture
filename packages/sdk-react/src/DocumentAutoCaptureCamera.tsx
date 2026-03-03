@@ -1,9 +1,10 @@
-import type { Quad } from '@docuscan/core-engine';
-import type { CaptureResult, ScannerConfig } from '@docuscan/sdk-headless';
+import type { CaptureResult, ScannerConfig } from 'js-document-autocapture';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useDocuscan } from './useDocuscan';
+import { useDocumentAutoCapture } from './useDocumentAutoCapture';
 
-export interface DocuscanCameraProps extends ScannerConfig {
+type Quad = CaptureResult['quad'];
+
+export interface DocumentAutoCaptureCameraProps extends ScannerConfig {
   className?: string;
   autoStart?: boolean;
   onCapture?: (capture: CaptureResult) => void;
@@ -27,7 +28,7 @@ function drawQuad(
   ctx.stroke();
 }
 
-export function DocuscanCamera(props: DocuscanCameraProps) {
+export function DocumentAutoCaptureCamera(props: DocumentAutoCaptureCameraProps) {
   const { className, autoStart = true, onCapture, ...config } = props;
   const debugOverlayLevel = config.debugOverlayLevel ?? 'basic';
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
@@ -44,7 +45,7 @@ export function DocuscanCamera(props: DocuscanCameraProps) {
     lastCapture,
     error,
     stability,
-  } = useDocuscan(config);
+  } = useDocumentAutoCapture(config);
 
   const status = useMemo(() => {
     if (error) {

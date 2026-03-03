@@ -45,12 +45,12 @@ export function JsIntegrationPage() {
       {
         title: 'Install',
         language: 'bash',
-        code: 'pnpm add @docuscan/sdk-headless',
+        code: 'pnpm add js-document-autocapture',
       },
       {
         title: 'Vanilla JS usage',
         language: 'ts',
-        code: `import { createScanner } from '@docuscan/sdk-headless';
+        code: `import { createScanner } from 'js-document-autocapture';
 
 const video = document.querySelector('video');
 const scanner = createScanner({
@@ -79,7 +79,7 @@ await scanner.destroy();`,
     <IntegrationShell
       title="Headless JS integration"
       subtitle="Route /js"
-      description="This page is mounted through a plain imperative module using createScanner from @docuscan/sdk-headless."
+      description="This page is mounted through a plain imperative module using createScanner from js-document-autocapture."
       snippets={snippets}
     >
       {mountError ? (

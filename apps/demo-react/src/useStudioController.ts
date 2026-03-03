@@ -1,7 +1,7 @@
-import type { GuidanceCode, Quad } from '@docuscan/core-engine';
-import { useDocuscan } from '@docuscan/sdk-react';
-import type { CaptureResult, ScannerConfig } from '@docuscan/sdk-headless';
-import { warpPerspectiveCpu } from '@docuscan/warp-cpu';
+import type { GuidanceCode, Quad } from '@document-autocapture/core-engine';
+import { useDocumentAutoCapture } from 'react-document-autocapture';
+import type { CaptureResult, ScannerConfig } from 'js-document-autocapture';
+import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import {
   buildShareUrl,
@@ -354,7 +354,7 @@ export function useStudioController() {
     lastCapture,
     warning,
     error,
-  } = useDocuscan(scannerConfig);
+  } = useDocumentAutoCapture(scannerConfig);
 
   useEffect(() => {
     const previous = prevGuidanceRef.current;
@@ -664,7 +664,7 @@ export function useStudioController() {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = `docuscan-session-${Date.now()}.json`;
+    anchor.download = `document-autocapture-session-${Date.now()}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
     appendLog(setEvents, 'info', 'Session diagnostics exported');

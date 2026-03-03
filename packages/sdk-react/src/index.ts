@@ -1,3 +1,3 @@
-export * from './useDocuscan';
-export * from './DocuscanCamera';
+export * from './useDocumentAutoCapture';
+export * from './DocumentAutoCaptureCamera';
 export * from './CornerAdjustModal';

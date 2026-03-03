@@ -7,8 +7,8 @@ import './styles.css';
 
 declare global {
   interface Window {
-    __DOCUSCAN_PHASE0__?: unknown;
-    __DOCUSCAN_BAKEOFF__?: unknown;
+    __DOCUMENT_AUTOCAPTURE_PHASE0__?: unknown;
+    __DOCUMENT_AUTOCAPTURE_BAKEOFF__?: unknown;
   }
 }
 
@@ -53,13 +53,13 @@ async function runPhase0BenchMode(): Promise<void> {
   try {
     const { runPhase0Bench } = await import('./phase0Bench');
     const result = await runPhase0Bench();
-    window.__DOCUSCAN_PHASE0__ = result;
+    window.__DOCUMENT_AUTOCAPTURE_PHASE0__ = result;
     renderBenchResult(result);
   } catch (error) {
     const benchError = {
       error: error instanceof Error ? error.message : 'Unknown benchmark failure',
     };
-    window.__DOCUSCAN_PHASE0__ = benchError;
+    window.__DOCUMENT_AUTOCAPTURE_PHASE0__ = benchError;
     renderBenchResult(benchError);
   }
 }
@@ -75,14 +75,14 @@ async function runBakeoffBenchMode(candidateParam: string | null): Promise<void>
   try {
     const { runBakeoffBench } = await import('./bakeoffBench');
     const result = await runBakeoffBench(candidateParam);
-    window.__DOCUSCAN_BAKEOFF__ = result;
+    window.__DOCUMENT_AUTOCAPTURE_BAKEOFF__ = result;
     renderBenchResult(result);
   } catch (error) {
     const benchError = {
       error: error instanceof Error ? error.message : 'Unknown bakeoff benchmark failure',
       candidate: candidateParam ?? 'candidate-a',
     };
-    window.__DOCUSCAN_BAKEOFF__ = benchError;
+    window.__DOCUMENT_AUTOCAPTURE_BAKEOFF__ = benchError;
     renderBenchResult(benchError);
   }
 }

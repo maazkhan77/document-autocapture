@@ -1,5 +1,8 @@
-import type { Point, Quad } from '@docuscan/core-engine';
+import type { CaptureResult } from 'js-document-autocapture';
 import { useEffect, useRef, useState } from 'react';
+
+type Quad = CaptureResult['quad'];
+type Point = Quad[keyof Quad];
 
 export interface CornerAdjustModalProps {
   open: boolean;

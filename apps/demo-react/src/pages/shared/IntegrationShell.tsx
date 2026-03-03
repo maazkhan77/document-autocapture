@@ -26,7 +26,7 @@ export function IntegrationShell({
     <main className="integration-shell">
       <header className="studio-bar integration-topbar">
         <div className="studio-brand">
-          <h1>docuscan</h1>
+          <h1>document-autocapture</h1>
           <p>{subtitle}</p>
         </div>
         <nav className="integration-nav" aria-label="Demo pages">

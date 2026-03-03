@@ -1,5 +1,5 @@
-import { createScanner } from '@docuscan/sdk-headless';
-import type { CaptureResult } from '@docuscan/sdk-headless';
+import { createScanner } from 'js-document-autocapture';
+import type { CaptureResult } from 'js-document-autocapture';
 
 function createNode<K extends keyof HTMLElementTagNameMap>(
   tag: K,

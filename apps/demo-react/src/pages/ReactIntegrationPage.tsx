@@ -1,5 +1,5 @@
-import { useDocuscan } from '@docuscan/sdk-react';
-import type { ScannerConfig } from '@docuscan/sdk-headless';
+import { useDocumentAutoCapture } from 'react-document-autocapture';
+import type { ScannerConfig } from 'js-document-autocapture';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { IntegrationShell } from './shared/IntegrationShell';
 
@@ -48,7 +48,7 @@ export function ReactIntegrationPage() {
     lastCapture,
     warning,
     error,
-  } = useDocuscan(scannerConfig);
+  } = useDocumentAutoCapture(scannerConfig);
 
   useEffect(() => {
     void start().catch(() => undefined);
@@ -82,15 +82,15 @@ export function ReactIntegrationPage() {
       {
         title: 'Install',
         language: 'bash',
-        code: 'pnpm add @docuscan/sdk-react @docuscan/sdk-headless',
+        code: 'pnpm add react-document-autocapture js-document-autocapture',
       },
       {
         title: 'React usage',
         language: 'tsx',
-        code: `import { useDocuscan } from '@docuscan/sdk-react';
+        code: `import { useDocumentAutoCapture } from 'react-document-autocapture';
 
 export function ScannerView() {
-  const { videoRef, start, stop, captureManual, detection, guidance } = useDocuscan({
+  const { videoRef, start, stop, captureManual, detection, guidance } = useDocumentAutoCapture({
     detectorMode: 'ml',
     mlPipelineVersion: 'v2-graph',
     mlModelId: 'doc-corner-v2',

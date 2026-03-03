@@ -1,5 +1,5 @@
 import { Suspense, lazy, useState } from 'react';
-import { CornerAdjustModal } from '@docuscan/sdk-react';
+import { CornerAdjustModal } from 'react-document-autocapture';
 import { CapturePanel } from './components/CapturePanel';
 import { LiveCapturePanel } from './components/LiveCapturePanel';
 import { useStudioController } from './useStudioController';
@@ -25,7 +25,7 @@ export function App() {
     <main className="sota-shell">
       <header className="studio-bar">
         <div className="studio-brand">
-          <h1>docuscan</h1>
+          <h1>document-autocapture</h1>
           <p>Live scanner demo</p>
         </div>
         <div className="studio-status">

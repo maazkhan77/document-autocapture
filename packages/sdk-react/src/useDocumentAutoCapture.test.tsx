@@ -1,14 +1,14 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { useDocuscan } from './useDocuscan';
+import { useDocumentAutoCapture } from './useDocumentAutoCapture';
 
-describe('useDocuscan', () => {
+describe('useDocumentAutoCapture', () => {
   it('returns stable control API shape for consumers', () => {
-    let snapshot: ReturnType<typeof useDocuscan> | undefined;
+    let snapshot: ReturnType<typeof useDocumentAutoCapture> | undefined;
 
     function Probe() {
-      snapshot = useDocuscan({
+      snapshot = useDocumentAutoCapture({
         detectorMode: 'cv',
       });
       return null;

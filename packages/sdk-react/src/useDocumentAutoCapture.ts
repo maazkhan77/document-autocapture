@@ -3,19 +3,19 @@ import {
   type Capabilities,
   type CaptureResult,
   type ScannerConfig,
+  type ScannerEventMap,
   type ScannerSession,
-} from '@docuscan/sdk-headless';
-import type {
-  DetectionResult,
-  FrameProcessResult,
-  GuidanceCode,
-  QualityResult,
-  StabilityResult,
-} from '@docuscan/core-engine';
+} from 'js-document-autocapture';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { normalizeConfig, shallowRecordEqual } from './config-utils';
 
-export interface UseDocuscanState {
+type FrameProcessResult = ScannerEventMap['frame'];
+type DetectionResult = FrameProcessResult['detection'];
+type StabilityResult = FrameProcessResult['stability'];
+type QualityResult = FrameProcessResult['quality'];
+type GuidanceCode = FrameProcessResult['guidance'];
+
+export interface UseDocumentAutoCaptureState {
   videoRef: (node: HTMLVideoElement | null) => void;
   start: () => Promise<void>;
   stop: () => Promise<void>;
@@ -68,7 +68,7 @@ function reducer(state: HookState, action: HookAction): HookState {
   }
 }
 
-export function useDocuscan(config?: ScannerConfig): UseDocuscanState {
+export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoCaptureState {
   const [state, dispatch] = useReducer(reducer, { isRunning: false });
 
   const videoRefObject = useRef<HTMLVideoElement | null>(null);
