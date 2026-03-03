@@ -1,0 +1,33 @@
+{
+  "datasetName": "smartdoc-2015",
+  "clipId": "smartdoc-sample-01",
+  "width": 1920,
+  "height": 1080,
+  "tags": ["sample", "smartdoc"],
+  "frames": [
+    {
+      "id": "0001",
+      "tsMs": 0,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": { "x": 220, "y": 140 },
+        "topRight": { "x": 1688, "y": 152 },
+        "bottomRight": { "x": 1704, "y": 944 },
+        "bottomLeft": { "x": 205, "y": 930 }
+      },
+      "brightness": 142,
+      "blur": 46,
+      "glare": 0.02,
+      "detectionMs": 15.4
+    },
+    {
+      "id": "0002",
+      "tsMs": 33,
+      "hasDocument": false,
+      "brightness": 136,
+      "blur": 44,
+      "glare": 0.03,
+      "detectionMs": 14.9
+    }
+  ]
+}

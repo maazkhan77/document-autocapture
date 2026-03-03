@@ -1,0 +1,73 @@
+{
+  "datasetName": "sample-phase0",
+  "frames": [
+    {
+      "id": "doc-001",
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": { "x": 42, "y": 64 },
+        "topRight": { "x": 612, "y": 58 },
+        "bottomRight": { "x": 620, "y": 844 },
+        "bottomLeft": { "x": 40, "y": 852 }
+      },
+      "prediction": {
+        "topLeft": { "x": 45, "y": 66 },
+        "topRight": { "x": 609, "y": 61 },
+        "bottomRight": { "x": 617, "y": 840 },
+        "bottomLeft": { "x": 42, "y": 849 }
+      },
+      "detectionMs": 13.8,
+      "timeToStableMs": 1180,
+      "autoCaptureSuccess": true,
+      "rejectionReason": "none"
+    },
+    {
+      "id": "doc-002",
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": { "x": 90, "y": 112 },
+        "topRight": { "x": 601, "y": 130 },
+        "bottomRight": { "x": 580, "y": 838 },
+        "bottomLeft": { "x": 74, "y": 820 }
+      },
+      "prediction": {
+        "topLeft": { "x": 88, "y": 116 },
+        "topRight": { "x": 598, "y": 136 },
+        "bottomRight": { "x": 575, "y": 833 },
+        "bottomLeft": { "x": 70, "y": 816 }
+      },
+      "detectionMs": 15.2,
+      "timeToStableMs": 1420,
+      "autoCaptureSuccess": true,
+      "rejectionReason": "none"
+    },
+    {
+      "id": "nodoc-001",
+      "hasDocument": false,
+      "prediction": null,
+      "detectionMs": 11.1,
+      "autoCaptureSuccess": false,
+      "rejectionReason": "none"
+    },
+    {
+      "id": "doc-003-glare",
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": { "x": 51, "y": 74 },
+        "topRight": { "x": 605, "y": 81 },
+        "bottomRight": { "x": 598, "y": 852 },
+        "bottomLeft": { "x": 43, "y": 846 }
+      },
+      "prediction": {
+        "topLeft": { "x": 120, "y": 120 },
+        "topRight": { "x": 520, "y": 150 },
+        "bottomRight": { "x": 510, "y": 780 },
+        "bottomLeft": { "x": 115, "y": 760 }
+      },
+      "detectionMs": 18.5,
+      "timeToStableMs": 2130,
+      "autoCaptureSuccess": false,
+      "rejectionReason": "glare"
+    }
+  ]
+}

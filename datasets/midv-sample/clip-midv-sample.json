@@ -1,0 +1,27 @@
+{
+  "datasetName": "midv-500",
+  "clipId": "midv-sample-01",
+  "width": 1280,
+  "height": 720,
+  "tags": ["sample", "midv"],
+  "annotations": [
+    {
+      "frame": 1,
+      "document_present": true,
+      "quad": [[146, 92], [1125, 104], [1138, 656], [132, 644]],
+      "brightness": 148,
+      "blur": 52,
+      "glare": 0.01,
+      "detectionMs": 14.2
+    },
+    {
+      "frame": 2,
+      "document_present": true,
+      "quad": [[149, 96], [1122, 107], [1135, 653], [136, 641]],
+      "brightness": 147,
+      "blur": 50,
+      "glare": 0.01,
+      "detectionMs": 14.1
+    }
+  ]
+}

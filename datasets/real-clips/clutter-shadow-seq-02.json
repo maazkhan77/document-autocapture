@@ -1,0 +1,4966 @@
+{
+  "datasetName": "realclip-controlled-v1",
+  "clipId": "clutter-shadow-seq-02",
+  "width": 480,
+  "height": 672,
+  "source": "pixel7-chrome",
+  "tags": [
+    "clutter",
+    "shadow",
+    "hand-jitter"
+  ],
+  "frames": [
+    {
+      "id": "clutter-shadow-seq-02-f000",
+      "tsMs": 0,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 33,
+              "y": 25
+            },
+            "topRight": {
+              "x": 227,
+              "y": 23
+            },
+            "bottomRight": {
+              "x": 230,
+              "y": 195
+            },
+            "bottomLeft": {
+              "x": 30,
+              "y": 197
+            }
+          },
+          "score": 0.23,
+          "metrics": {
+            "borderPenalty": 0.2916,
+            "edgeStrength": 0.2931
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 210,
+              "y": 120
+            },
+            "topRight": {
+              "x": 360,
+              "y": 128
+            },
+            "bottomRight": {
+              "x": 370,
+              "y": 280
+            },
+            "bottomLeft": {
+              "x": 200,
+              "y": 272
+            }
+          },
+          "score": 0.2407,
+          "metrics": {
+            "borderPenalty": 0.1204,
+            "edgeStrength": 0.3874
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 135,
+            "y": 80
+          },
+          "topRight": {
+            "x": 335,
+            "y": 77
+          },
+          "bottomRight": {
+            "x": 330,
+            "y": 270
+          },
+          "bottomLeft": {
+            "x": 140,
+            "y": 273
+          }
+        },
+        "score": 0.21,
+        "metrics": {
+          "borderPenalty": 0.2839,
+          "edgeStrength": 0.2659
+        }
+      },
+      "quality": {
+        "brightness": 133.79,
+        "blur": 48.42,
+        "glare": 0.0584
+      },
+      "detectionMs": 19.08
+    },
+    {
+      "id": "clutter-shadow-seq-02-f001",
+      "tsMs": 33,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 49,
+              "y": 36
+            },
+            "topRight": {
+              "x": 252,
+              "y": 35
+            },
+            "bottomRight": {
+              "x": 254,
+              "y": 215
+            },
+            "bottomLeft": {
+              "x": 47,
+              "y": 216
+            }
+          },
+          "score": 0.2272,
+          "metrics": {
+            "borderPenalty": 0.1963,
+            "edgeStrength": 0.4067
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 223,
+              "y": 129
+            },
+            "topRight": {
+              "x": 378,
+              "y": 137
+            },
+            "bottomRight": {
+              "x": 388,
+              "y": 296
+            },
+            "bottomLeft": {
+              "x": 213,
+              "y": 288
+            }
+          },
+          "score": 0.2017,
+          "metrics": {
+            "borderPenalty": 0.3226,
+            "edgeStrength": 0.2886
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 146,
+            "y": 87
+          },
+          "topRight": {
+            "x": 349,
+            "y": 84
+          },
+          "bottomRight": {
+            "x": 344,
+            "y": 282
+          },
+          "bottomLeft": {
+            "x": 151,
+            "y": 285
+          }
+        },
+        "score": 0.2296,
+        "metrics": {
+          "borderPenalty": 0.2349,
+          "edgeStrength": 0.533
+        }
+      },
+      "quality": {
+        "brightness": 193,
+        "blur": 66.89,
+        "glare": 0.0309
+      },
+      "detectionMs": 13.76
+    },
+    {
+      "id": "clutter-shadow-seq-02-f002",
+      "tsMs": 66,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 65,
+              "y": 47
+            },
+            "topRight": {
+              "x": 277,
+              "y": 47
+            },
+            "bottomRight": {
+              "x": 278,
+              "y": 235
+            },
+            "bottomLeft": {
+              "x": 64,
+              "y": 235
+            }
+          },
+          "score": 0.2193,
+          "metrics": {
+            "borderPenalty": 0.1679,
+            "edgeStrength": 0.5627
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 236,
+              "y": 138
+            },
+            "topRight": {
+              "x": 396,
+              "y": 146
+            },
+            "bottomRight": {
+              "x": 406,
+              "y": 312
+            },
+            "bottomLeft": {
+              "x": 226,
+              "y": 304
+            }
+          },
+          "score": 0.1669,
+          "metrics": {
+            "borderPenalty": 0.3071,
+            "edgeStrength": 0.6067
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 157,
+            "y": 94
+          },
+          "topRight": {
+            "x": 363,
+            "y": 91
+          },
+          "bottomRight": {
+            "x": 358,
+            "y": 294
+          },
+          "bottomLeft": {
+            "x": 162,
+            "y": 297
+          }
+        },
+        "score": 0.2471,
+        "metrics": {
+          "borderPenalty": 0.3465,
+          "edgeStrength": 0.3331
+        }
+      },
+      "quality": {
+        "brightness": 187.43,
+        "blur": 66.05,
+        "glare": 0.037
+      },
+      "detectionMs": 16.28
+    },
+    {
+      "id": "clutter-shadow-seq-02-f003",
+      "tsMs": 99,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 81,
+              "y": 58
+            },
+            "topRight": {
+              "x": 302,
+              "y": 59
+            },
+            "bottomRight": {
+              "x": 302,
+              "y": 255
+            },
+            "bottomLeft": {
+              "x": 81,
+              "y": 254
+            }
+          },
+          "score": 0.207,
+          "metrics": {
+            "borderPenalty": 0.3401,
+            "edgeStrength": 0.3629
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 249,
+              "y": 147
+            },
+            "topRight": {
+              "x": 414,
+              "y": 155
+            },
+            "bottomRight": {
+              "x": 424,
+              "y": 328
+            },
+            "bottomLeft": {
+              "x": 239,
+              "y": 320
+            }
+          },
+          "score": 0.212,
+          "metrics": {
+            "borderPenalty": 0.1874,
+            "edgeStrength": 0.3671
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 168,
+            "y": 101
+          },
+          "topRight": {
+            "x": 377,
+            "y": 98
+          },
+          "bottomRight": {
+            "x": 372,
+            "y": 306
+          },
+          "bottomLeft": {
+            "x": 173,
+            "y": 309
+          }
+        },
+        "score": 0.2605,
+        "metrics": {
+          "borderPenalty": 0.1955,
+          "edgeStrength": 0.2909
+        }
+      },
+      "quality": {
+        "brightness": 193.13,
+        "blur": 47.44,
+        "glare": 0.0563
+      },
+      "detectionMs": 14.12
+    },
+    {
+      "id": "clutter-shadow-seq-02-f004",
+      "tsMs": 132,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 97,
+              "y": 69
+            },
+            "topRight": {
+              "x": 327,
+              "y": 71
+            },
+            "bottomRight": {
+              "x": 326,
+              "y": 275
+            },
+            "bottomLeft": {
+              "x": 98,
+              "y": 273
+            }
+          },
+          "score": 0.1918,
+          "metrics": {
+            "borderPenalty": 0.1885,
+            "edgeStrength": 0.3123
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 262,
+              "y": 156
+            },
+            "topRight": {
+              "x": 432,
+              "y": 164
+            },
+            "bottomRight": {
+              "x": 442,
+              "y": 344
+            },
+            "bottomLeft": {
+              "x": 252,
+              "y": 336
+            }
+          },
+          "score": 0.1192,
+          "metrics": {
+            "borderPenalty": 0.2713,
+            "edgeStrength": 0.5254
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 179,
+            "y": 108
+          },
+          "topRight": {
+            "x": 391,
+            "y": 105
+          },
+          "bottomRight": {
+            "x": 386,
+            "y": 318
+          },
+          "bottomLeft": {
+            "x": 184,
+            "y": 321
+          }
+        },
+        "score": 0.2683,
+        "metrics": {
+          "borderPenalty": 0.3406,
+          "edgeStrength": 0.3223
+        }
+      },
+      "quality": {
+        "brightness": 125.24,
+        "blur": 51.87,
+        "glare": 0.0431
+      },
+      "detectionMs": 14.42
+    },
+    {
+      "id": "clutter-shadow-seq-02-f005",
+      "tsMs": 165,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 113,
+              "y": 80
+            },
+            "topRight": {
+              "x": 352,
+              "y": 78
+            },
+            "bottomRight": {
+              "x": 350,
+              "y": 295
+            },
+            "bottomLeft": {
+              "x": 115,
+              "y": 297
+            }
+          },
+          "score": 0.1752,
+          "metrics": {
+            "borderPenalty": 0.3233,
+            "edgeStrength": 0.4068
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 275,
+              "y": 165
+            },
+            "topRight": {
+              "x": 450,
+              "y": 173
+            },
+            "bottomRight": {
+              "x": 460,
+              "y": 360
+            },
+            "bottomLeft": {
+              "x": 265,
+              "y": 352
+            }
+          },
+          "score": 0.1713,
+          "metrics": {
+            "borderPenalty": 0.1015,
+            "edgeStrength": 0.3903
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 190,
+            "y": 115
+          },
+          "topRight": {
+            "x": 405,
+            "y": 112
+          },
+          "bottomRight": {
+            "x": 400,
+            "y": 330
+          },
+          "bottomLeft": {
+            "x": 195,
+            "y": 333
+          }
+        },
+        "score": 0.2697,
+        "metrics": {
+          "borderPenalty": 0.2903,
+          "edgeStrength": 0.4516
+        }
+      },
+      "quality": {
+        "brightness": 105.28,
+        "blur": 62,
+        "glare": 0.0453
+      },
+      "detectionMs": 20.03
+    },
+    {
+      "id": "clutter-shadow-seq-02-f006",
+      "tsMs": 198,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 135,
+              "y": 91
+            },
+            "topRight": {
+              "x": 371,
+              "y": 90
+            },
+            "bottomRight": {
+              "x": 374,
+              "y": 315
+            },
+            "bottomLeft": {
+              "x": 132,
+              "y": 316
+            }
+          },
+          "score": 0.1592,
+          "metrics": {
+            "borderPenalty": 0.3463,
+            "edgeStrength": 0.5122
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 288,
+              "y": 174
+            },
+            "topRight": {
+              "x": 468,
+              "y": 182
+            },
+            "bottomRight": {
+              "x": 478,
+              "y": 376
+            },
+            "bottomLeft": {
+              "x": 278,
+              "y": 368
+            }
+          },
+          "score": 0.1691,
+          "metrics": {
+            "borderPenalty": 0.3184,
+            "edgeStrength": 0.4484
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 201,
+            "y": 122
+          },
+          "topRight": {
+            "x": 419,
+            "y": 119
+          },
+          "bottomRight": {
+            "x": 414,
+            "y": 342
+          },
+          "bottomLeft": {
+            "x": 206,
+            "y": 345
+          }
+        },
+        "score": 0.2646,
+        "metrics": {
+          "borderPenalty": 0.3401,
+          "edgeStrength": 0.4541
+        }
+      },
+      "quality": {
+        "brightness": 175.95,
+        "blur": 66.8,
+        "glare": 0.0541
+      },
+      "detectionMs": 19.94
+    },
+    {
+      "id": "clutter-shadow-seq-02-f007",
+      "tsMs": 231,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 151,
+              "y": 102
+            },
+            "topRight": {
+              "x": 396,
+              "y": 102
+            },
+            "bottomRight": {
+              "x": 398,
+              "y": 335
+            },
+            "bottomLeft": {
+              "x": 149,
+              "y": 335
+            }
+          },
+          "score": 0.1455,
+          "metrics": {
+            "borderPenalty": 0.2533,
+            "edgeStrength": 0.3048
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 301,
+              "y": 183
+            },
+            "topRight": {
+              "x": 486,
+              "y": 191
+            },
+            "bottomRight": {
+              "x": 496,
+              "y": 392
+            },
+            "bottomLeft": {
+              "x": 291,
+              "y": 384
+            }
+          },
+          "score": 0.149,
+          "metrics": {
+            "borderPenalty": 0.3652,
+            "edgeStrength": 0.5468
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 212,
+            "y": 129
+          },
+          "topRight": {
+            "x": 433,
+            "y": 126
+          },
+          "bottomRight": {
+            "x": 428,
+            "y": 354
+          },
+          "bottomLeft": {
+            "x": 217,
+            "y": 357
+          }
+        },
+        "score": 0.2534,
+        "metrics": {
+          "borderPenalty": 0.3279,
+          "edgeStrength": 0.4426
+        }
+      },
+      "quality": {
+        "brightness": 184.61,
+        "blur": 57.92,
+        "glare": 0.0398
+      },
+      "detectionMs": 20.69
+    },
+    {
+      "id": "clutter-shadow-seq-02-f008",
+      "tsMs": 264,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 70.71885831472004,
+          "y": 70.94095029321196
+        },
+        "topRight": {
+          "x": 419.276024921778,
+          "y": 73.64246182255265
+        },
+        "bottomRight": {
+          "x": 411.997441618249,
+          "y": 590.9409502932119
+        },
+        "bottomLeft": {
+          "x": 77.99744161824903,
+          "y": 588.2394387638712
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.49873942889819,
+              "y": 72.32701724076756
+            },
+            "topRight": {
+              "x": 423.8775950751252,
+              "y": 72.15182010695983
+            },
+            "bottomRight": {
+              "x": 414.1582160614921,
+              "y": 584.4092234242106
+            },
+            "bottomLeft": {
+              "x": 81.21811844253132,
+              "y": 584.5844205580183
+            }
+          },
+          "score": 0.6927,
+          "metrics": {
+            "borderPenalty": 0.0713,
+            "edgeStrength": 0.7653
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 74.83674011260973,
+              "y": 74.92712758272776
+            },
+            "topRight": {
+              "x": 356.67674011260976,
+              "y": 66.92712758272776
+            },
+            "bottomRight": {
+              "x": 342.67674011260976,
+              "y": 449.3271275827277
+            },
+            "bottomLeft": {
+              "x": 88.83674011260973,
+              "y": 457.3271275827277
+            }
+          },
+          "score": 0.5603,
+          "metrics": {
+            "borderPenalty": 0.1725,
+            "edgeStrength": 0.3745
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 75.74144172481917,
+            "y": 71.78749197505975
+          },
+          "topRight": {
+            "x": 421.43858293687373,
+            "y": 71.67069388585459
+          },
+          "bottomRight": {
+            "x": 416.5788934300572,
+            "y": 601.5629581059708
+          },
+          "bottomLeft": {
+            "x": 80.60113123163573,
+            "y": 601.679756195176
+          }
+        },
+        "score": 0.5471,
+        "metrics": {
+          "borderPenalty": 0.043,
+          "edgeStrength": 0.7882
+        }
+      },
+      "quality": {
+        "brightness": 174.54,
+        "blur": 63.81,
+        "glare": 0.0584
+      },
+      "detectionMs": 13.74
+    },
+    {
+      "id": "clutter-shadow-seq-02-f009",
+      "tsMs": 297,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 70.16597712153569,
+          "y": 70.28294880667082
+        },
+        "topRight": {
+          "x": 419.52019444900264,
+          "y": 72.43883139066415
+        },
+        "bottomRight": {
+          "x": 411.8430857852692,
+          "y": 590.2829488066708
+        },
+        "bottomLeft": {
+          "x": 77.84308578526917,
+          "y": 588.1270662226775
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.96989317980946,
+              "y": 70.02868793229784
+            },
+            "topRight": {
+              "x": 426.30161961465785,
+              "y": 68.66547536413933
+            },
+            "bottomRight": {
+              "x": 416.3266697486173,
+              "y": 587.1874539073057
+            },
+            "bottomLeft": {
+              "x": 81.94484304585,
+              "y": 588.5506664754641
+            }
+          },
+          "score": 0.4178,
+          "metrics": {
+            "borderPenalty": 0.0839,
+            "edgeStrength": 0.722
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.53927717603767,
+              "y": 83.78408401138441
+            },
+            "topRight": {
+              "x": 351.3792771760377,
+              "y": 75.78408401138441
+            },
+            "bottomRight": {
+              "x": 337.3792771760377,
+              "y": 458.18408401138436
+            },
+            "bottomLeft": {
+              "x": 83.53927717603767,
+              "y": 466.18408401138436
+            }
+          },
+          "score": 0.2751,
+          "metrics": {
+            "borderPenalty": 0.1197,
+            "edgeStrength": 0.4167
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 72.8366517028705,
+            "y": 72.39308625786381
+          },
+          "topRight": {
+            "x": 417.29939034735565,
+            "y": 71.48427787909147
+          },
+          "bottomRight": {
+            "x": 412.3119154143354,
+            "y": 594.1710943312486
+          },
+          "bottomLeft": {
+            "x": 77.82412663589076,
+            "y": 595.079902710021
+          }
+        },
+        "score": 0.5273,
+        "metrics": {
+          "borderPenalty": 0.0904,
+          "edgeStrength": 0.7592
+        }
+      },
+      "quality": {
+        "brightness": 194.44,
+        "blur": 70.57,
+        "glare": 0.0459
+      },
+      "detectionMs": 20.98
+    },
+    {
+      "id": "clutter-shadow-seq-02-f010",
+      "tsMs": 330,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 69.53655994997709,
+          "y": 69.6171058079425
+        },
+        "topRight": {
+          "x": 419.3750091719311,
+          "y": 71.19371761991884
+        },
+        "bottomRight": {
+          "x": 411.4557845609541,
+          "y": 589.6171058079425
+        },
+        "bottomLeft": {
+          "x": 77.45578456095409,
+          "y": 588.0404939959661
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 68.9205842161254,
+              "y": 66.53490125390212
+            },
+            "topRight": {
+              "x": 425.7104449005229,
+              "y": 64.03802023461927
+            },
+            "bottomRight": {
+              "x": 415.75636532300524,
+              "y": 582.8512679112612
+            },
+            "bottomLeft": {
+              "x": 78.87466379364305,
+              "y": 585.3481489305441
+            }
+          },
+          "score": 0.4394,
+          "metrics": {
+            "borderPenalty": 0.1302,
+            "edgeStrength": 0.7451
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.98581740808467,
+              "y": 93.67324370926453
+            },
+            "topRight": {
+              "x": 351.8258174080847,
+              "y": 85.67324370926453
+            },
+            "bottomRight": {
+              "x": 337.8258174080847,
+              "y": 468.0732437092645
+            },
+            "bottomLeft": {
+              "x": 83.98581740808467,
+              "y": 476.0732437092645
+            }
+          },
+          "score": 0.29,
+          "metrics": {
+            "borderPenalty": 0.1175,
+            "edgeStrength": 0.6047
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 72.68533445295319,
+            "y": 66.95998414896079
+          },
+          "topRight": {
+            "x": 419.4368824014671,
+            "y": 65.29539680277222
+          },
+          "bottomRight": {
+            "x": 414.45984261270826,
+            "y": 595.8203768854374
+          },
+          "bottomLeft": {
+            "x": 77.66237424171202,
+            "y": 597.484964231626
+          }
+        },
+        "score": 0.5084,
+        "metrics": {
+          "borderPenalty": 0.0642,
+          "edgeStrength": 0.6887
+        }
+      },
+      "quality": {
+        "brightness": 189.76,
+        "blur": 71.18,
+        "glare": 0.0412
+      },
+      "detectionMs": 21.92
+    },
+    {
+      "id": "clutter-shadow-seq-02-f011",
+      "tsMs": 363,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 68.85098002185059,
+          "y": 68.96187416152466
+        },
+        "topRight": {
+          "x": 418.85097682398447,
+          "y": 69.9346127014696
+        },
+        "bottomRight": {
+          "x": 410.85097842291754,
+          "y": 588.9618741615246
+        },
+        "bottomLeft": {
+          "x": 76.85097842291754,
+          "y": 587.9891356215797
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 68.22730795207006,
+              "y": 69.68571801088116
+            },
+            "topRight": {
+              "x": 417.13317202815114,
+              "y": 66.15471130734909
+            },
+            "bottomRight": {
+              "x": 407.47582549057614,
+              "y": 587.5076177757071
+            },
+            "bottomLeft": {
+              "x": 77.88465448964506,
+              "y": 591.0386244792392
+            }
+          },
+          "score": 0.3814,
+          "metrics": {
+            "borderPenalty": 0.0474,
+            "edgeStrength": 0.7024
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 76.0670321863106,
+              "y": 102.1733954858252
+            },
+            "topRight": {
+              "x": 357.90703218631063,
+              "y": 94.1733954858252
+            },
+            "bottomRight": {
+              "x": 343.90703218631063,
+              "y": 476.5733954858252
+            },
+            "bottomLeft": {
+              "x": 90.0670321863106,
+              "y": 484.5733954858252
+            }
+          },
+          "score": 0.2817,
+          "metrics": {
+            "borderPenalty": 0.1832,
+            "edgeStrength": 0.2785
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 73.5490182489539,
+            "y": 71.38877708507736
+          },
+          "topRight": {
+            "x": 414.2287780271748,
+            "y": 69.03477261605599
+          },
+          "bottomRight": {
+            "x": 409.40010475838733,
+            "y": 597.6535877495867
+          },
+          "bottomLeft": {
+            "x": 78.3776915177414,
+            "y": 600.007592218608
+          }
+        },
+        "score": 0.4911,
+        "metrics": {
+          "borderPenalty": 0.0614,
+          "edgeStrength": 0.7214
+        }
+      },
+      "quality": {
+        "brightness": 118.43,
+        "blur": 59.23,
+        "glare": 0.0563
+      },
+      "detectionMs": 21.64
+    },
+    {
+      "id": "clutter-shadow-seq-02-f012",
+      "tsMs": 396,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 68.13499469242834,
+          "y": 68.33541265381143
+        },
+        "topRight": {
+          "x": 417.9705634741855,
+          "y": 68.68909866214995
+        },
+        "bottomRight": {
+          "x": 410.0527790833069,
+          "y": 588.3354126538114
+        },
+        "bottomLeft": {
+          "x": 76.0527790833069,
+          "y": 587.9817266454729
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.88111737323766,
+              "y": 66.2868978596589
+            },
+            "topRight": {
+              "x": 422.14339178023766,
+              "y": 61.862535566411424
+            },
+            "bottomRight": {
+              "x": 413.05041751198087,
+              "y": 579.9087289979122
+            },
+            "bottomLeft": {
+              "x": 80.97409164149448,
+              "y": 584.3330912911597
+            }
+          },
+          "score": 0.3846,
+          "metrics": {
+            "borderPenalty": 0.114,
+            "edgeStrength": 0.6385
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 86.29402804322578,
+              "y": 107.20340573300732
+            },
+            "topRight": {
+              "x": 368.1340280432258,
+              "y": 99.20340573300732
+            },
+            "bottomRight": {
+              "x": 354.1340280432258,
+              "y": 481.6034057330073
+            },
+            "bottomLeft": {
+              "x": 100.29402804322578,
+              "y": 489.6034057330073
+            }
+          },
+          "score": 0.2712,
+          "metrics": {
+            "borderPenalty": 0.2646,
+            "edgeStrength": 0.498
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 69.29245329588174,
+            "y": 67.71684074193243
+          },
+          "topRight": {
+            "x": 410.081070559938,
+            "y": 64.76726587976745
+          },
+          "bottomRight": {
+            "x": 405.53458342580956,
+            "y": 583.1835441615749
+          },
+          "bottomLeft": {
+            "x": 73.83894043001015,
+            "y": 586.1331190237399
+          }
+        },
+        "score": 0.4763,
+        "metrics": {
+          "borderPenalty": 0.0425,
+          "edgeStrength": 0.6167
+        }
+      },
+      "quality": {
+        "brightness": 215.81,
+        "blur": 54.03,
+        "glare": 0.1846
+      },
+      "detectionMs": 17.95
+    },
+    {
+      "id": "clutter-shadow-seq-02-f013",
+      "tsMs": 429,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 67.41875066509806,
+          "y": 67.75508274889704
+        },
+        "topRight": {
+          "x": 416.7672657967595,
+          "y": 67.48419707376236
+        },
+        "bottomRight": {
+          "x": 409.0930082309288,
+          "y": 587.755082748897
+        },
+        "bottomLeft": {
+          "x": 75.09300823092879,
+          "y": 588.0259684240317
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 63.4617795659029,
+              "y": 68.18393839647726
+            },
+            "topRight": {
+              "x": 410.555560563032,
+              "y": 63.04260587626358
+            },
+            "bottomRight": {
+              "x": 402.27895704177234,
+              "y": 588.9270737195365
+            },
+            "bottomLeft": {
+              "x": 71.7383830871625,
+              "y": 594.0684062397502
+            }
+          },
+          "score": 0.6113,
+          "metrics": {
+            "borderPenalty": 0.0597,
+            "edgeStrength": 0.6484
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 98.16287971410758,
+              "y": 107.53175251456047
+            },
+            "topRight": {
+              "x": 380.00287971410756,
+              "y": 99.53175251456047
+            },
+            "bottomRight": {
+              "x": 366.00287971410756,
+              "y": 481.93175251456046
+            },
+            "bottomLeft": {
+              "x": 112.16287971410758,
+              "y": 489.93175251456046
+            }
+          },
+          "score": 0.5255,
+          "metrics": {
+            "borderPenalty": 0.2431,
+            "edgeStrength": 0.2538
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 68.78344943186198,
+            "y": 69.1351040404479
+          },
+          "topRight": {
+            "x": 412.7153331346485,
+            "y": 65.70754902697212
+          },
+          "bottomRight": {
+            "x": 408.5770313740187,
+            "y": 590.8634669205675
+          },
+          "bottomLeft": {
+            "x": 72.92175119249178,
+            "y": 594.2910219340432
+          }
+        },
+        "score": 0.4643,
+        "metrics": {
+          "borderPenalty": 0.0783,
+          "edgeStrength": 0.6408
+        }
+      },
+      "quality": {
+        "brightness": 219.35,
+        "blur": 53.64,
+        "glare": 0.1893
+      },
+      "detectionMs": 12.88
+    },
+    {
+      "id": "clutter-shadow-seq-02-f014",
+      "tsMs": 462,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 66.73554948632999,
+          "y": 67.23696744100049
+        },
+        "topRight": {
+          "x": 415.2843083155409,
+          "y": 66.34573716275303
+        },
+        "bottomRight": {
+          "x": 408.00992890093545,
+          "y": 587.2369674410005
+        },
+        "bottomLeft": {
+          "x": 74.00992890093544,
+          "y": 588.128197719248
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 70.94080127907613,
+              "y": 68.97370303846121
+            },
+            "topRight": {
+              "x": 416.52043537644056,
+              "y": 63.32036899444926
+            },
+            "bottomRight": {
+              "x": 409.2895765590573,
+              "y": 588.6745375464561
+            },
+            "bottomLeft": {
+              "x": 78.17166009645938,
+              "y": 594.327871590468
+            }
+          },
+          "score": 0.5919,
+          "metrics": {
+            "borderPenalty": 0.0585,
+            "edgeStrength": 0.6934
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 108.76767836925094,
+              "y": 103.0780450868661
+            },
+            "topRight": {
+              "x": 390.60767836925095,
+              "y": 95.0780450868661
+            },
+            "bottomRight": {
+              "x": 376.60767836925095,
+              "y": 477.4780450868661
+            },
+            "bottomLeft": {
+              "x": 122.76767836925094,
+              "y": 485.4780450868661
+            }
+          },
+          "score": 0.4865,
+          "metrics": {
+            "borderPenalty": 0.3686,
+            "edgeStrength": 0.6327
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 68.08594879648328,
+            "y": 66.20558840378223
+          },
+          "topRight": {
+            "x": 410.3750560987311,
+            "y": 62.436699041107595
+          },
+          "bottomRight": {
+            "x": 406.75962669003945,
+            "y": 590.0620513617472
+          },
+          "bottomLeft": {
+            "x": 71.7013782051749,
+            "y": 593.8309407244218
+          }
+        },
+        "score": 0.4558,
+        "metrics": {
+          "borderPenalty": 0.0736,
+          "edgeStrength": 0.617
+        }
+      },
+      "quality": {
+        "brightness": 227.13,
+        "blur": 47.47,
+        "glare": 0.1441
+      },
+      "detectionMs": 12.1
+    },
+    {
+      "id": "clutter-shadow-seq-02-f015",
+      "tsMs": 495,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 66.1204232019972,
+          "y": 66.79542553781226
+        },
+        "topRight": {
+          "x": 413.5730168947212,
+          "y": 65.2977580068644
+        },
+        "bottomRight": {
+          "x": 406.8467200483592,
+          "y": 586.7954255378122
+        },
+        "bottomLeft": {
+          "x": 72.8467200483592,
+          "y": 588.2930930687601
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.74973224311549,
+              "y": 69.64204997264893
+            },
+            "topRight": {
+              "x": 413.5277273807562,
+              "y": 63.70209499304626
+            },
+            "bottomRight": {
+              "x": 407.54300593971664,
+              "y": 577.1720134907606
+            },
+            "bottomLeft": {
+              "x": 75.73445368415506,
+              "y": 583.1119684703633
+            }
+          },
+          "score": 0.5743,
+          "metrics": {
+            "borderPenalty": 0.0806,
+            "edgeStrength": 0.7697
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 115.51199944259372,
+              "y": 94.93270635670052
+            },
+            "topRight": {
+              "x": 397.35199944259375,
+              "y": 86.93270635670052
+            },
+            "bottomRight": {
+              "x": 383.35199944259375,
+              "y": 469.3327063567005
+            },
+            "bottomLeft": {
+              "x": 129.51199944259372,
+              "y": 477.3327063567005
+            }
+          },
+          "score": 0.4631,
+          "metrics": {
+            "borderPenalty": 0.2567,
+            "edgeStrength": 0.4911
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 69.70792680783576,
+            "y": 69.64086595210237
+          },
+          "topRight": {
+            "x": 411.31547695098175,
+            "y": 65.68089596570059
+          },
+          "bottomRight": {
+            "x": 408.32311623046195,
+            "y": 596.4614619707323
+          },
+          "bottomLeft": {
+            "x": 72.70028752835555,
+            "y": 600.4214319571341
+          }
+        },
+        "score": 0.451,
+        "metrics": {
+          "borderPenalty": 0.0543,
+          "edgeStrength": 0.7179
+        }
+      },
+      "quality": {
+        "brightness": 218.66,
+        "blur": 57.93,
+        "glare": 0.1912
+      },
+      "detectionMs": 12.41
+    },
+    {
+      "id": "clutter-shadow-seq-02-f016",
+      "tsMs": 528,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 65.60857892958126,
+          "y": 66.44269372714784
+        },
+        "topRight": {
+          "x": 411.69093134928784,
+          "y": 64.36195954441213
+        },
+        "bottomRight": {
+          "x": 405.64975513943455,
+          "y": 586.4426937271478
+        },
+        "bottomLeft": {
+          "x": 71.64975513943452,
+          "y": 588.5234279098835
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 67.74275963386305,
+              "y": 69.97667556815902
+            },
+            "topRight": {
+              "x": 411.20652740604515,
+              "y": 63.986906913390506
+            },
+            "bottomRight": {
+              "x": 406.633801139687,
+              "y": 579.0050169095447
+            },
+            "bottomLeft": {
+              "x": 72.31548590022116,
+              "y": 584.9947855643132
+            }
+          },
+          "score": 0.4334,
+          "metrics": {
+            "borderPenalty": 0.0683,
+            "edgeStrength": 0.6981
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 116.74459791896118,
+              "y": 85.08999932382773
+            },
+            "topRight": {
+              "x": 398.5845979189612,
+              "y": 77.08999932382773
+            },
+            "bottomRight": {
+              "x": 384.5845979189612,
+              "y": 459.4899993238277
+            },
+            "bottomLeft": {
+              "x": 130.74459791896118,
+              "y": 467.4899993238277
+            }
+          },
+          "score": 0.294,
+          "metrics": {
+            "borderPenalty": 0.1849,
+            "edgeStrength": 0.5551
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 69.48705642995645,
+            "y": 64.90074475738436
+          },
+          "topRight": {
+            "x": 405.4451302002719,
+            "y": 60.90756565420535
+          },
+          "bottomRight": {
+            "x": 403.1587670670928,
+            "y": 592.012193167121
+          },
+          "bottomLeft": {
+            "x": 71.77341956313552,
+            "y": 596.0053722703001
+          }
+        },
+        "score": 0.4502,
+        "metrics": {
+          "borderPenalty": 0.0432,
+          "edgeStrength": 0.6226
+        }
+      },
+      "quality": {
+        "brightness": 112.16,
+        "blur": 18.03,
+        "glare": 0.0496
+      },
+      "detectionMs": 24.29
+    },
+    {
+      "id": "clutter-shadow-seq-02-f017",
+      "tsMs": 561,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 65.23377759178624,
+          "y": 66.18854745504873
+        },
+        "topRight": {
+          "x": 409.69972918389175,
+          "y": 63.55721578152721
+        },
+        "bottomRight": {
+          "x": 404.466753387839,
+          "y": 586.1885474550487
+        },
+        "bottomLeft": {
+          "x": 70.466753387839,
+          "y": 588.8198791285703
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 64.49219703410122,
+              "y": 65.89083971156673
+            },
+            "topRight": {
+              "x": 405.5096481415281,
+              "y": 60.09005055608996
+            },
+            "bottomRight": {
+              "x": 402.4756434678495,
+              "y": 575.8762156643584
+            },
+            "bottomLeft": {
+              "x": 67.52620170777979,
+              "y": 581.6770048198351
+            }
+          },
+          "score": 0.404,
+          "metrics": {
+            "borderPenalty": 0.1041,
+            "edgeStrength": 0.6239
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 112.16369070296376,
+              "y": 75.95976194630353
+            },
+            "topRight": {
+              "x": 394.00369070296375,
+              "y": 67.95976194630353
+            },
+            "bottomRight": {
+              "x": 380.00369070296375,
+              "y": 450.3597619463035
+            },
+            "bottomLeft": {
+              "x": 126.16369070296376,
+              "y": 458.3597619463035
+            }
+          },
+          "score": 0.2916,
+          "metrics": {
+            "borderPenalty": 0.238,
+            "edgeStrength": 0.6382
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 71.25942501730722,
+            "y": 67.86229735983862
+          },
+          "topRight": {
+            "x": 408.6144475270477,
+            "y": 63.99510458952078
+          },
+          "bottomRight": {
+            "x": 407.0974451902084,
+            "y": 593.1862413697046
+          },
+          "bottomLeft": {
+            "x": 72.7764273541465,
+            "y": 597.0534341400224
+          }
+        },
+        "score": 0.4533,
+        "metrics": {
+          "borderPenalty": 0.0947,
+          "edgeStrength": 0.6562
+        }
+      },
+      "quality": {
+        "brightness": 129.77,
+        "blur": 25.4,
+        "glare": 0.0389
+      },
+      "detectionMs": 23.46
+    },
+    {
+      "id": "clutter-shadow-seq-02-f018",
+      "tsMs": 594,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 65.02671588102572,
+          "y": 66.04003001359821
+        },
+        "topRight": {
+          "x": 407.66303879943604,
+          "y": 62.89916189998452
+        },
+        "bottomRight": {
+          "x": 403.3448773402309,
+          "y": 586.0400300135982
+        },
+        "bottomLeft": {
+          "x": 69.34487734023088,
+          "y": 589.1808981272119
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 67.92493769747878,
+              "y": 67.17010587143933
+            },
+            "topRight": {
+              "x": 408.34362823952694,
+              "y": 61.78955537343445
+            },
+            "bottomRight": {
+              "x": 406.93242815892825,
+              "y": 579.1704267201812
+            },
+            "bottomLeft": {
+              "x": 69.33613777807746,
+              "y": 584.5509772181862
+            }
+          },
+          "score": 0.5418,
+          "metrics": {
+            "borderPenalty": 0.1162,
+            "edgeStrength": 0.6678
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 102.89084364580216,
+              "y": 69.77739476230646
+            },
+            "topRight": {
+              "x": 384.73084364580217,
+              "y": 61.77739476230646
+            },
+            "bottomRight": {
+              "x": 370.73084364580217,
+              "y": 444.17739476230645
+            },
+            "bottomLeft": {
+              "x": 116.89084364580216,
+              "y": 452.17739476230645
+            }
+          },
+          "score": 0.4005,
+          "metrics": {
+            "borderPenalty": 0.3711,
+            "edgeStrength": 0.3811
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 68.53582183521819,
+            "y": 64.60194573431333
+          },
+          "topRight": {
+            "x": 401.68675996839113,
+            "y": 61.01491206897674
+          },
+          "bottomRight": {
+            "x": 400.9811599280918,
+            "y": 586.7699810470036
+          },
+          "bottomLeft": {
+            "x": 69.24142187551752,
+            "y": 590.3570147123402
+          }
+        },
+        "score": 0.4603,
+        "metrics": {
+          "borderPenalty": 0.0322,
+          "edgeStrength": 0.6008
+        }
+      },
+      "quality": {
+        "brightness": 89.64,
+        "blur": 23.49,
+        "glare": 0.0448
+      },
+      "detectionMs": 15.31
+    },
+    {
+      "id": "clutter-shadow-seq-02-f019",
+      "tsMs": 627,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 65.01348150425493,
+          "y": 66.00125734638637
+        },
+        "topRight": {
+          "x": 405.64422380443244,
+          "y": 62.39986498910291
+        },
+        "bottomRight": {
+          "x": 402.3288526543437,
+          "y": 586.0012573463864
+        },
+        "bottomLeft": {
+          "x": 68.32885265434369,
+          "y": 589.6026497036698
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 70.48056468328775,
+              "y": 64.89357578182458
+            },
+            "topRight": {
+              "x": 399.264766521014,
+              "y": 60.14776951033808
+            },
+            "bottomRight": {
+              "x": 399.51548037896566,
+              "y": 571.4863049019463
+            },
+            "bottomLeft": {
+              "x": 70.22985082533606,
+              "y": 576.2321111734327
+            }
+          },
+          "score": 0.5401,
+          "metrics": {
+            "borderPenalty": 0.0747,
+            "edgeStrength": 0.6614
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 91.19637310891657,
+              "y": 68.05655687607243
+            },
+            "topRight": {
+              "x": 373.03637310891656,
+              "y": 60.056556876072435
+            },
+            "bottomRight": {
+              "x": 359.03637310891656,
+              "y": 442.4565568760724
+            },
+            "bottomLeft": {
+              "x": 105.19637310891657,
+              "y": 450.4565568760724
+            }
+          },
+          "score": 0.4117,
+          "metrics": {
+            "borderPenalty": 0.312,
+            "edgeStrength": 0.4406
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 68.6859489673648,
+            "y": 64.27349190116213
+          },
+          "topRight": {
+            "x": 403.536679215993,
+            "y": 61.10962105350446
+          },
+          "bottomRight": {
+            "x": 403.66203614496885,
+            "y": 587.1518430077374
+          },
+          "bottomLeft": {
+            "x": 68.56059203838895,
+            "y": 590.3157138553951
+          }
+        },
+        "score": 0.4709,
+        "metrics": {
+          "borderPenalty": 0.0647,
+          "edgeStrength": 0.5651
+        }
+      },
+      "quality": {
+        "brightness": 109.55,
+        "blur": 51.92,
+        "glare": 0.0373
+      },
+      "detectionMs": 15.3
+    },
+    {
+      "id": "clutter-shadow-seq-02-f020",
+      "tsMs": 660,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 65.21414983203758,
+          "y": 66.07330398115569
+        },
+        "topRight": {
+          "x": 403.70422022426726,
+          "y": 62.06758590342102
+        },
+        "bottomRight": {
+          "x": 401.45918502815243,
+          "y": 586.0733039811557
+        },
+        "bottomLeft": {
+          "x": 67.45918502815243,
+          "y": 590.0790220588904
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 64.64610117764686,
+              "y": 65.84588807050338
+            },
+            "topRight": {
+              "x": 393.6365445808731,
+              "y": 61.92402634532171
+            },
+            "bottomRight": {
+              "x": 395.54222420962793,
+              "y": 584.8675239932004
+            },
+            "bottomLeft": {
+              "x": 62.740421548892,
+              "y": 588.789385718382
+            }
+          },
+          "score": 0.5433,
+          "metrics": {
+            "borderPenalty": 0.0731,
+            "edgeStrength": 0.7026
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 79.94349333865513,
+              "y": 71.21856941847095
+            },
+            "topRight": {
+              "x": 361.78349333865515,
+              "y": 63.21856941847095
+            },
+            "bottomRight": {
+              "x": 347.78349333865515,
+              "y": 445.61856941847094
+            },
+            "bottomLeft": {
+              "x": 93.94349333865513,
+              "y": 453.61856941847094
+            }
+          },
+          "score": 0.4023,
+          "metrics": {
+            "borderPenalty": 0.34,
+            "edgeStrength": 0.558
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 68.01183701645338,
+            "y": 65.31735850282425
+          },
+          "topRight": {
+            "x": 401.2294369482883,
+            "y": 62.7027840193698
+          },
+          "bottomRight": {
+            "x": 402.18227676266577,
+            "y": 585.4329143096454
+          },
+          "bottomLeft": {
+            "x": 67.05899720207596,
+            "y": 588.0474887930999
+          }
+        },
+        "score": 0.4846,
+        "metrics": {
+          "borderPenalty": 0.0934,
+          "edgeStrength": 0.5754
+        }
+      },
+      "quality": {
+        "brightness": 171.37,
+        "blur": 71.45,
+        "glare": 0.0408
+      },
+      "detectionMs": 13.42
+    },
+    {
+      "id": "clutter-shadow-seq-02-f021",
+      "tsMs": 693,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 65.64158530103954,
+          "y": 66.25417325083681
+        },
+        "topRight": {
+          "x": 401.8995054299974,
+          "y": 61.906637343506894
+        },
+        "bottomRight": {
+          "x": 400.7705453655185,
+          "y": 586.2541732508369
+        },
+        "bottomLeft": {
+          "x": 66.77054536551847,
+          "y": 590.6017091581667
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.63944608488318,
+              "y": 64.53807070656718
+            },
+            "topRight": {
+              "x": 396.8895425513399,
+              "y": 61.59650577852299
+            },
+            "bottomRight": {
+              "x": 400.3973748282361,
+              "y": 583.9720306841168
+            },
+            "bottomLeft": {
+              "x": 66.13161380798698,
+              "y": 586.913595612161
+            }
+          },
+          "score": 0.5513,
+          "metrics": {
+            "borderPenalty": 0.0971,
+            "edgeStrength": 0.7555
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.88730176067992,
+              "y": 78.48926144008016
+            },
+            "topRight": {
+              "x": 353.7273017606799,
+              "y": 70.48926144008016
+            },
+            "bottomRight": {
+              "x": 339.7273017606799,
+              "y": 452.88926144008013
+            },
+            "bottomLeft": {
+              "x": 85.88730176067992,
+              "y": 460.88926144008013
+            }
+          },
+          "score": 0.4156,
+          "metrics": {
+            "borderPenalty": 0.268,
+            "edgeStrength": 0.3457
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 71.27373672619319,
+            "y": 68.0084838863529
+          },
+          "topRight": {
+            "x": 402.5595290634224,
+            "y": 66.04744060099011
+          },
+          "bottomRight": {
+            "x": 404.31344520187054,
+            "y": 595.8486300321149
+          },
+          "bottomLeft": {
+            "x": 69.51982058774509,
+            "y": 597.8096733174777
+          }
+        },
+        "score": 0.501,
+        "metrics": {
+          "borderPenalty": 0.0711,
+          "edgeStrength": 0.6554
+        }
+      },
+      "quality": {
+        "brightness": 133.85,
+        "blur": 56.22,
+        "glare": 0.0329
+      },
+      "detectionMs": 15.04
+    },
+    {
+      "id": "clutter-shadow-seq-02-f022",
+      "tsMs": 726,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 66.30050346810593,
+          "y": 66.53885262825506
+        },
+        "topRight": {
+          "x": 400.2802716452199,
+          "y": 61.917340735092736
+        },
+        "bottomRight": {
+          "x": 400.2903875566629,
+          "y": 586.5388526282551
+        },
+        "bottomLeft": {
+          "x": 66.2903875566629,
+          "y": 591.1603645214174
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 73.3615836752673,
+              "y": 62.971219889979935
+            },
+            "topRight": {
+              "x": 391.91846264491954,
+              "y": 61.12722267010942
+            },
+            "bottomRight": {
+              "x": 396.931233130803,
+              "y": 578.3166667161516
+            },
+            "bottomLeft": {
+              "x": 68.34881318938385,
+              "y": 580.1606639360222
+            }
+          },
+          "score": 0.5636,
+          "metrics": {
+            "borderPenalty": 0.0458,
+            "edgeStrength": 0.7204
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.00023504278312,
+              "y": 88.08851395976102
+            },
+            "topRight": {
+              "x": 350.8402350427831,
+              "y": 80.08851395976102
+            },
+            "bottomRight": {
+              "x": 336.8402350427831,
+              "y": 462.488513959761
+            },
+            "bottomLeft": {
+              "x": 83.00023504278312,
+              "y": 470.488513959761
+            }
+          },
+          "score": 0.477,
+          "metrics": {
+            "borderPenalty": 0.25,
+            "edgeStrength": 0.3197
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 69.50571511070135,
+            "y": 66.30291965725955
+          },
+          "topRight": {
+            "x": 400.82730576810815,
+            "y": 65.07358817734587
+          },
+          "bottomRight": {
+            "x": 403.3336910110499,
+            "y": 593.3777353851075
+          },
+          "bottomLeft": {
+            "x": 66.99932986775963,
+            "y": 594.6070668650211
+          }
+        },
+        "score": 0.5193,
+        "metrics": {
+          "borderPenalty": 0.0933,
+          "edgeStrength": 0.6598
+        }
+      },
+      "quality": {
+        "brightness": 89.88,
+        "blur": 69.47,
+        "glare": 0.0416
+      },
+      "detectionMs": 19.5
+    },
+    {
+      "id": "clutter-shadow-seq-02-f023",
+      "tsMs": 759,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 67.18683976925375,
+          "y": 66.91945264098702
+        },
+        "topRight": {
+          "x": 398.8888681871447,
+          "y": 62.09608190938044
+        },
+        "bottomRight": {
+          "x": 400.0378539781992,
+          "y": 586.9194526409871
+        },
+        "bottomLeft": {
+          "x": 66.03785397819921,
+          "y": 591.7428233725936
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 73.31183871972229,
+              "y": 63.209204926528564
+            },
+            "topRight": {
+              "x": 389.9130564959763,
+              "y": 62.53628976491824
+            },
+            "bottomRight": {
+              "x": 396.2918435911448,
+              "y": 577.0531147677211
+            },
+            "bottomLeft": {
+              "x": 66.93305162455377,
+              "y": 577.7260299293315
+            }
+          },
+          "score": 0.5793,
+          "metrics": {
+            "borderPenalty": 0.0477,
+            "edgeStrength": 0.6723
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.9891478074777,
+              "y": 97.66609517506012
+            },
+            "topRight": {
+              "x": 353.82914780747774,
+              "y": 89.66609517506012
+            },
+            "bottomRight": {
+              "x": 339.82914780747774,
+              "y": 472.0660951750601
+            },
+            "bottomLeft": {
+              "x": 85.9891478074777,
+              "y": 480.0660951750601
+            }
+          },
+          "score": 0.4567,
+          "metrics": {
+            "borderPenalty": 0.1932,
+            "edgeStrength": 0.6191
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 70.75159359652216,
+            "y": 66.93259873836028
+          },
+          "topRight": {
+            "x": 399.08949900540324,
+            "y": 66.48398863062006
+          },
+          "bottomRight": {
+            "x": 402.2788925529875,
+            "y": 584.0255771918869
+          },
+          "bottomLeft": {
+            "x": 67.5622000489379,
+            "y": 584.4741872996271
+          }
+        },
+        "score": 0.5388,
+        "metrics": {
+          "borderPenalty": 0.0762,
+          "edgeStrength": 0.6383
+        }
+      },
+      "quality": {
+        "brightness": 191.23,
+        "blur": 50.93,
+        "glare": 0.0496
+      },
+      "detectionMs": 15.75
+    },
+    {
+      "id": "clutter-shadow-seq-02-f024",
+      "tsMs": 792,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 68.287459179643,
+          "y": 67.38542551654555
+        },
+        "topRight": {
+          "x": 397.7585655143269,
+          "y": 62.43546303354333
+        },
+        "bottomRight": {
+          "x": 400.02301234698496,
+          "y": 587.3854255165455
+        },
+        "bottomLeft": {
+          "x": 66.02301234698496,
+          "y": 592.3353879995477
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 78.54956536035364,
+              "y": 66.22454905852622
+            },
+            "topRight": {
+              "x": 390.78746225181,
+              "y": 66.7495429591629
+            },
+            "bottomRight": {
+              "x": 398.35548720488924,
+              "y": 575.9731760681966
+            },
+            "bottomLeft": {
+              "x": 70.98154040727435,
+              "y": 575.4481821675599
+            }
+          },
+          "score": 0.5976,
+          "metrics": {
+            "borderPenalty": 0.1215,
+            "edgeStrength": 0.6776
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 80.12224996798956,
+              "y": 104.87707917464985
+            },
+            "topRight": {
+              "x": 361.9622499679896,
+              "y": 96.87707917464985
+            },
+            "bottomRight": {
+              "x": 347.9622499679896,
+              "y": 479.2770791746498
+            },
+            "bottomLeft": {
+              "x": 94.12224996798956,
+              "y": 487.2770791746498
+            }
+          },
+          "score": 0.4762,
+          "metrics": {
+            "borderPenalty": 0.1479,
+            "edgeStrength": 0.6587
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 69.75526229800447,
+            "y": 67.83182808512602
+          },
+          "topRight": {
+            "x": 397.82490389554795,
+            "y": 68.1818240188838
+          },
+          "bottomRight": {
+            "x": 401.6089163720876,
+            "y": 592.0257370632515
+          },
+          "bottomLeft": {
+            "x": 65.97124982146482,
+            "y": 591.6757411294938
+          }
+        },
+        "score": 0.5587,
+        "metrics": {
+          "borderPenalty": 0.0571,
+          "edgeStrength": 0.6804
+        }
+      },
+      "quality": {
+        "brightness": 138.36,
+        "blur": 55.91,
+        "glare": 0.0511
+      },
+      "detectionMs": 13.4
+    },
+    {
+      "id": "clutter-shadow-seq-02-f025",
+      "tsMs": 825,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 69.58022756604917,
+          "y": 67.92385749846152
+        },
+        "topRight": {
+          "x": 396.91268113799316,
+          "y": 62.92454577305308
+        },
+        "bottomRight": {
+          "x": 400.24645435202115,
+          "y": 587.9238574984615
+        },
+        "bottomLeft": {
+          "x": 66.24645435202117,
+          "y": 592.92316922387
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 75.40985869304397,
+              "y": 69.54638472522912
+            },
+            "topRight": {
+              "x": 398.91035504216563,
+              "y": 71.24835783800847
+            },
+            "bottomRight": {
+              "x": 407.457881114554,
+              "y": 586.6635240825626
+            },
+            "bottomLeft": {
+              "x": 66.86233262065558,
+              "y": 584.9615509697833
+            }
+          },
+          "score": 0.6173,
+          "metrics": {
+            "borderPenalty": 0.1189,
+            "edgeStrength": 0.7325
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 91.40827446357119,
+              "y": 107.95596558357161
+            },
+            "topRight": {
+              "x": 373.2482744635712,
+              "y": 99.95596558357161
+            },
+            "bottomRight": {
+              "x": 359.2482744635712,
+              "y": 482.35596558357156
+            },
+            "bottomLeft": {
+              "x": 105.40827446357119,
+              "y": 490.35596558357156
+            }
+          },
+          "score": 0.5059,
+          "metrics": {
+            "borderPenalty": 0.2051,
+            "edgeStrength": 0.5417
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 67.82196646450035,
+            "y": 65.64598378118882
+          },
+          "topRight": {
+            "x": 390.03318149739414,
+            "y": 66.78063252304172
+          },
+          "bottomRight": {
+            "x": 394.30694453358836,
+            "y": 593.1401491198328
+          },
+          "bottomLeft": {
+            "x": 63.548203428306145,
+            "y": 592.00550037798
+          }
+        },
+        "score": 0.5784,
+        "metrics": {
+          "borderPenalty": 0.034,
+          "edgeStrength": 0.6975
+        }
+      },
+      "quality": {
+        "brightness": 180.19,
+        "blur": 64.1,
+        "glare": 0.0493
+      },
+      "detectionMs": 18.92
+    },
+    {
+      "id": "clutter-shadow-seq-02-f026",
+      "tsMs": 858,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 71.03445110215432,
+          "y": 68.51982673214985
+        },
+        "topRight": {
+          "x": 396.36409302920384,
+          "y": 63.54917835174712
+        },
+        "bottomRight": {
+          "x": 400.6992720656791,
+          "y": 588.5198267321498
+        },
+        "bottomLeft": {
+          "x": 66.69927206567908,
+          "y": 593.4904751125525
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 80.24409641051383,
+              "y": 65.79868492029225
+            },
+            "topRight": {
+              "x": 397.33533593791026,
+              "y": 68.60978494809451
+            },
+            "bottomRight": {
+              "x": 406.6254809506179,
+              "y": 577.4762567240679
+            },
+            "bottomLeft": {
+              "x": 70.95395139780621,
+              "y": 574.6651566962656
+            }
+          },
+          "score": 0.6372,
+          "metrics": {
+            "borderPenalty": 0.0905,
+            "edgeStrength": 0.6247
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 103.08400888383937,
+              "y": 106.14893562900392
+            },
+            "topRight": {
+              "x": 384.9240088838394,
+              "y": 98.14893562900392
+            },
+            "bottomRight": {
+              "x": 370.9240088838394,
+              "y": 480.5489356290039
+            },
+            "bottomLeft": {
+              "x": 117.08400888383937,
+              "y": 488.5489356290039
+            }
+          },
+          "score": 0.5523,
+          "metrics": {
+            "borderPenalty": 0.3749,
+            "edgeStrength": 0.2672
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 71.48890308946692,
+            "y": 66.5975237467889
+          },
+          "topRight": {
+            "x": 396.0336063486243,
+            "y": 68.4715904319904
+          },
+          "bottomRight": {
+            "x": 400.6786788549781,
+            "y": 588.4837957428147
+          },
+          "bottomLeft": {
+            "x": 66.8438305831131,
+            "y": 586.6097290576132
+          }
+        },
+        "score": 0.5969,
+        "metrics": {
+          "borderPenalty": 0.0936,
+          "edgeStrength": 0.6472
+        }
+      },
+      "quality": {
+        "brightness": 95.33,
+        "blur": 69.45,
+        "glare": 0.0389
+      },
+      "detectionMs": 18.2
+    },
+    {
+      "id": "clutter-shadow-seq-02-f027",
+      "tsMs": 891,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 72.61167525406283,
+          "y": 69.15681680227688
+        },
+        "topRight": {
+          "x": 396.11515089526534,
+          "y": 64.29239707237964
+        },
+        "bottomRight": {
+          "x": 401.3634130746641,
+          "y": 589.1568168022769
+        },
+        "bottomLeft": {
+          "x": 67.36341307466408,
+          "y": 594.0212365321742
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 78.26985101878743,
+              "y": 70.01622490935274
+            },
+            "topRight": {
+              "x": 392.56170905558895,
+              "y": 73.82438216500856
+            },
+            "bottomRight": {
+              "x": 402.3370102322399,
+              "y": 586.923465190627
+            },
+            "bottomLeft": {
+              "x": 68.49454984213646,
+              "y": 583.1153079349712
+            }
+          },
+          "score": 0.656,
+          "metrics": {
+            "borderPenalty": 0.1283,
+            "edgeStrength": 0.6311
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 112.2908262372389,
+              "y": 99.89841326619784
+            },
+            "topRight": {
+              "x": 394.1308262372389,
+              "y": 91.89841326619784
+            },
+            "bottomRight": {
+              "x": 380.1308262372389,
+              "y": 474.2984132661978
+            },
+            "bottomLeft": {
+              "x": 126.2908262372389,
+              "y": 482.2984132661978
+            }
+          },
+          "score": 0.5356,
+          "metrics": {
+            "borderPenalty": 0.2883,
+            "edgeStrength": 0.5417
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 74.80625391166362,
+            "y": 66.43944600809081
+          },
+          "topRight": {
+            "x": 401.53192833898396,
+            "y": 68.97821751186135
+          },
+          "bottomRight": {
+            "x": 406.41957892730943,
+            "y": 593.6894695549671
+          },
+          "bottomLeft": {
+            "x": 69.91860332333813,
+            "y": 591.1506980511965
+          }
+        },
+        "score": 0.6135,
+        "metrics": {
+          "borderPenalty": 0.0346,
+          "edgeStrength": 0.6667
+        }
+      },
+      "quality": {
+        "brightness": 184.58,
+        "blur": 48.86,
+        "glare": 0.0303
+      },
+      "detectionMs": 20.73
+    },
+    {
+      "id": "clutter-shadow-seq-02-f028",
+      "tsMs": 924,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 74.2668201352295,
+          "y": 69.81717446104568
+        },
+        "topRight": {
+          "x": 396.15798021030264,
+          "y": 65.1348910245917
+        },
+        "bottomRight": {
+          "x": 402.2124001727661,
+          "y": 589.8171744610456
+        },
+        "bottomLeft": {
+          "x": 68.21240017276607,
+          "y": 594.4994578974996
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 75.8421105944351,
+              "y": 71.15156230484695
+            },
+            "topRight": {
+              "x": 388.11863569650103,
+              "y": 75.80495757590845
+            },
+            "bottomRight": {
+              "x": 398.1081848674803,
+              "y": 597.7922874357935
+            },
+            "bottomLeft": {
+              "x": 65.85256142345581,
+              "y": 593.1388921647319
+            }
+          },
+          "score": 0.6726,
+          "metrics": {
+            "borderPenalty": 0.0587,
+            "edgeStrength": 0.6401
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 116.77457653667688,
+              "y": 90.73474436415667
+            },
+            "topRight": {
+              "x": 398.61457653667685,
+              "y": 82.73474436415667
+            },
+            "bottomRight": {
+              "x": 384.61457653667685,
+              "y": 465.13474436415663
+            },
+            "bottomLeft": {
+              "x": 130.77457653667688,
+              "y": 473.13474436415663
+            }
+          },
+          "score": 0.5319,
+          "metrics": {
+            "borderPenalty": 0.3067,
+            "edgeStrength": 0.5646
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 73.59505481121023,
+            "y": 67.22790377604457
+          },
+          "topRight": {
+            "x": 396.5320823156459,
+            "y": 70.33016729008557
+          },
+          "bottomRight": {
+            "x": 401.52685690113555,
+            "y": 593.3444297044391
+          },
+          "bottomLeft": {
+            "x": 68.6002802257206,
+            "y": 590.2421661903982
+          }
+        },
+        "score": 0.6276,
+        "metrics": {
+          "borderPenalty": 0.0859,
+          "edgeStrength": 0.7441
+        }
+      },
+      "quality": {
+        "brightness": 185.77,
+        "blur": 61.33,
+        "glare": 0.0544
+      },
+      "detectionMs": 13.42
+    },
+    {
+      "id": "clutter-shadow-seq-02-f029",
+      "tsMs": 957,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 75.9496150704367,
+          "y": 70.48259886212982
+        },
+        "topRight": {
+          "x": 396.4751587765982,
+          "y": 66.05551718611471
+        },
+        "bottomRight": {
+          "x": 403.21238692351744,
+          "y": 590.4825988621299
+        },
+        "bottomLeft": {
+          "x": 69.21238692351746,
+          "y": 594.9096805381449
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 78.75127197932214,
+              "y": 71.98275030947623
+            },
+            "topRight": {
+              "x": 399.5587945714072,
+              "y": 77.29586741112415
+            },
+            "bottomRight": {
+              "x": 409.48574599740874,
+              "y": 600.3887854768224
+            },
+            "bottomLeft": {
+              "x": 68.82432055332062,
+              "y": 595.0756683751745
+            }
+          },
+          "score": 0.3637,
+          "metrics": {
+            "borderPenalty": 0.0951,
+            "edgeStrength": 0.7562
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 115.4374813325924,
+              "y": 80.9015146642259
+            },
+            "topRight": {
+              "x": 397.2774813325924,
+              "y": 72.9015146642259
+            },
+            "bottomRight": {
+              "x": 383.2774813325924,
+              "y": 455.30151466422586
+            },
+            "bottomLeft": {
+              "x": 129.4374813325924,
+              "y": 463.30151466422586
+            }
+          },
+          "score": 0.2476,
+          "metrics": {
+            "borderPenalty": 0.2866,
+            "edgeStrength": 0.3432
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 74.22378842982799,
+            "y": 68.56160476943582
+          },
+          "topRight": {
+            "x": 398.7574060575309,
+            "y": 72.10368283720109
+          },
+          "bottomRight": {
+            "x": 403.72088177053166,
+            "y": 597.3002124084967
+          },
+          "bottomLeft": {
+            "x": 69.26031271682723,
+            "y": 593.7581343407314
+          }
+        },
+        "score": 0.6386,
+        "metrics": {
+          "borderPenalty": 0.099,
+          "edgeStrength": 0.7147
+        }
+      },
+      "quality": {
+        "brightness": 224.33,
+        "blur": 57.84,
+        "glare": 0.1538
+      },
+      "detectionMs": 21.14
+    },
+    {
+      "id": "clutter-shadow-seq-02-f030",
+      "tsMs": 990,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 77.60628256529272,
+          "y": 71.1346487418529
+        },
+        "topRight": {
+          "x": 397.0407314563202,
+          "y": 67.03185195515509
+        },
+        "bottomRight": {
+          "x": 404.32350701080645,
+          "y": 591.1346487418529
+        },
+        "bottomLeft": {
+          "x": 70.32350701080645,
+          "y": 595.2374455285507
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 76.13467617804443,
+              "y": 72.93458682824443
+            },
+            "topRight": {
+              "x": 385.32875544647266,
+              "y": 78.69560854814662
+            },
+            "bottomRight": {
+              "x": 394.91799819310404,
+              "y": 592.7338001313909
+            },
+            "bottomLeft": {
+              "x": 66.54543343141304,
+              "y": 586.9727784114888
+            }
+          },
+          "score": 0.3819,
+          "metrics": {
+            "borderPenalty": 0.0917,
+            "edgeStrength": 0.695
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 108.60690816377081,
+              "y": 72.80624174282357
+            },
+            "topRight": {
+              "x": 390.4469081637708,
+              "y": 64.80624174282357
+            },
+            "bottomRight": {
+              "x": 376.4469081637708,
+              "y": 447.2062417428235
+            },
+            "bottomLeft": {
+              "x": 122.60690816377081,
+              "y": 455.2062417428235
+            }
+          },
+          "score": 0.2541,
+          "metrics": {
+            "borderPenalty": 0.1752,
+            "edgeStrength": 0.3448
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 76.05456774765435,
+            "y": 73.96036267399693
+          },
+          "topRight": {
+            "x": 403.07486382914334,
+            "y": 77.8010438205984
+          },
+          "bottomRight": {
+            "x": 407.86948520245903,
+            "y": 602.5600768497794
+          },
+          "bottomLeft": {
+            "x": 71.25994637433865,
+            "y": 598.719395703178
+          }
+        },
+        "score": 0.646,
+        "metrics": {
+          "borderPenalty": 0.0823,
+          "edgeStrength": 0.65
+        }
+      },
+      "quality": {
+        "brightness": 191.84,
+        "blur": 51.3,
+        "glare": 0.0301
+      },
+      "detectionMs": 22.94
+    },
+    {
+      "id": "clutter-shadow-seq-02-f031",
+      "tsMs": 1023,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 79.18141106954968,
+          "y": 71.75525349182945
+        },
+        "topRight": {
+          "x": 397.8215160966404,
+          "y": 68.04076436608946
+        },
+        "bottomRight": {
+          "x": 405.501463583095,
+          "y": 591.7552534918294
+        },
+        "bottomLeft": {
+          "x": 71.50146358309502,
+          "y": 595.4697426175694
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 77.01671876048091,
+              "y": 70.59304382109599
+            },
+            "topRight": {
+              "x": 390.16032046650815,
+              "y": 76.5722964032353
+            },
+            "bottomRight": {
+              "x": 399.14610270131544,
+              "y": 593.8342596061489
+            },
+            "bottomLeft": {
+              "x": 68.03093652567361,
+              "y": 587.8550070240095
+            }
+          },
+          "score": 0.6996,
+          "metrics": {
+            "borderPenalty": 0.0946,
+            "edgeStrength": 0.7558
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 97.95521956650711,
+              "y": 68.43093074362231
+            },
+            "topRight": {
+              "x": 379.7952195665071,
+              "y": 60.43093074362231
+            },
+            "bottomRight": {
+              "x": 365.7952195665071,
+              "y": 442.8309307436223
+            },
+            "bottomLeft": {
+              "x": 111.95521956650711,
+              "y": 450.8309307436223
+            }
+          },
+          "score": 0.5833,
+          "metrics": {
+            "borderPenalty": 0.118,
+            "edgeStrength": 0.5038
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 77.86071320281023,
+            "y": 72.26648953223773
+          },
+          "topRight": {
+            "x": 402.0716771679382,
+            "y": 76.25265792033059
+          },
+          "bottomRight": {
+            "x": 406.56456828534186,
+            "y": 587.3023414715971
+          },
+          "bottomLeft": {
+            "x": 73.36782208540659,
+            "y": 583.3161730835042
+          }
+        },
+        "score": 0.6497,
+        "metrics": {
+          "borderPenalty": 0.0655,
+          "edgeStrength": 0.6859
+        }
+      },
+      "quality": {
+        "brightness": 128.85,
+        "blur": 57.03,
+        "glare": 0.0321
+      },
+      "detectionMs": 18.13
+    },
+    {
+      "id": "clutter-shadow-seq-02-f032",
+      "tsMs": 1056,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 80.61994739786964,
+          "y": 72.32721395943668
+        },
+        "topRight": {
+          "x": 398.77864306033626,
+          "y": 69.05899585511861
+        },
+        "bottomRight": {
+          "x": 406.699295229103,
+          "y": 592.3272139594367
+        },
+        "bottomLeft": {
+          "x": 72.69929522910296,
+          "y": 595.5954320637547
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 79.87558215118128,
+              "y": 72.6336221268476
+            },
+            "topRight": {
+              "x": 399.278842134065,
+              "y": 78.59273163939676
+            },
+            "bottomRight": {
+              "x": 407.41213604974075,
+              "y": 579.0419456300988
+            },
+            "bottomLeft": {
+              "x": 71.74228823550547,
+              "y": 573.0828361175496
+            }
+          },
+          "score": 0.6991,
+          "metrics": {
+            "borderPenalty": 0.1273,
+            "edgeStrength": 0.611
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 86.09032040003844,
+              "y": 68.84681039353231
+            },
+            "topRight": {
+              "x": 367.93032040003845,
+              "y": 60.84681039353231
+            },
+            "bottomRight": {
+              "x": 353.93032040003845,
+              "y": 443.2468103935323
+            },
+            "bottomLeft": {
+              "x": 100.09032040003844,
+              "y": 451.2468103935323
+            }
+          },
+          "score": 0.6102,
+          "metrics": {
+            "borderPenalty": 0.2749,
+            "edgeStrength": 0.4009
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 75.54044196523381,
+            "y": 74.89328042684971
+          },
+          "topRight": {
+            "x": 403.7770936899086,
+            "y": 78.86602010188248
+          },
+          "bottomRight": {
+            "x": 407.84374064774653,
+            "y": 592.4772808217432
+          },
+          "bottomLeft": {
+            "x": 71.4737950073959,
+            "y": 588.5045411467104
+          }
+        },
+        "score": 0.6493,
+        "metrics": {
+          "borderPenalty": 0.0333,
+          "edgeStrength": 0.5628
+        }
+      },
+      "quality": {
+        "brightness": 98.43,
+        "blur": 48.59,
+        "glare": 0.0536
+      },
+      "detectionMs": 18.27
+    },
+    {
+      "id": "clutter-shadow-seq-02-f033",
+      "tsMs": 1089,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 81.86923379068662,
+          "y": 72.83467909716504
+        },
+        "topRight": {
+          "x": 399.8692625714739,
+          "y": 70.06373146470295
+        },
+        "bottomRight": {
+          "x": 407.86924818108025,
+          "y": 592.834679097165
+        },
+        "bottomLeft": {
+          "x": 73.86924818108027,
+          "y": 595.6056267296271
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 77.80104869914707,
+              "y": 76.5909812807237
+            },
+            "topRight": {
+              "x": 393.19753657857103,
+              "y": 82.29237683247487
+            },
+            "bottomRight": {
+              "x": 400.25293983427497,
+              "y": 585.6146661198006
+            },
+            "bottomLeft": {
+              "x": 70.74564544344315,
+              "y": 579.9132705680495
+            }
+          },
+          "score": 0.408,
+          "metrics": {
+            "borderPenalty": 0.052,
+            "edgeStrength": 0.7631
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 75.91715178314105,
+              "y": 73.95205884994573
+            },
+            "topRight": {
+              "x": 357.75715178314107,
+              "y": 65.95205884994573
+            },
+            "bottomRight": {
+              "x": 343.75715178314107,
+              "y": 448.3520588499457
+            },
+            "bottomLeft": {
+              "x": 89.91715178314105,
+              "y": 456.3520588499457
+            }
+          },
+          "score": 0.3215,
+          "metrics": {
+            "borderPenalty": 0.3679,
+            "edgeStrength": 0.5579
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 79.51220171198547,
+            "y": 73.01398151427013
+          },
+          "topRight": {
+            "x": 407.0524983461972,
+            "y": 76.81491188210424
+          },
+          "bottomRight": {
+            "x": 410.58019997404915,
+            "y": 593.023920677822
+          },
+          "bottomLeft": {
+            "x": 75.98450008413351,
+            "y": 589.222990309988
+          }
+        },
+        "score": 0.645,
+        "metrics": {
+          "borderPenalty": 0.0956,
+          "edgeStrength": 0.7617
+        }
+      },
+      "quality": {
+        "brightness": 114.4,
+        "blur": 22.97,
+        "glare": 0.0303
+      },
+      "detectionMs": 23.88
+    },
+    {
+      "id": "clutter-shadow-seq-02-f034",
+      "tsMs": 1122,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 82.88101161760589,
+          "y": 73.26358525120773
+        },
+        "topRight": {
+          "x": 401.04834859605745,
+          "y": 71.03314780163876
+        },
+        "bottomRight": {
+          "x": 408.9646801068317,
+          "y": 593.2635852512077
+        },
+        "bottomLeft": {
+          "x": 74.96468010683165,
+          "y": 595.4940227007767
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 79.50092575745033,
+              "y": 75.68012962472196
+            },
+            "topRight": {
+              "x": 408.00103016864836,
+              "y": 80.89651456682091
+            },
+            "bottomRight": {
+              "x": 413.78301258609144,
+              "y": 585.7323829543374
+            },
+            "bottomLeft": {
+              "x": 73.71894334000724,
+              "y": 580.5159980122385
+            }
+          },
+          "score": 0.6839,
+          "metrics": {
+            "borderPenalty": 0.0751,
+            "edgeStrength": 0.7023
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.92646019489064,
+              "y": 82.49673323896806
+            },
+            "topRight": {
+              "x": 351.76646019489067,
+              "y": 74.49673323896806
+            },
+            "bottomRight": {
+              "x": 337.76646019489067,
+              "y": 456.89673323896807
+            },
+            "bottomLeft": {
+              "x": 83.92646019489064,
+              "y": 464.89673323896807
+            }
+          },
+          "score": 0.5609,
+          "metrics": {
+            "borderPenalty": 0.2016,
+            "edgeStrength": 0.3231
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 77.9465094831055,
+            "y": 73.75346050421888
+          },
+          "topRight": {
+            "x": 405.9567162701177,
+            "y": 77.23105046561818
+          },
+          "bottomRight": {
+            "x": 408.8477074788392,
+            "y": 594.7483828519233
+          },
+          "bottomLeft": {
+            "x": 75.05551827438396,
+            "y": 591.270792890524
+          }
+        },
+        "score": 0.6369,
+        "metrics": {
+          "borderPenalty": 0.0833,
+          "edgeStrength": 0.783
+        }
+      },
+      "quality": {
+        "brightness": 115.21,
+        "blur": 23.29,
+        "glare": 0.0517
+      },
+      "detectionMs": 19.16
+    },
+    {
+      "id": "clutter-shadow-seq-02-f035",
+      "tsMs": 1155,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 83.61331378961783,
+          "y": 73.60204591504915
+        },
+        "topRight": {
+          "x": 402.2705253950076,
+          "y": 71.94692387878472
+        },
+        "bottomRight": {
+          "x": 409.94191959231273,
+          "y": 593.6020459150492
+        },
+        "bottomLeft": {
+          "x": 75.94191959231273,
+          "y": 595.2571679513136
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 78.96729117946481,
+              "y": 74.42430873785958
+            },
+            "topRight": {
+              "x": 403.2102321361117,
+              "y": 78.9477222639194
+            },
+            "bottomRight": {
+              "x": 407.55855453236245,
+              "y": 586.0175661419535
+            },
+            "bottomLeft": {
+              "x": 74.61896878321404,
+              "y": 581.4941526158937
+            }
+          },
+          "score": 0.67,
+          "metrics": {
+            "borderPenalty": 0.0856,
+            "edgeStrength": 0.8004
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.58497586876422,
+              "y": 92.38879926422919
+            },
+            "topRight": {
+              "x": 351.42497586876425,
+              "y": 84.38879926422919
+            },
+            "bottomRight": {
+              "x": 337.42497586876425,
+              "y": 466.78879926422917
+            },
+            "bottomLeft": {
+              "x": 83.58497586876422,
+              "y": 474.78879926422917
+            }
+          },
+          "score": 0.5854,
+          "metrics": {
+            "borderPenalty": 0.288,
+            "edgeStrength": 0.6172
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 79.61135493040595,
+            "y": 71.60293207286145
+          },
+          "topRight": {
+            "x": 408.0395390301861,
+            "y": 74.61854109023467
+          },
+          "bottomRight": {
+            "x": 410.2137002283115,
+            "y": 593.3722365638074
+          },
+          "bottomLeft": {
+            "x": 77.43719373228056,
+            "y": 590.3566275464342
+          }
+        },
+        "score": 0.6254,
+        "metrics": {
+          "borderPenalty": 0.0383,
+          "edgeStrength": 0.6664
+        }
+      },
+      "quality": {
+        "brightness": 166.91,
+        "blur": 62.34,
+        "glare": 0.0575
+      },
+      "detectionMs": 16.44
+    },
+    {
+      "id": "clutter-shadow-seq-02-f036",
+      "tsMs": 1188,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 84.03217107753231,
+          "y": 73.84068114660147
+        },
+        "topRight": {
+          "x": 403.49184328865755,
+          "y": 72.78670214944756
+        },
+        "bottomRight": {
+          "x": 410.7620071830949,
+          "y": 593.8406811466015
+        },
+        "bottomLeft": {
+          "x": 76.76200718309492,
+          "y": 594.8946601437553
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 82.79727775243776,
+              "y": 72.97133527559312
+            },
+            "topRight": {
+              "x": 406.0346183558695,
+              "y": 76.62144316278665
+            },
+            "bottomRight": {
+              "x": 408.82877333785876,
+              "y": 598.9446343892932
+            },
+            "bottomLeft": {
+              "x": 80.0031227704485,
+              "y": 595.2945265020998
+            }
+          },
+          "score": 0.653,
+          "metrics": {
+            "borderPenalty": 0.128,
+            "edgeStrength": 0.6691
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 74.97630607747978,
+              "y": 101.20633416488161
+            },
+            "topRight": {
+              "x": 356.8163060774798,
+              "y": 93.20633416488161
+            },
+            "bottomRight": {
+              "x": 342.8163060774798,
+              "y": 475.60633416488156
+            },
+            "bottomLeft": {
+              "x": 88.97630607747978,
+              "y": 483.60633416488156
+            }
+          },
+          "score": 0.5105,
+          "metrics": {
+            "borderPenalty": 0.3228,
+            "edgeStrength": 0.6144
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 79.7042006954411,
+            "y": 75.68438638374809
+          },
+          "topRight": {
+            "x": 410.4569657309731,
+            "y": 78.1177916418771
+          },
+          "bottomRight": {
+            "x": 411.8540432219677,
+            "y": 600.0321296679671
+          },
+          "bottomLeft": {
+            "x": 78.30712320444647,
+            "y": 597.598724409838
+          }
+        },
+        "score": 0.6108,
+        "metrics": {
+          "borderPenalty": 0.06,
+          "edgeStrength": 0.7492
+        }
+      },
+      "quality": {
+        "brightness": 148.23,
+        "blur": 61.02,
+        "glare": 0.0549
+      },
+      "detectionMs": 14.98
+    },
+    {
+      "id": "clutter-shadow-seq-02-f037",
+      "tsMs": 1221,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 84.11306363423331,
+          "y": 73.97287751957559
+        },
+        "topRight": {
+          "x": 404.67143351550624,
+          "y": 73.53648855127041
+        },
+        "bottomRight": {
+          "x": 411.39224857486977,
+          "y": 593.9728775195756
+        },
+        "bottomLeft": {
+          "x": 77.39224857486977,
+          "y": 594.4092664878808
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 77.70827588706818,
+              "y": 74.94413437909701
+            },
+            "topRight": {
+              "x": 407.5048775401713,
+              "y": 77.57541834454335
+            },
+            "bottomRight": {
+              "x": 408.66742919077365,
+              "y": 597.3080401638944
+            },
+            "bottomLeft": {
+              "x": 76.54572423646589,
+              "y": 594.6767561984481
+            }
+          },
+          "score": 0.6339,
+          "metrics": {
+            "borderPenalty": 0.041,
+            "edgeStrength": 0.6593
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 84.78046515672929,
+              "y": 106.79049787496513
+            },
+            "topRight": {
+              "x": 366.6204651567293,
+              "y": 98.79049787496513
+            },
+            "bottomRight": {
+              "x": 352.6204651567293,
+              "y": 481.1904978749651
+            },
+            "bottomLeft": {
+              "x": 98.78046515672929,
+              "y": 489.1904978749651
+            }
+          },
+          "score": 0.4954,
+          "metrics": {
+            "borderPenalty": 0.1431,
+            "edgeStrength": 0.6722
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 78.03366548826466,
+            "y": 73.9175854322595
+          },
+          "topRight": {
+            "x": 412.4164552358723,
+            "y": 75.67177474255706
+          },
+          "bottomRight": {
+            "x": 412.99773106117345,
+            "y": 600.7853657881119
+          },
+          "bottomLeft": {
+            "x": 77.45238966296351,
+            "y": 599.0311764778144
+          }
+        },
+        "score": 0.5939,
+        "metrics": {
+          "borderPenalty": 0.0799,
+          "edgeStrength": 0.6392
+        }
+      },
+      "quality": {
+        "brightness": 117.32,
+        "blur": 54.44,
+        "glare": 0.0466
+      },
+      "detectionMs": 19.89
+    },
+    {
+      "id": "clutter-shadow-seq-02-f038",
+      "tsMs": 1254,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 83.84205787128623,
+          "y": 73.99497140491448
+        },
+        "topRight": {
+          "x": 405.7729781930916,
+          "y": 74.18298216935436
+        },
+        "bottomRight": {
+          "x": 411.8075180321889,
+          "y": 593.9949714049145
+        },
+        "bottomLeft": {
+          "x": 77.80751803218892,
+          "y": 593.8069606404746
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 80.6130068392201,
+              "y": 76.64400101816402
+            },
+            "topRight": {
+              "x": 413.3424067098337,
+              "y": 78.15156007365755
+            },
+            "bottomRight": {
+              "x": 412.84113661101196,
+              "y": 590.7572598398211
+            },
+            "bottomLeft": {
+              "x": 81.11427693804183,
+              "y": 589.2497007843276
+            }
+          },
+          "score": 0.614,
+          "metrics": {
+            "borderPenalty": 0.0705,
+            "edgeStrength": 0.81
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 96.59705303191086,
+              "y": 107.77409236373339
+            },
+            "topRight": {
+              "x": 378.43705303191086,
+              "y": 99.77409236373339
+            },
+            "bottomRight": {
+              "x": 364.43705303191086,
+              "y": 482.1740923637334
+            },
+            "bottomLeft": {
+              "x": 110.59705303191086,
+              "y": 490.1740923637334
+            }
+          },
+          "score": 0.5183,
+          "metrics": {
+            "borderPenalty": 0.1196,
+            "edgeStrength": 0.4663
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 79.93411665071261,
+            "y": 76.19115217648859
+          },
+          "topRight": {
+            "x": 414.38578511434304,
+            "y": 77.19619154681762
+          },
+          "bottomRight": {
+            "x": 414.1351500649322,
+            "y": 597.9149484021327
+          },
+          "bottomLeft": {
+            "x": 80.18475170012347,
+            "y": 596.9099090318037
+          }
+        },
+        "score": 0.5751,
+        "metrics": {
+          "borderPenalty": 0.0647,
+          "edgeStrength": 0.61
+        }
+      },
+      "quality": {
+        "brightness": 120.32,
+        "blur": 64.66,
+        "glare": 0.0537
+      },
+      "detectionMs": 15.5
+    },
+    {
+      "id": "clutter-shadow-seq-02-f039",
+      "tsMs": 1287,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 83.21658011974787,
+          "y": 73.90635050291209
+        },
+        "topRight": {
+          "x": 406.7659400247474,
+          "y": 74.71582715499977
+        },
+        "bottomRight": {
+          "x": 411.99126007224766,
+          "y": 593.9063505029121
+        },
+        "bottomLeft": {
+          "x": 77.99126007224763,
+          "y": 593.0968738508244
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 70.96703045167561,
+              "y": 71.36748856878529
+            },
+            "topRight": {
+              "x": 410.9319523038581,
+              "y": 71.69122109216119
+            },
+            "bottomRight": {
+              "x": 408.78075242297996,
+              "y": 587.9955410017392
+            },
+            "bottomLeft": {
+              "x": 73.11823033255376,
+              "y": 587.6718084783632
+            }
+          },
+          "score": 0.5944,
+          "metrics": {
+            "borderPenalty": 0.0405,
+            "edgeStrength": 0.6905
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 107.53295687327042,
+              "y": 103.91629939627887
+            },
+            "topRight": {
+              "x": 389.3729568732704,
+              "y": 95.91629939627887
+            },
+            "bottomRight": {
+              "x": 375.3729568732704,
+              "y": 478.31629939627885
+            },
+            "bottomLeft": {
+              "x": 121.53295687327042,
+              "y": 486.31629939627885
+            }
+          },
+          "score": 0.4982,
+          "metrics": {
+            "borderPenalty": 0.1611,
+            "edgeStrength": 0.5574
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 75.52480376978224,
+            "y": 72.1408589247519
+          },
+          "topRight": {
+            "x": 413.6963109224272,
+            "y": 72.35668060700249
+          },
+          "bottomRight": {
+            "x": 412.6207109819881,
+            "y": 593.0797869086358
+          },
+          "bottomLeft": {
+            "x": 76.60040371022131,
+            "y": 592.8639652263852
+          }
+        },
+        "score": 0.5554,
+        "metrics": {
+          "borderPenalty": 0.048,
+          "edgeStrength": 0.5851
+        }
+      },
+      "quality": {
+        "brightness": 148.17,
+        "blur": 57.12,
+        "glare": 0.0441
+      },
+      "detectionMs": 17.69
+    },
+    {
+      "id": "clutter-shadow-seq-02-f040",
+      "tsMs": 1320,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 82.24579178682954,
+          "y": 73.7094708122039
+        },
+        "topRight": {
+          "x": 407.62650717265103,
+          "y": 75.12778173952003
+        },
+        "bottomRight": {
+          "x": 411.93614947974027,
+          "y": 593.7094708122039
+        },
+        "bottomLeft": {
+          "x": 77.9361494797403,
+          "y": 592.2911598848877
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 75.04492016216518,
+              "y": 71.63252840460676
+            },
+            "topRight": {
+              "x": 417.67305370488197,
+              "y": 70.75952820175507
+            },
+            "bottomRight": {
+              "x": 413.93154139916976,
+              "y": 579.1075919323948
+            },
+            "bottomLeft": {
+              "x": 78.78643246787739,
+              "y": 579.9805921352465
+            }
+          },
+          "score": 0.5765,
+          "metrics": {
+            "borderPenalty": 0.0913,
+            "edgeStrength": 0.7814
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 114.91068601746306,
+              "y": 96.16164123626784
+            },
+            "topRight": {
+              "x": 396.75068601746307,
+              "y": 88.16164123626784
+            },
+            "bottomRight": {
+              "x": 382.75068601746307,
+              "y": 470.5616412362678
+            },
+            "bottomLeft": {
+              "x": 128.91068601746306,
+              "y": 478.5616412362678
+            }
+          },
+          "score": 0.4365,
+          "metrics": {
+            "borderPenalty": 0.172,
+            "edgeStrength": 0.4445
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 74.43058552552961,
+            "y": 71.5057036205293
+          },
+          "topRight": {
+            "x": 415.1247845905152,
+            "y": 70.92370348529485
+          },
+          "bottomRight": {
+            "x": 413.25402843765914,
+            "y": 595.8288715486699
+          },
+          "bottomLeft": {
+            "x": 76.30134167838571,
+            "y": 596.4108716839044
+          }
+        },
+        "score": 0.5354,
+        "metrics": {
+          "borderPenalty": 0.0794,
+          "edgeStrength": 0.5712
+        }
+      },
+      "quality": {
+        "brightness": 95.74,
+        "blur": 68.11,
+        "glare": 0.0584
+      },
+      "detectionMs": 16.88
+    },
+    {
+      "id": "clutter-shadow-seq-02-f041",
+      "tsMs": 1353,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 80.95054549925575,
+          "y": 73.40978856535811
+        },
+        "topRight": {
+          "x": 408.33822118090154,
+          "y": 75.41480150024829
+        },
+        "bottomRight": {
+          "x": 411.64438334007866,
+          "y": 593.4097885653581
+        },
+        "bottomLeft": {
+          "x": 77.64438334007863,
+          "y": 591.404775630468
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 72.98069210656249,
+              "y": 71.64219543468441
+            },
+            "topRight": {
+              "x": 412.28144424050333,
+              "y": 69.6072662687814
+            },
+            "bottomRight": {
+              "x": 407.0533100492065,
+              "y": 593.8678460038238
+            },
+            "bottomLeft": {
+              "x": 78.20882629785928,
+              "y": 595.9027751697269
+            }
+          },
+          "score": 0.5612,
+          "metrics": {
+            "borderPenalty": 0.1286,
+            "edgeStrength": 0.6109
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 116.92391506269118,
+              "y": 86.4087286544292
+            },
+            "topRight": {
+              "x": 398.7639150626912,
+              "y": 78.4087286544292
+            },
+            "bottomRight": {
+              "x": 384.7639150626912,
+              "y": 460.80872865442916
+            },
+            "bottomLeft": {
+              "x": 130.92391506269118,
+              "y": 468.80872865442916
+            }
+          },
+          "score": 0.4349,
+          "metrics": {
+            "borderPenalty": 0.2877,
+            "edgeStrength": 0.2748
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 75.0236621147839,
+            "y": 71.2701720753177
+          },
+          "topRight": {
+            "x": 413.6249811099206,
+            "y": 69.91355263138236
+          },
+          "bottomRight": {
+            "x": 411.0109140142722,
+            "y": 595.5077666867016
+          },
+          "bottomLeft": {
+            "x": 77.6377292104323,
+            "y": 596.864386130637
+          }
+        },
+        "score": 0.5161,
+        "metrics": {
+          "borderPenalty": 0.0764,
+          "edgeStrength": 0.6603
+        }
+      },
+      "quality": {
+        "brightness": 116.4,
+        "blur": 56.27,
+        "glare": 0.0589
+      },
+      "detectionMs": 20.54
+    },
+    {
+      "id": "clutter-shadow-seq-02-f042",
+      "tsMs": 1386,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 79.36291743412109,
+          "y": 73.01560901737322
+        },
+        "topRight": {
+          "x": 408.8922694629383,
+          "y": 75.57603640358242
+        },
+        "bottomRight": {
+          "x": 411.1275934485297,
+          "y": 593.0156090173732
+        },
+        "bottomLeft": {
+          "x": 77.12759344852968,
+          "y": 590.455181631164
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.24036091830307,
+              "y": 75.25182691547431
+            },
+            "topRight": {
+              "x": 412.72905685743933,
+              "y": 72.1360949907742
+            },
+            "bottomRight": {
+              "x": 406.15919087025145,
+              "y": 599.2222655646843
+            },
+            "bottomLeft": {
+              "x": 75.81022690549096,
+              "y": 602.3379974893844
+            }
+          },
+          "score": 0.5496,
+          "metrics": {
+            "borderPenalty": 0.1026,
+            "edgeStrength": 0.6458
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 113.07973532486534,
+              "y": 77.04541479551463
+            },
+            "topRight": {
+              "x": 394.9197353248653,
+              "y": 69.04541479551463
+            },
+            "bottomRight": {
+              "x": 380.9197353248653,
+              "y": 451.4454147955146
+            },
+            "bottomLeft": {
+              "x": 127.07973532486534,
+              "y": 459.4454147955146
+            }
+          },
+          "score": 0.4493,
+          "metrics": {
+            "borderPenalty": 0.2296,
+            "edgeStrength": 0.6622
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 73.25202728642228,
+            "y": 74.9571073222533
+          },
+          "topRight": {
+            "x": 411.1741291197013,
+            "y": 72.87995270578655
+          },
+          "bottomRight": {
+            "x": 407.8891961261074,
+            "y": 595.7664316354162
+          },
+          "bottomLeft": {
+            "x": 76.53696028001622,
+            "y": 597.8435862518829
+          }
+        },
+        "score": 0.4981,
+        "metrics": {
+          "borderPenalty": 0.0786,
+          "edgeStrength": 0.6091
+        }
+      },
+      "quality": {
+        "brightness": 178.42,
+        "blur": 65.08,
+        "glare": 0.0592
+      },
+      "detectionMs": 15.97
+    },
+    {
+      "id": "clutter-shadow-seq-02-f043",
+      "tsMs": 1419,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 77.52532707273306,
+          "y": 72.53785627768733
+        },
+        "topRight": {
+          "x": 409.2874381017563,
+          "y": 75.61374350221087
+        },
+        "bottomRight": {
+          "x": 410.4063825872447,
+          "y": 592.5378562776873
+        },
+        "bottomLeft": {
+          "x": 76.40638258724468,
+          "y": 589.4619690531638
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.51916555552603,
+              "y": 68.99431981837587
+            },
+            "topRight": {
+              "x": 425.43298640065143,
+              "y": 64.9219995344558
+            },
+            "bottomRight": {
+              "x": 417.7034628408666,
+              "y": 577.3459837552623
+            },
+            "bottomLeft": {
+              "x": 79.24868911531087,
+              "y": 581.4183040391823
+            }
+          },
+          "score": 0.5424,
+          "metrics": {
+            "borderPenalty": 0.1157,
+            "edgeStrength": 0.6067
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 104.3193360742607,
+              "y": 70.36416544917351
+            },
+            "topRight": {
+              "x": 386.1593360742607,
+              "y": 62.36416544917351
+            },
+            "bottomRight": {
+              "x": 372.1593360742607,
+              "y": 444.7641654491735
+            },
+            "bottomLeft": {
+              "x": 118.3193360742607,
+              "y": 452.7641654491735
+            }
+          },
+          "score": 0.4329,
+          "metrics": {
+            "borderPenalty": 0.2838,
+            "edgeStrength": 0.5666
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 74.00611668144954,
+            "y": 74.6973219515206
+          },
+          "topRight": {
+            "x": 418.7883737496596,
+            "y": 71.98244176224055
+          },
+          "bottomRight": {
+            "x": 414.9236119697672,
+            "y": 601.5097343687936
+          },
+          "bottomLeft": {
+            "x": 77.87087846134196,
+            "y": 604.2246145580737
+          }
+        },
+        "score": 0.4821,
+        "metrics": {
+          "borderPenalty": 0.0855,
+          "edgeStrength": 0.6317
+        }
+      },
+      "quality": {
+        "brightness": 191.19,
+        "blur": 60,
+        "glare": 0.0592
+      },
+      "detectionMs": 17.75
+    },
+    {
+      "id": "clutter-shadow-seq-02-f044",
+      "tsMs": 1452,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 75.48927135063919,
+          "y": 71.98977056446847
+        },
+        "topRight": {
+          "x": 409.5297349640619,
+          "y": 75.53311943592477
+        },
+        "bottomRight": {
+          "x": 409.50950315735054,
+          "y": 591.9897705644685
+        },
+        "bottomLeft": {
+          "x": 75.50950315735057,
+          "y": 588.4464216930122
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 62.06099990849917,
+              "y": 70.82690039476772
+            },
+            "topRight": {
+              "x": 411.8681845303894,
+              "y": 65.96034231039778
+            },
+            "bottomRight": {
+              "x": 403.19321583420134,
+              "y": 584.4646475852109
+            },
+            "bottomLeft": {
+              "x": 70.73596860468723,
+              "y": 589.3312056695808
+            }
+          },
+          "score": 0.54,
+          "metrics": {
+            "borderPenalty": 0.0748,
+            "edgeStrength": 0.6854
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 92.78756857703031,
+              "y": 68.00078347210726
+            },
+            "topRight": {
+              "x": 374.62756857703033,
+              "y": 60.00078347210726
+            },
+            "bottomRight": {
+              "x": 360.62756857703033,
+              "y": 442.40078347210726
+            },
+            "bottomLeft": {
+              "x": 106.78756857703031,
+              "y": 450.40078347210726
+            }
+          },
+          "score": 0.4351,
+          "metrics": {
+            "borderPenalty": 0.2588,
+            "edgeStrength": 0.4355
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 74.14683467253286,
+            "y": 74.55555917456898
+          },
+          "topRight": {
+            "x": 417.1611022438195,
+            "y": 71.31118711832237
+          },
+          "bottomRight": {
+            "x": 412.8236178957255,
+            "y": 601.6918949720592
+          },
+          "bottomLeft": {
+            "x": 78.4843190206269,
+            "y": 604.9362670283059
+          }
+        },
+        "score": 0.4689,
+        "metrics": {
+          "borderPenalty": 0.0771,
+          "edgeStrength": 0.7195
+        }
+      },
+      "quality": {
+        "brightness": 90.28,
+        "blur": 65.25,
+        "glare": 0.045
+      },
+      "detectionMs": 20.71
+    },
+    {
+      "id": "clutter-shadow-seq-02-f045",
+      "tsMs": 1485,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 73.31371500483073,
+          "y": 71.3865412713401
+        },
+        "topRight": {
+          "x": 409.6317068180703,
+          "y": 75.3420590156938
+        },
+        "bottomRight": {
+          "x": 408.4727109114505,
+          "y": 591.3865412713401
+        },
+        "bottomLeft": {
+          "x": 74.47271091145053,
+          "y": 587.4310235269865
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 62.99613449556723,
+              "y": 73.46018352419482
+            },
+            "topRight": {
+              "x": 418.56618315791854,
+              "y": 67.99340195288676
+            },
+            "bottomRight": {
+              "x": 409.18618339017115,
+              "y": 584.6479549180941
+            },
+            "bottomLeft": {
+              "x": 72.37613426331463,
+              "y": 590.1147364894022
+            }
+          },
+          "score": 0.5426,
+          "metrics": {
+            "borderPenalty": 0.0818,
+            "edgeStrength": 0.6597
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 81.30781170094777,
+              "y": 70.5339071981297
+            },
+            "topRight": {
+              "x": 363.1478117009478,
+              "y": 62.5339071981297
+            },
+            "bottomRight": {
+              "x": 349.1478117009478,
+              "y": 444.93390719812965
+            },
+            "bottomLeft": {
+              "x": 95.30781170094777,
+              "y": 452.93390719812965
+            }
+          },
+          "score": 0.4472,
+          "metrics": {
+            "borderPenalty": 0.368,
+            "edgeStrength": 0.5032
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 67.11358290860346,
+            "y": 72.6114497414837
+          },
+          "topRight": {
+            "x": 409.93760839451505,
+            "y": 68.966928693945
+          },
+          "bottomRight": {
+            "x": 405.2476085106414,
+            "y": 596.7881188071393
+          },
+          "bottomLeft": {
+            "x": 71.80358279247716,
+            "y": 600.432639854678
+          }
+        },
+        "score": 0.4589,
+        "metrics": {
+          "borderPenalty": 0.054,
+          "edgeStrength": 0.7587
+        }
+      },
+      "quality": {
+        "brightness": 163.48,
+        "blur": 55.82,
+        "glare": 0.0526
+      },
+      "detectionMs": 12.02
+    },
+    {
+      "id": "clutter-shadow-seq-02-f046",
+      "tsMs": 1518,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 71.0631922569616,
+          "y": 70.74488601556092
+        },
+        "topRight": {
+          "x": 409.6114867122414,
+          "y": 75.05084810136853
+        },
+        "bottomRight": {
+          "x": 407.3373394846015,
+          "y": 590.744886015561
+        },
+        "bottomLeft": {
+          "x": 73.33733948460149,
+          "y": 586.4389239297534
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 64.49857338176618,
+              "y": 73.62438475684172
+            },
+            "topRight": {
+              "x": 422.794768148149,
+              "y": 67.77532302841674
+            },
+            "bottomRight": {
+              "x": 412.96969027828527,
+              "y": 581.0321265077177
+            },
+            "bottomLeft": {
+              "x": 74.32365125162991,
+              "y": 586.8811882361427
+            }
+          },
+          "score": 0.55,
+          "metrics": {
+            "borderPenalty": 0.064,
+            "edgeStrength": 0.6175
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 72.69071029979591,
+              "y": 77.34333959333205
+            },
+            "topRight": {
+              "x": 354.53071029979594,
+              "y": 69.34333959333205
+            },
+            "bottomRight": {
+              "x": 340.53071029979594,
+              "y": 451.74333959333205
+            },
+            "bottomLeft": {
+              "x": 86.69071029979591,
+              "y": 459.74333959333205
+            }
+          },
+          "score": 0.4601,
+          "metrics": {
+            "borderPenalty": 0.1774,
+            "edgeStrength": 0.4427
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 70.71892452671914,
+            "y": 71.82796068155552
+          },
+          "topRight": {
+            "x": 417.8336342400052,
+            "y": 67.92858619593886
+          },
+          "bottomRight": {
+            "x": 412.9210953050733,
+            "y": 593.6669916354439
+          },
+          "bottomLeft": {
+            "x": 75.631463461651,
+            "y": 597.5663661210606
+          }
+        },
+        "score": 0.4525,
+        "metrics": {
+          "borderPenalty": 0.0304,
+          "edgeStrength": 0.6682
+        }
+      },
+      "quality": {
+        "brightness": 85.32,
+        "blur": 71.36,
+        "glare": 0.0462
+      },
+      "detectionMs": 20.27
+    },
+    {
+      "id": "clutter-shadow-seq-02-f047",
+      "tsMs": 1551,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 68.80568629508822,
+          "y": 70.08258733372247
+        },
+        "topRight": {
+          "x": 409.49161881035207,
+          "y": 74.67180066280126
+        },
+        "bottomRight": {
+          "x": 406.14865255272014,
+          "y": 590.0825873337225
+        },
+        "bottomLeft": {
+          "x": 72.14865255272015,
+          "y": 585.4933740046437
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 63.90989995852638,
+              "y": 73.8672550614493
+            },
+            "topRight": {
+              "x": 416.1140309172202,
+              "y": 67.86909680923806
+            },
+            "bottomRight": {
+              "x": 406.11616260307795,
+              "y": 602.626916838355
+            },
+            "bottomLeft": {
+              "x": 73.90776827266859,
+              "y": 608.6250750905663
+            }
+          },
+          "score": 0.5617,
+          "metrics": {
+            "borderPenalty": 0.1009,
+            "edgeStrength": 0.7785
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.0460313284945,
+              "y": 86.76189412011159
+            },
+            "topRight": {
+              "x": 350.8860313284945,
+              "y": 78.76189412011159
+            },
+            "bottomRight": {
+              "x": 336.8860313284945,
+              "y": 461.1618941201116
+            },
+            "bottomLeft": {
+              "x": 83.0460313284945,
+              "y": 469.1618941201116
+            }
+          },
+          "score": 0.4136,
+          "metrics": {
+            "borderPenalty": 0.2319,
+            "edgeStrength": 0.5692
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 67.9690842098942,
+            "y": 71.76567192771518
+          },
+          "topRight": {
+            "x": 412.7825948112548,
+            "y": 67.76689975957434
+          },
+          "bottomRight": {
+            "x": 407.7836606541837,
+            "y": 599.8368014735847
+          },
+          "bottomLeft": {
+            "x": 72.96801836696531,
+            "y": 603.8355736417255
+          }
+        },
+        "score": 0.45,
+        "metrics": {
+          "borderPenalty": 0.0286,
+          "edgeStrength": 0.7735
+        }
+      },
+      "quality": {
+        "brightness": 111.38,
+        "blur": 47.54,
+        "glare": 0.0518
+      },
+      "detectionMs": 19.65
+    }
+  ]
+}

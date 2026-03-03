@@ -1,0 +1,24 @@
+{
+  "name": "@docuscan/eval-harness",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsup src/index.ts src/phase0-report.ts src/bakeoff-report.ts src/realclip-ingest.ts src/realclip-tune.ts src/opencv-regression.ts src/verify-gates.ts --format esm --dts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src --ext .ts",
+    "phase0:report": "node dist/phase0-report.js",
+    "bakeoff:report": "node dist/bakeoff-report.js",
+    "realclip:ingest": "node dist/realclip-ingest.js",
+    "realclip:tune": "node dist/realclip-tune.js",
+    "realclip:all": "pnpm build && pnpm realclip:ingest && pnpm realclip:tune",
+    "opencv:regression": "node dist/opencv-regression.js",
+    "verify:gates": "node dist/verify-gates.js",
+    "verify:gates:strict": "DOCUSCAN_REQUIRE_PHYSICAL_ANDROID=1 node dist/verify-gates.js"
+  },
+  "dependencies": {
+    "@docuscan/core-engine": "workspace:*"
+  }
+}

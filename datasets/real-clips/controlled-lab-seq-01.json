@@ -1,0 +1,4364 @@
+{
+  "datasetName": "realclip-controlled-v1",
+  "clipId": "controlled-lab-seq-01",
+  "width": 480,
+  "height": 672,
+  "source": "pixel7-chrome",
+  "tags": [
+    "well-lit",
+    "plain-bg",
+    "single-doc"
+  ],
+  "frames": [
+    {
+      "id": "controlled-lab-seq-01-f000",
+      "tsMs": 0,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 33,
+              "y": 25
+            },
+            "topRight": {
+              "x": 227,
+              "y": 23
+            },
+            "bottomRight": {
+              "x": 230,
+              "y": 195
+            },
+            "bottomLeft": {
+              "x": 30,
+              "y": 197
+            }
+          },
+          "score": 0.23,
+          "metrics": {
+            "borderPenalty": 0.2983,
+            "edgeStrength": 0.555
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 210,
+              "y": 120
+            },
+            "topRight": {
+              "x": 360,
+              "y": 128
+            },
+            "bottomRight": {
+              "x": 370,
+              "y": 280
+            },
+            "bottomLeft": {
+              "x": 200,
+              "y": 272
+            }
+          },
+          "score": 0.1667,
+          "metrics": {
+            "borderPenalty": 0.114,
+            "edgeStrength": 0.3037
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 135,
+            "y": 80
+          },
+          "topRight": {
+            "x": 335,
+            "y": 77
+          },
+          "bottomRight": {
+            "x": 330,
+            "y": 270
+          },
+          "bottomLeft": {
+            "x": 140,
+            "y": 273
+          }
+        },
+        "score": 0.21,
+        "metrics": {
+          "borderPenalty": 0.3173,
+          "edgeStrength": 0.3323
+        }
+      },
+      "quality": {
+        "brightness": 170.01,
+        "blur": 47.46,
+        "glare": 0.0357
+      },
+      "detectionMs": 17.76
+    },
+    {
+      "id": "controlled-lab-seq-01-f001",
+      "tsMs": 33,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 49,
+              "y": 36
+            },
+            "topRight": {
+              "x": 252,
+              "y": 35
+            },
+            "bottomRight": {
+              "x": 254,
+              "y": 215
+            },
+            "bottomLeft": {
+              "x": 47,
+              "y": 216
+            }
+          },
+          "score": 0.2272,
+          "metrics": {
+            "borderPenalty": 0.275,
+            "edgeStrength": 0.5924
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 223,
+              "y": 129
+            },
+            "topRight": {
+              "x": 378,
+              "y": 137
+            },
+            "bottomRight": {
+              "x": 388,
+              "y": 296
+            },
+            "bottomLeft": {
+              "x": 213,
+              "y": 288
+            }
+          },
+          "score": 0.1802,
+          "metrics": {
+            "borderPenalty": 0.1044,
+            "edgeStrength": 0.6495
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 146,
+            "y": 87
+          },
+          "topRight": {
+            "x": 349,
+            "y": 84
+          },
+          "bottomRight": {
+            "x": 344,
+            "y": 282
+          },
+          "bottomLeft": {
+            "x": 151,
+            "y": 285
+          }
+        },
+        "score": 0.2296,
+        "metrics": {
+          "borderPenalty": 0.2533,
+          "edgeStrength": 0.4694
+        }
+      },
+      "quality": {
+        "brightness": 109.26,
+        "blur": 47.31,
+        "glare": 0.057
+      },
+      "detectionMs": 20
+    },
+    {
+      "id": "controlled-lab-seq-01-f002",
+      "tsMs": 66,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 65,
+              "y": 47
+            },
+            "topRight": {
+              "x": 277,
+              "y": 47
+            },
+            "bottomRight": {
+              "x": 278,
+              "y": 235
+            },
+            "bottomLeft": {
+              "x": 64,
+              "y": 235
+            }
+          },
+          "score": 0.2193,
+          "metrics": {
+            "borderPenalty": 0.2187,
+            "edgeStrength": 0.3544
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 236,
+              "y": 138
+            },
+            "topRight": {
+              "x": 396,
+              "y": 146
+            },
+            "bottomRight": {
+              "x": 406,
+              "y": 312
+            },
+            "bottomLeft": {
+              "x": 226,
+              "y": 304
+            }
+          },
+          "score": 0.2144,
+          "metrics": {
+            "borderPenalty": 0.3152,
+            "edgeStrength": 0.481
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 157,
+            "y": 94
+          },
+          "topRight": {
+            "x": 363,
+            "y": 91
+          },
+          "bottomRight": {
+            "x": 358,
+            "y": 294
+          },
+          "bottomLeft": {
+            "x": 162,
+            "y": 297
+          }
+        },
+        "score": 0.2471,
+        "metrics": {
+          "borderPenalty": 0.2914,
+          "edgeStrength": 0.4596
+        }
+      },
+      "quality": {
+        "brightness": 96.99,
+        "blur": 62.45,
+        "glare": 0.0398
+      },
+      "detectionMs": 20.42
+    },
+    {
+      "id": "controlled-lab-seq-01-f003",
+      "tsMs": 99,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 81,
+              "y": 58
+            },
+            "topRight": {
+              "x": 302,
+              "y": 59
+            },
+            "bottomRight": {
+              "x": 302,
+              "y": 255
+            },
+            "bottomLeft": {
+              "x": 81,
+              "y": 254
+            }
+          },
+          "score": 0.207,
+          "metrics": {
+            "borderPenalty": 0.1954,
+            "edgeStrength": 0.3
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 249,
+              "y": 147
+            },
+            "topRight": {
+              "x": 414,
+              "y": 155
+            },
+            "bottomRight": {
+              "x": 424,
+              "y": 328
+            },
+            "bottomLeft": {
+              "x": 239,
+              "y": 320
+            }
+          },
+          "score": 0.1742,
+          "metrics": {
+            "borderPenalty": 0.1297,
+            "edgeStrength": 0.3161
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 168,
+            "y": 101
+          },
+          "topRight": {
+            "x": 377,
+            "y": 98
+          },
+          "bottomRight": {
+            "x": 372,
+            "y": 306
+          },
+          "bottomLeft": {
+            "x": 173,
+            "y": 309
+          }
+        },
+        "score": 0.2605,
+        "metrics": {
+          "borderPenalty": 0.3466,
+          "edgeStrength": 0.4299
+        }
+      },
+      "quality": {
+        "brightness": 99.45,
+        "blur": 51.81,
+        "glare": 0.0445
+      },
+      "detectionMs": 18.79
+    },
+    {
+      "id": "controlled-lab-seq-01-f004",
+      "tsMs": 132,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 97,
+              "y": 69
+            },
+            "topRight": {
+              "x": 327,
+              "y": 71
+            },
+            "bottomRight": {
+              "x": 326,
+              "y": 275
+            },
+            "bottomLeft": {
+              "x": 98,
+              "y": 273
+            }
+          },
+          "score": 0.1918,
+          "metrics": {
+            "borderPenalty": 0.3061,
+            "edgeStrength": 0.3253
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 262,
+              "y": 156
+            },
+            "topRight": {
+              "x": 432,
+              "y": 164
+            },
+            "bottomRight": {
+              "x": 442,
+              "y": 344
+            },
+            "bottomLeft": {
+              "x": 252,
+              "y": 336
+            }
+          },
+          "score": 0.1037,
+          "metrics": {
+            "borderPenalty": 0.2207,
+            "edgeStrength": 0.6942
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 179,
+            "y": 108
+          },
+          "topRight": {
+            "x": 391,
+            "y": 105
+          },
+          "bottomRight": {
+            "x": 386,
+            "y": 318
+          },
+          "bottomLeft": {
+            "x": 184,
+            "y": 321
+          }
+        },
+        "score": 0.2683,
+        "metrics": {
+          "borderPenalty": 0.3411,
+          "edgeStrength": 0.2569
+        }
+      },
+      "quality": {
+        "brightness": 180.07,
+        "blur": 48.96,
+        "glare": 0.0365
+      },
+      "detectionMs": 17.56
+    },
+    {
+      "id": "controlled-lab-seq-01-f005",
+      "tsMs": 165,
+      "hasDocument": false,
+      "groundTruth": null,
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 113,
+              "y": 80
+            },
+            "topRight": {
+              "x": 352,
+              "y": 78
+            },
+            "bottomRight": {
+              "x": 350,
+              "y": 295
+            },
+            "bottomLeft": {
+              "x": 115,
+              "y": 297
+            }
+          },
+          "score": 0.1752,
+          "metrics": {
+            "borderPenalty": 0.1543,
+            "edgeStrength": 0.5784
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 275,
+              "y": 165
+            },
+            "topRight": {
+              "x": 450,
+              "y": 173
+            },
+            "bottomRight": {
+              "x": 460,
+              "y": 360
+            },
+            "bottomLeft": {
+              "x": 265,
+              "y": 352
+            }
+          },
+          "score": 0.0918,
+          "metrics": {
+            "borderPenalty": 0.1443,
+            "edgeStrength": 0.4519
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 190,
+            "y": 115
+          },
+          "topRight": {
+            "x": 405,
+            "y": 112
+          },
+          "bottomRight": {
+            "x": 400,
+            "y": 330
+          },
+          "bottomLeft": {
+            "x": 195,
+            "y": 333
+          }
+        },
+        "score": 0.2697,
+        "metrics": {
+          "borderPenalty": 0.3025,
+          "edgeStrength": 0.4698
+        }
+      },
+      "quality": {
+        "brightness": 88.4,
+        "blur": 52.86,
+        "glare": 0.0493
+      },
+      "detectionMs": 17.34
+    },
+    {
+      "id": "controlled-lab-seq-01-f006",
+      "tsMs": 198,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 63.54443159462949,
+          "y": 60.16120922347256
+        },
+        "topRight": {
+          "x": 423.6400374369772,
+          "y": 63.81965356784166
+        },
+        "bottomRight": {
+          "x": 417.59223451580334,
+          "y": 608.1612092234726
+        },
+        "bottomLeft": {
+          "x": 69.59223451580336,
+          "y": 604.5027648791036
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 59.460891861650474,
+              "y": 59.772666751690466
+            },
+            "topRight": {
+              "x": 430.5029487473095,
+              "y": 61.94681327855051
+            },
+            "bottomRight": {
+              "x": 422.08823889923053,
+              "y": 617.0544320492015
+            },
+            "bottomLeft": {
+              "x": 67.87560170972944,
+              "y": 614.8802855223415
+            }
+          },
+          "score": 0.6998,
+          "metrics": {
+            "borderPenalty": 0.0534,
+            "edgeStrength": 0.7694
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 88.38688019343681,
+              "y": 56.20015006799109
+            },
+            "topRight": {
+              "x": 380.8668801934368,
+              "y": 48.20015006799109
+            },
+            "bottomRight": {
+              "x": 366.8668801934368,
+              "y": 450.7601500679911
+            },
+            "bottomLeft": {
+              "x": 102.38688019343681,
+              "y": 458.7601500679911
+            }
+          },
+          "score": 0.5886,
+          "metrics": {
+            "borderPenalty": 0.3257,
+            "edgeStrength": 0.6443
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 64.74825856445813,
+            "y": 61.138109212063014
+          },
+          "topRight": {
+            "x": 421.7647593084417,
+            "y": 62.58754022996971
+          },
+          "bottomRight": {
+            "x": 417.5574043844022,
+            "y": 611.0791931108007
+          },
+          "bottomLeft": {
+            "x": 68.9556134884976,
+            "y": 609.629762092894
+          }
+        },
+        "score": 0.5862,
+        "metrics": {
+          "borderPenalty": 0.0364,
+          "edgeStrength": 0.6407
+        }
+      },
+      "quality": {
+        "brightness": 155.35,
+        "blur": 57.59,
+        "glare": 0.0333
+      },
+      "detectionMs": 17.33
+    },
+    {
+      "id": "controlled-lab-seq-01-f007",
+      "tsMs": 231,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 63.180930501467586,
+          "y": 59.57287471910543
+        },
+        "topRight": {
+          "x": 424.64446625839395,
+          "y": 62.777859009922054
+        },
+        "bottomRight": {
+          "x": 417.91269837993076,
+          "y": 607.5728747191055
+        },
+        "bottomLeft": {
+          "x": 69.91269837993076,
+          "y": 604.3678904282889
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 64.16230651053455,
+              "y": 57.13123433598946
+            },
+            "topRight": {
+              "x": 429.14868946072903,
+              "y": 58.151037193390906
+            },
+            "bottomRight": {
+              "x": 419.95423966819146,
+              "y": 597.9168035363465
+            },
+            "bottomLeft": {
+              "x": 73.3567563030721,
+              "y": 596.897000678945
+            }
+          },
+          "score": 0.6987,
+          "metrics": {
+            "borderPenalty": 0.0566,
+            "edgeStrength": 0.7905
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 76.58120253544912,
+              "y": 57.27086625418407
+            },
+            "topRight": {
+              "x": 369.0612025354491,
+              "y": 49.27086625418407
+            },
+            "bottomRight": {
+              "x": 355.0612025354491,
+              "y": 451.83086625418406
+            },
+            "bottomLeft": {
+              "x": 90.58120253544912,
+              "y": 459.83086625418406
+            }
+          },
+          "score": 0.601,
+          "metrics": {
+            "borderPenalty": 0.2029,
+            "edgeStrength": 0.5142
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 67.15062803391668,
+            "y": 59.12060006692617
+          },
+          "topRight": {
+            "x": 425.7837735576664,
+            "y": 59.800468638527136
+          },
+          "bottomRight": {
+            "x": 421.18654866139764,
+            "y": 602.9737913496434
+          },
+          "bottomLeft": {
+            "x": 71.74785293018545,
+            "y": 602.2939227780424
+          }
+        },
+        "score": 0.567,
+        "metrics": {
+          "borderPenalty": 0.0265,
+          "edgeStrength": 0.6074
+        }
+      },
+      "quality": {
+        "brightness": 176.93,
+        "blur": 55.12,
+        "glare": 0.0396
+      },
+      "detectionMs": 15.81
+    },
+    {
+      "id": "controlled-lab-seq-01-f008",
+      "tsMs": 264,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 62.71885831472004,
+          "y": 58.940950293211955
+        },
+        "topRight": {
+          "x": 425.276024921778,
+          "y": 61.642461822552654
+        },
+        "bottomRight": {
+          "x": 417.997441618249,
+          "y": 606.9409502932119
+        },
+        "bottomLeft": {
+          "x": 69.99744161824903,
+          "y": 604.2394387638712
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 63.90613600346566,
+              "y": 61.641038223754414
+            },
+            "topRight": {
+              "x": 432.63612872294203,
+              "y": 61.46584108994668
+            },
+            "bottomRight": {
+              "x": 422.91674970930893,
+              "y": 603.4706752873736
+            },
+            "bottomLeft": {
+              "x": 73.62551501709879,
+              "y": 603.6458724211814
+            }
+          },
+          "score": 0.6927,
+          "metrics": {
+            "borderPenalty": 0.1274,
+            "edgeStrength": 0.8196
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 66.83674011260973,
+              "y": 62.92712758272776
+            },
+            "topRight": {
+              "x": 359.31674011260975,
+              "y": 54.92712758272776
+            },
+            "bottomRight": {
+              "x": 345.31674011260975,
+              "y": 457.4871275827278
+            },
+            "bottomLeft": {
+              "x": 80.83674011260973,
+              "y": 465.4871275827278
+            }
+          },
+          "score": 0.5708,
+          "metrics": {
+            "borderPenalty": 0.1343,
+            "edgeStrength": 0.2735
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 66.28218534966199,
+            "y": 58.89128990948307
+          },
+          "topRight": {
+            "x": 424.0817954587189,
+            "y": 58.774491820277916
+          },
+          "bottomRight": {
+            "x": 419.22210595190234,
+            "y": 616.4942946606637
+          },
+          "bottomLeft": {
+            "x": 71.14187485647855,
+            "y": 616.6110927498689
+          }
+        },
+        "score": 0.5471,
+        "metrics": {
+          "borderPenalty": 0.035,
+          "edgeStrength": 0.7708
+        }
+      },
+      "quality": {
+        "brightness": 156.89,
+        "blur": 64.81,
+        "glare": 0.0338
+      },
+      "detectionMs": 13.92
+    },
+    {
+      "id": "controlled-lab-seq-01-f009",
+      "tsMs": 297,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 62.16597712153569,
+          "y": 58.28294880667081
+        },
+        "topRight": {
+          "x": 425.52019444900264,
+          "y": 60.43883139066414
+        },
+        "bottomRight": {
+          "x": 417.8430857852692,
+          "y": 606.2829488066708
+        },
+        "bottomLeft": {
+          "x": 69.84308578526917,
+          "y": 604.1270662226775
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 56.689635925029904,
+              "y": 58.22106430750735
+            },
+            "topRight": {
+              "x": 426.03548498877245,
+              "y": 56.857851739348824
+            },
+            "bottomRight": {
+              "x": 416.0605351227319,
+              "y": 594.3311427900971
+            },
+            "bottomLeft": {
+              "x": 66.66458579107045,
+              "y": 595.6943553582556
+            }
+          },
+          "score": 0.6822,
+          "metrics": {
+            "borderPenalty": 0.1208,
+            "edgeStrength": 0.6546
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 61.53927717603767,
+              "y": 71.78408401138441
+            },
+            "topRight": {
+              "x": 354.0192771760377,
+              "y": 63.78408401138441
+            },
+            "bottomRight": {
+              "x": 340.0192771760377,
+              "y": 466.34408401138444
+            },
+            "bottomLeft": {
+              "x": 75.53927717603767,
+              "y": 474.34408401138444
+            }
+          },
+          "score": 0.5593,
+          "metrics": {
+            "borderPenalty": 0.1431,
+            "edgeStrength": 0.2915
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 65.95868799565928,
+            "y": 57.88364859224124
+          },
+          "topRight": {
+            "x": 426.8458566670858,
+            "y": 56.97484021346889
+          },
+          "bottomRight": {
+            "x": 421.8583817340655,
+            "y": 609.6632485692118
+          },
+          "bottomLeft": {
+            "x": 70.94616292867954,
+            "y": 610.5720569479842
+          }
+        },
+        "score": 0.5273,
+        "metrics": {
+          "borderPenalty": 0.0463,
+          "edgeStrength": 0.6719
+        }
+      },
+      "quality": {
+        "brightness": 97.65,
+        "blur": 64.91,
+        "glare": 0.0587
+      },
+      "detectionMs": 18.27
+    },
+    {
+      "id": "controlled-lab-seq-01-f010",
+      "tsMs": 330,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 61.5365599499771,
+          "y": 57.617105807942494
+        },
+        "topRight": {
+          "x": 425.3750091719311,
+          "y": 59.193717619918836
+        },
+        "bottomRight": {
+          "x": 417.4557845609541,
+          "y": 605.6171058079425
+        },
+        "bottomLeft": {
+          "x": 69.45578456095409,
+          "y": 604.0404939959661
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 57.248185044580666,
+              "y": 61.60934961878093
+            },
+            "topRight": {
+              "x": 430.39732947033815,
+              "y": 59.11246859949808
+            },
+            "bottomRight": {
+              "x": 420.4432498928205,
+              "y": 609.4730478664562
+            },
+            "bottomLeft": {
+              "x": 67.20226462209831,
+              "y": 611.9699288857391
+            }
+          },
+          "score": 0.6679,
+          "metrics": {
+            "borderPenalty": 0.1011,
+            "edgeStrength": 0.7695
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 61.98581740808467,
+              "y": 81.67324370926453
+            },
+            "topRight": {
+              "x": 354.4658174080847,
+              "y": 73.67324370926453
+            },
+            "bottomRight": {
+              "x": 340.4658174080847,
+              "y": 476.2332437092645
+            },
+            "bottomLeft": {
+              "x": 75.98581740808467,
+              "y": 484.2332437092645
+            }
+          },
+          "score": 0.5239,
+          "metrics": {
+            "borderPenalty": 0.275,
+            "edgeStrength": 0.2607
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 64.37163942057603,
+            "y": 57.54508099008522
+          },
+          "topRight": {
+            "x": 420.6953395687969,
+            "y": 55.88049364389665
+          },
+          "bottomRight": {
+            "x": 415.7182997800381,
+            "y": 602.1751750935401
+          },
+          "bottomLeft": {
+            "x": 69.34867920933486,
+            "y": 603.8397624397287
+          }
+        },
+        "score": 0.5084,
+        "metrics": {
+          "borderPenalty": 0.0822,
+          "edgeStrength": 0.6336
+        }
+      },
+      "quality": {
+        "brightness": 149.25,
+        "blur": 59.27,
+        "glare": 0.0566
+      },
+      "detectionMs": 19.18
+    },
+    {
+      "id": "controlled-lab-seq-01-f011",
+      "tsMs": 363,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 60.85098002185059,
+          "y": 56.96187416152467
+        },
+        "topRight": {
+          "x": 424.85097682398447,
+          "y": 57.934612701469604
+        },
+        "bottomRight": {
+          "x": 416.85097842291754,
+          "y": 604.9618741615246
+        },
+        "bottomLeft": {
+          "x": 68.85097842291754,
+          "y": 603.9891356215797
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 55.422958062148325,
+              "y": 53.37939646602822
+            },
+            "topRight": {
+              "x": 421.01675481520743,
+              "y": 49.84838976249614
+            },
+            "bottomRight": {
+              "x": 411.35940827763244,
+              "y": 604.9695620570977
+            },
+            "bottomLeft": {
+              "x": 65.08030459972332,
+              "y": 608.5005687606298
+            }
+          },
+          "score": 0.6505,
+          "metrics": {
+            "borderPenalty": 0.1167,
+            "edgeStrength": 0.6428
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 68.0670321863106,
+              "y": 90.1733954858252
+            },
+            "topRight": {
+              "x": 360.5470321863106,
+              "y": 82.1733954858252
+            },
+            "bottomRight": {
+              "x": 346.5470321863106,
+              "y": 484.7333954858252
+            },
+            "bottomLeft": {
+              "x": 82.0670321863106,
+              "y": 492.7333954858252
+            }
+          },
+          "score": 0.5021,
+          "metrics": {
+            "borderPenalty": 0.1129,
+            "edgeStrength": 0.6594
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 63.605174124381634,
+            "y": 56.566346259776495
+          },
+          "topRight": {
+            "x": 421.8540923707627,
+            "y": 54.21234179075511
+          },
+          "bottomRight": {
+            "x": 417.0254191019752,
+            "y": 613.1664034848546
+          },
+          "bottomLeft": {
+            "x": 68.43384739316913,
+            "y": 615.520407953876
+          }
+        },
+        "score": 0.4911,
+        "metrics": {
+          "borderPenalty": 0.0642,
+          "edgeStrength": 0.627
+        }
+      },
+      "quality": {
+        "brightness": 120.87,
+        "blur": 62.41,
+        "glare": 0.0424
+      },
+      "detectionMs": 14.98
+    },
+    {
+      "id": "controlled-lab-seq-01-f012",
+      "tsMs": 396,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 60.13499469242833,
+          "y": 56.33541265381143
+        },
+        "topRight": {
+          "x": 423.9705634741855,
+          "y": 56.689098662149945
+        },
+        "bottomRight": {
+          "x": 416.0527790833069,
+          "y": 604.3354126538114
+        },
+        "bottomLeft": {
+          "x": 68.0527790833069,
+          "y": 603.9817266454729
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 54.09928686007053,
+              "y": 52.648951552352074
+            },
+            "topRight": {
+              "x": 424.7212066456936,
+              "y": 48.224589259104604
+            },
+            "bottomRight": {
+              "x": 415.6282323774368,
+              "y": 591.4795659280002
+            },
+            "bottomLeft": {
+              "x": 63.192261128327345,
+              "y": 595.9039282212476
+            }
+          },
+          "score": 0.6313,
+          "metrics": {
+            "borderPenalty": 0.1275,
+            "edgeStrength": 0.6112
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 78.29402804322578,
+              "y": 95.20340573300732
+            },
+            "topRight": {
+              "x": 370.7740280432258,
+              "y": 87.20340573300732
+            },
+            "bottomRight": {
+              "x": 356.7740280432258,
+              "y": 489.7634057330073
+            },
+            "bottomLeft": {
+              "x": 92.29402804322578,
+              "y": 497.7634057330073
+            }
+          },
+          "score": 0.5244,
+          "metrics": {
+            "borderPenalty": 0.2833,
+            "edgeStrength": 0.2552
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 61.03789257230993,
+            "y": 56.622169075581816
+          },
+          "topRight": {
+            "x": 417.08267601383767,
+            "y": 53.672594213416836
+          },
+          "bottomRight": {
+            "x": 412.53618887970924,
+            "y": 607.1567832578007
+          },
+          "bottomLeft": {
+            "x": 65.58437970643834,
+            "y": 610.1063581199658
+          }
+        },
+        "score": 0.4763,
+        "metrics": {
+          "borderPenalty": 0.0591,
+          "edgeStrength": 0.6713
+        }
+      },
+      "quality": {
+        "brightness": 181.02,
+        "blur": 48.68,
+        "glare": 0.0441
+      },
+      "detectionMs": 18.39
+    },
+    {
+      "id": "controlled-lab-seq-01-f013",
+      "tsMs": 429,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 59.41875066509807,
+          "y": 55.75508274889703
+        },
+        "topRight": {
+          "x": 422.7672657967595,
+          "y": 55.48419707376235
+        },
+        "bottomRight": {
+          "x": 415.0930082309288,
+          "y": 603.755082748897
+        },
+        "bottomLeft": {
+          "x": 67.09300823092879,
+          "y": 604.0259684240317
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 58.08860618807728,
+              "y": 52.725596837674594
+            },
+            "topRight": {
+              "x": 421.9612578754892,
+              "y": 47.58426431746091
+            },
+            "bottomRight": {
+              "x": 413.68465435422956,
+              "y": 598.3477188000213
+            },
+            "bottomLeft": {
+              "x": 66.36520970933688,
+              "y": 603.489051320235
+            }
+          },
+          "score": 0.6113,
+          "metrics": {
+            "borderPenalty": 0.0479,
+            "edgeStrength": 0.8036
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 90.16287971410758,
+              "y": 95.53175251456047
+            },
+            "topRight": {
+              "x": 382.6428797141076,
+              "y": 87.53175251456047
+            },
+            "bottomRight": {
+              "x": 368.6428797141076,
+              "y": 490.0917525145605
+            },
+            "bottomLeft": {
+              "x": 104.16287971410758,
+              "y": 498.0917525145605
+            }
+          },
+          "score": 0.5249,
+          "metrics": {
+            "borderPenalty": 0.3178,
+            "edgeStrength": 0.4911
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 60.99989064272715,
+            "y": 54.636020058664975
+          },
+          "topRight": {
+            "x": 418.518870998558,
+            "y": 51.208465045189186
+          },
+          "bottomRight": {
+            "x": 414.38056923792817,
+            "y": 602.5406111069785
+          },
+          "bottomLeft": {
+            "x": 65.13819240335695,
+            "y": 605.9681661204543
+          }
+        },
+        "score": 0.4643,
+        "metrics": {
+          "borderPenalty": 0.0694,
+          "edgeStrength": 0.6964
+        }
+      },
+      "quality": {
+        "brightness": 170.09,
+        "blur": 49.09,
+        "glare": 0.0348
+      },
+      "detectionMs": 13.62
+    },
+    {
+      "id": "controlled-lab-seq-01-f014",
+      "tsMs": 462,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 58.73554948632998,
+          "y": 55.236967441000495
+        },
+        "topRight": {
+          "x": 421.2843083155409,
+          "y": 54.34573716275303
+        },
+        "bottomRight": {
+          "x": 414.00992890093545,
+          "y": 603.2369674410005
+        },
+        "bottomLeft": {
+          "x": 66.00992890093544,
+          "y": 604.128197719248
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 61.701942059790916,
+              "y": 57.23173573476613
+            },
+            "topRight": {
+              "x": 420.3826180532748,
+              "y": 51.578401690754184
+            },
+            "bottomRight": {
+              "x": 413.1517592358916,
+              "y": 597.0946528846283
+            },
+            "bottomLeft": {
+              "x": 68.93280087717416,
+              "y": 602.7479869286402
+            }
+          },
+          "score": 0.3892,
+          "metrics": {
+            "borderPenalty": 0.1385,
+            "edgeStrength": 0.6446
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 100.76767836925094,
+              "y": 91.0780450868661
+            },
+            "topRight": {
+              "x": 393.24767836925093,
+              "y": 83.0780450868661
+            },
+            "bottomRight": {
+              "x": 379.24767836925093,
+              "y": 485.6380450868661
+            },
+            "bottomLeft": {
+              "x": 114.76767836925094,
+              "y": 493.6380450868661
+            }
+          },
+          "score": 0.2975,
+          "metrics": {
+            "borderPenalty": 0.3735,
+            "edgeStrength": 0.5559
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 61.23150804225057,
+            "y": 54.198291442931975
+          },
+          "topRight": {
+            "x": 417.5379048969039,
+            "y": 50.42940208025734
+          },
+          "bottomRight": {
+            "x": 413.9224754882123,
+            "y": 610.6609843647082
+          },
+          "bottomLeft": {
+            "x": 64.84693745094219,
+            "y": 614.4298737273828
+          }
+        },
+        "score": 0.4558,
+        "metrics": {
+          "borderPenalty": 0.094,
+          "edgeStrength": 0.6839
+        }
+      },
+      "quality": {
+        "brightness": 155.33,
+        "blur": 47.82,
+        "glare": 0.0401
+      },
+      "detectionMs": 20.46
+    },
+    {
+      "id": "controlled-lab-seq-01-f015",
+      "tsMs": 495,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 58.1204232019972,
+          "y": 54.795425537812264
+        },
+        "topRight": {
+          "x": 419.5730168947212,
+          "y": 53.29775800686439
+        },
+        "bottomRight": {
+          "x": 412.8467200483592,
+          "y": 602.7954255378122
+        },
+        "bottomLeft": {
+          "x": 64.8467200483592,
+          "y": 604.2930930687601
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 55.79379070599663,
+              "y": 58.605950664314605
+            },
+            "topRight": {
+              "x": 411.7333222443436,
+              "y": 52.66599568471193
+            },
+            "bottomRight": {
+              "x": 405.74860080330404,
+              "y": 599.1041432319157
+            },
+            "bottomLeft": {
+              "x": 61.778512147036196,
+              "y": 605.0440982115184
+            }
+          },
+          "score": 0.438,
+          "metrics": {
+            "borderPenalty": 0.1375,
+            "edgeStrength": 0.6044
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 107.51199944259373,
+              "y": 82.93270635670052
+            },
+            "topRight": {
+              "x": 399.99199944259374,
+              "y": 74.93270635670052
+            },
+            "bottomRight": {
+              "x": 385.99199944259374,
+              "y": 477.4927063567005
+            },
+            "bottomLeft": {
+              "x": 121.51199944259373,
+              "y": 485.4927063567005
+            }
+          },
+          "score": 0.3157,
+          "metrics": {
+            "borderPenalty": 0.3329,
+            "edgeStrength": 0.3358
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 58.99063906508209,
+            "y": 52.103656571877465
+          },
+          "topRight": {
+            "x": 415.8272518249291,
+            "y": 48.143686585475685
+          },
+          "bottomRight": {
+            "x": 412.8348911044093,
+            "y": 601.9844869742772
+          },
+          "bottomLeft": {
+            "x": 61.982999785601876,
+            "y": 605.944456960679
+          }
+        },
+        "score": 0.451,
+        "metrics": {
+          "borderPenalty": 0.0805,
+          "edgeStrength": 0.744
+        }
+      },
+      "quality": {
+        "brightness": 173.87,
+        "blur": 71.54,
+        "glare": 0.0535
+      },
+      "detectionMs": 19.08
+    },
+    {
+      "id": "controlled-lab-seq-01-f016",
+      "tsMs": 528,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 57.608578929581256,
+          "y": 54.442693727147834
+        },
+        "topRight": {
+          "x": 417.69093134928784,
+          "y": 52.36195954441212
+        },
+        "bottomRight": {
+          "x": 411.64975513943455,
+          "y": 602.4426937271478
+        },
+        "bottomLeft": {
+          "x": 63.64975513943452,
+          "y": 604.5234279098835
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 60.29007122902817,
+              "y": 57.21523315574434
+            },
+            "topRight": {
+              "x": 412.70499738355915,
+              "y": 51.225464500975825
+            },
+            "bottomRight": {
+              "x": 408.132271117201,
+              "y": 612.898626214969
+            },
+            "bottomLeft": {
+              "x": 64.86279749538629,
+              "y": 618.8883948697376
+            }
+          },
+          "score": 0.3633,
+          "metrics": {
+            "borderPenalty": 0.0852,
+            "edgeStrength": 0.7434
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 108.74459791896116,
+              "y": 73.08999932382773
+            },
+            "topRight": {
+              "x": 401.2245979189612,
+              "y": 65.08999932382773
+            },
+            "bottomRight": {
+              "x": 387.2245979189612,
+              "y": 467.6499993238277
+            },
+            "bottomLeft": {
+              "x": 122.74459791896116,
+              "y": 475.6499993238277
+            }
+          },
+          "score": 0.2572,
+          "metrics": {
+            "borderPenalty": 0.1528,
+            "edgeStrength": 0.5938
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 59.8844882596558,
+            "y": 54.3059675676084
+          },
+          "topRight": {
+            "x": 409.82113894196357,
+            "y": 50.31278846442939
+          },
+          "bottomRight": {
+            "x": 407.5347758087845,
+            "y": 601.2773455033873
+          },
+          "bottomLeft": {
+            "x": 62.170851392834855,
+            "y": 605.2705246065664
+          }
+        },
+        "score": 0.4502,
+        "metrics": {
+          "borderPenalty": 0.0646,
+          "edgeStrength": 0.6633
+        }
+      },
+      "quality": {
+        "brightness": 173.97,
+        "blur": 60.2,
+        "glare": 0.0539
+      },
+      "detectionMs": 18.81
+    },
+    {
+      "id": "controlled-lab-seq-01-f017",
+      "tsMs": 561,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 57.23377759178625,
+          "y": 54.188547455048734
+        },
+        "topRight": {
+          "x": 415.69972918389175,
+          "y": 51.55721578152721
+        },
+        "bottomRight": {
+          "x": 410.466753387839,
+          "y": 602.1885474550487
+        },
+        "bottomLeft": {
+          "x": 62.46675338783901,
+          "y": 604.8198791285703
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 59.718117633926646,
+              "y": 51.12744808299237
+            },
+            "topRight": {
+              "x": 417.6235758561725,
+              "y": 45.32665892751561
+            },
+            "bottomRight": {
+              "x": 414.58957118249396,
+              "y": 589.1371453742343
+            },
+            "bottomLeft": {
+              "x": 62.752122307605205,
+              "y": 594.937934529711
+            }
+          },
+          "score": 0.5484,
+          "metrics": {
+            "borderPenalty": 0.0749,
+            "edgeStrength": 0.7812
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 104.16369070296376,
+              "y": 63.95976194630353
+            },
+            "topRight": {
+              "x": 396.6436907029638,
+              "y": 55.95976194630353
+            },
+            "bottomRight": {
+              "x": 382.6436907029638,
+              "y": 458.51976194630356
+            },
+            "bottomLeft": {
+              "x": 118.16369070296376,
+              "y": 466.51976194630356
+            }
+          },
+          "score": 0.4345,
+          "metrics": {
+            "borderPenalty": 0.263,
+            "edgeStrength": 0.5336
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 63.62870119897457,
+            "y": 55.3820281011252
+          },
+          "topRight": {
+            "x": 414.7843533155341,
+            "y": 51.51483533080736
+          },
+          "bottomRight": {
+            "x": 413.2673509786948,
+            "y": 607.3076637237826
+          },
+          "bottomLeft": {
+            "x": 65.14570353581385,
+            "y": 611.1748564941005
+          }
+        },
+        "score": 0.4533,
+        "metrics": {
+          "borderPenalty": 0.0472,
+          "edgeStrength": 0.559
+        }
+      },
+      "quality": {
+        "brightness": 140.62,
+        "blur": 58.67,
+        "glare": 0.035
+      },
+      "detectionMs": 13.59
+    },
+    {
+      "id": "controlled-lab-seq-01-f018",
+      "tsMs": 594,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 57.02671588102574,
+          "y": 54.04003001359822
+        },
+        "topRight": {
+          "x": 413.66303879943604,
+          "y": 50.89916189998452
+        },
+        "bottomRight": {
+          "x": 409.3448773402309,
+          "y": 602.0400300135982
+        },
+        "bottomLeft": {
+          "x": 61.34487734023089,
+          "y": 605.1808981272119
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 56.53498590140861,
+              "y": 54.03909968286162
+            },
+            "topRight": {
+              "x": 400.84933406414683,
+              "y": 48.65854918485674
+            },
+            "bottomRight": {
+              "x": 399.43813398354814,
+              "y": 610.0714401881238
+            },
+            "bottomLeft": {
+              "x": 57.946185982007286,
+              "y": 615.4519906861287
+            }
+          },
+          "score": 0.5418,
+          "metrics": {
+            "borderPenalty": 0.1257,
+            "edgeStrength": 0.6867
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 94.89084364580216,
+              "y": 57.77739476230646
+            },
+            "topRight": {
+              "x": 387.3708436458022,
+              "y": 49.77739476230646
+            },
+            "bottomRight": {
+              "x": 373.3708436458022,
+              "y": 452.3373947623065
+            },
+            "bottomLeft": {
+              "x": 108.89084364580216,
+              "y": 460.3373947623065
+            }
+          },
+          "score": 0.4039,
+          "metrics": {
+            "borderPenalty": 0.1422,
+            "edgeStrength": 0.4858
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 63.230806410890445,
+            "y": 55.642244833088014
+          },
+          "topRight": {
+            "x": 412.4009907035973,
+            "y": 52.05521116775142
+          },
+          "bottomRight": {
+            "x": 411.695390663298,
+            "y": 600.0936121323273
+          },
+          "bottomLeft": {
+            "x": 63.93640645118978,
+            "y": 603.6806457976638
+          }
+        },
+        "score": 0.4603,
+        "metrics": {
+          "borderPenalty": 0.0958,
+          "edgeStrength": 0.7384
+        }
+      },
+      "quality": {
+        "brightness": 215.74,
+        "blur": 65.21,
+        "glare": 0.2181
+      },
+      "detectionMs": 12.59
+    },
+    {
+      "id": "controlled-lab-seq-01-f019",
+      "tsMs": 627,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 57.01348150425492,
+          "y": 54.001257346386375
+        },
+        "topRight": {
+          "x": 411.64422380443244,
+          "y": 50.399864989102916
+        },
+        "bottomRight": {
+          "x": 408.3288526543437,
+          "y": 602.0012573463864
+        },
+        "bottomLeft": {
+          "x": 60.328852654343684,
+          "y": 605.6026497036698
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 60.228184833797236,
+              "y": 55.54126764458457
+            },
+            "topRight": {
+              "x": 408.54902182598954,
+              "y": 50.79546137309807
+            },
+            "bottomRight": {
+              "x": 408.7997356839412,
+              "y": 589.1934142921905
+            },
+            "bottomLeft": {
+              "x": 59.97747097584555,
+              "y": 593.9392205636769
+            }
+          },
+          "score": 0.5401,
+          "metrics": {
+            "borderPenalty": 0.1067,
+            "edgeStrength": 0.6416
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 83.19637310891657,
+              "y": 56.056556876072435
+            },
+            "topRight": {
+              "x": 375.6763731089166,
+              "y": 48.056556876072435
+            },
+            "bottomRight": {
+              "x": 361.6763731089166,
+              "y": 450.6165568760724
+            },
+            "bottomLeft": {
+              "x": 97.19637310891657,
+              "y": 458.6165568760724
+            }
+          },
+          "score": 0.3918,
+          "metrics": {
+            "borderPenalty": 0.3639,
+            "edgeStrength": 0.3557
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 63.38880029657906,
+            "y": 53.54512351225957
+          },
+          "topRight": {
+            "x": 414.5599673688747,
+            "y": 50.3812526646019
+          },
+          "bottomRight": {
+            "x": 414.68532429785057,
+            "y": 601.534231137528
+          },
+          "bottomLeft": {
+            "x": 63.263443367603216,
+            "y": 604.6981019851856
+          }
+        },
+        "score": 0.4709,
+        "metrics": {
+          "borderPenalty": 0.0643,
+          "edgeStrength": 0.7344
+        }
+      },
+      "quality": {
+        "brightness": 221.46,
+        "blur": 71.45,
+        "glare": 0.1665
+      },
+      "detectionMs": 17.53
+    },
+    {
+      "id": "controlled-lab-seq-01-f020",
+      "tsMs": 660,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 57.21414983203758,
+          "y": 54.07330398115568
+        },
+        "topRight": {
+          "x": 409.70422022426726,
+          "y": 50.06758590342101
+        },
+        "bottomRight": {
+          "x": 407.45918502815243,
+          "y": 602.0733039811557
+        },
+        "bottomLeft": {
+          "x": 59.45918502815243,
+          "y": 606.0790220588904
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 64.35735945834489,
+              "y": 55.07734846124474
+            },
+            "topRight": {
+              "x": 405.737215051753,
+              "y": 51.15548673606307
+            },
+            "bottomRight": {
+              "x": 407.6428946805079,
+              "y": 613.9862861084916
+            },
+            "bottomLeft": {
+              "x": 62.451679829590034,
+              "y": 617.9081478336733
+            }
+          },
+          "score": 0.5433,
+          "metrics": {
+            "borderPenalty": 0.0482,
+            "edgeStrength": 0.7731
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.94349333865513,
+              "y": 59.21856941847095
+            },
+            "topRight": {
+              "x": 364.42349333865513,
+              "y": 51.21856941847095
+            },
+            "bottomRight": {
+              "x": 350.42349333865513,
+              "y": 453.77856941847097
+            },
+            "bottomLeft": {
+              "x": 85.94349333865513,
+              "y": 461.77856941847097
+            }
+          },
+          "score": 0.4346,
+          "metrics": {
+            "borderPenalty": 0.2618,
+            "edgeStrength": 0.5151
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 58.43260764873288,
+            "y": 55.018302781207076
+          },
+          "topRight": {
+            "x": 407.6058223304281,
+            "y": 52.40372829775263
+          },
+          "bottomRight": {
+            "x": 408.55866214480557,
+            "y": 600.0798477997772
+          },
+          "bottomLeft": {
+            "x": 57.47976783435546,
+            "y": 602.6944222832317
+          }
+        },
+        "score": 0.4846,
+        "metrics": {
+          "borderPenalty": 0.0783,
+          "edgeStrength": 0.6458
+        }
+      },
+      "quality": {
+        "brightness": 229.77,
+        "blur": 66.86,
+        "glare": 0.2012
+      },
+      "detectionMs": 17.93
+    },
+    {
+      "id": "controlled-lab-seq-01-f021",
+      "tsMs": 693,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 57.641585301039534,
+          "y": 54.254173250836814
+        },
+        "topRight": {
+          "x": 407.8995054299974,
+          "y": 49.906637343506894
+        },
+        "bottomRight": {
+          "x": 406.7705453655185,
+          "y": 602.2541732508369
+        },
+        "bottomLeft": {
+          "x": 58.77054536551847,
+          "y": 606.6017091581667
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 57.69261533983619,
+              "y": 55.28783033635498
+            },
+            "topRight": {
+              "x": 399.2081941609822,
+              "y": 52.346265408310785
+            },
+            "bottomRight": {
+              "x": 402.7160264378784,
+              "y": 603.3352865798983
+            },
+            "bottomLeft": {
+              "x": 54.18478306293999,
+              "y": 606.2768515079424
+            }
+          },
+          "score": 0.5513,
+          "metrics": {
+            "borderPenalty": 0.1095,
+            "edgeStrength": 0.6088
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 63.88730176067992,
+              "y": 66.48926144008016
+            },
+            "topRight": {
+              "x": 356.36730176067994,
+              "y": 58.489261440080156
+            },
+            "bottomRight": {
+              "x": 342.36730176067994,
+              "y": 461.04926144008016
+            },
+            "bottomLeft": {
+              "x": 77.88730176067992,
+              "y": 469.04926144008016
+            }
+          },
+          "score": 0.4483,
+          "metrics": {
+            "borderPenalty": 0.2595,
+            "edgeStrength": 0.3239
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 59.30146713202975,
+            "y": 53.77080488401645
+          },
+          "topRight": {
+            "x": 401.02064030772567,
+            "y": 51.80976159865365
+          },
+          "bottomRight": {
+            "x": 402.7745564461738,
+            "y": 611.788768855336
+          },
+          "bottomLeft": {
+            "x": 57.54755099358165,
+            "y": 613.7498121406989
+          }
+        },
+        "score": 0.501,
+        "metrics": {
+          "borderPenalty": 0.0965,
+          "edgeStrength": 0.6021
+        }
+      },
+      "quality": {
+        "brightness": 183.29,
+        "blur": 47.88,
+        "glare": 0.0419
+      },
+      "detectionMs": 20.78
+    },
+    {
+      "id": "controlled-lab-seq-01-f022",
+      "tsMs": 726,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 58.30050346810592,
+          "y": 54.53885262825506
+        },
+        "topRight": {
+          "x": 406.2802716452199,
+          "y": 49.917340735092736
+        },
+        "bottomRight": {
+          "x": 406.2903875566629,
+          "y": 602.5388526282551
+        },
+        "bottomLeft": {
+          "x": 58.29038755666291,
+          "y": 607.1603645214174
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 59.12738162794996,
+              "y": 55.955948058277414
+            },
+            "topRight": {
+              "x": 399.36265131864906,
+              "y": 54.1119508384069
+            },
+            "bottomRight": {
+              "x": 404.3754218045325,
+              "y": 614.7761390709202
+            },
+            "bottomLeft": {
+              "x": 54.11461114206651,
+              "y": 616.6201362907907
+            }
+          },
+          "score": 0.5636,
+          "metrics": {
+            "borderPenalty": 0.0674,
+            "edgeStrength": 0.7823
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 61.00023504278312,
+              "y": 76.08851395976102
+            },
+            "topRight": {
+              "x": 353.48023504278314,
+              "y": 68.08851395976102
+            },
+            "bottomRight": {
+              "x": 339.48023504278314,
+              "y": 470.64851395976103
+            },
+            "bottomLeft": {
+              "x": 75.00023504278312,
+              "y": 478.64851395976103
+            }
+          },
+          "score": 0.4147,
+          "metrics": {
+            "borderPenalty": 0.3496,
+            "edgeStrength": 0.2817
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 60.7548403271457,
+            "y": 57.36036311922578
+          },
+          "topRight": {
+            "x": 403.448967841316,
+            "y": 56.131031639312106
+          },
+          "bottomRight": {
+            "x": 405.95535308425775,
+            "y": 601.3041712912704
+          },
+          "bottomLeft": {
+            "x": 58.248455084203975,
+            "y": 602.5335027711841
+          }
+        },
+        "score": 0.5193,
+        "metrics": {
+          "borderPenalty": 0.0578,
+          "edgeStrength": 0.6
+        }
+      },
+      "quality": {
+        "brightness": 87.24,
+        "blur": 71.31,
+        "glare": 0.051
+      },
+      "detectionMs": 12.42
+    },
+    {
+      "id": "controlled-lab-seq-01-f023",
+      "tsMs": 759,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 59.18683976925376,
+          "y": 54.91945264098702
+        },
+        "topRight": {
+          "x": 404.8888681871447,
+          "y": 50.09608190938044
+        },
+        "bottomRight": {
+          "x": 406.0378539781992,
+          "y": 602.9194526409871
+        },
+        "bottomLeft": {
+          "x": 58.037853978199216,
+          "y": 607.7428233725936
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 65.28328025530007,
+              "y": 52.342376225753426
+            },
+            "topRight": {
+              "x": 395.6576793439731,
+              "y": 51.6694610641431
+            },
+            "bottomRight": {
+              "x": 402.03646643914163,
+              "y": 584.5172410199535
+            },
+            "bottomLeft": {
+              "x": 58.90449316013155,
+              "y": 585.1901561815639
+            }
+          },
+          "score": 0.3797,
+          "metrics": {
+            "borderPenalty": 0.1071,
+            "edgeStrength": 0.7928
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 63.98914780747771,
+              "y": 85.66609517506012
+            },
+            "topRight": {
+              "x": 356.4691478074777,
+              "y": 77.66609517506012
+            },
+            "bottomRight": {
+              "x": 342.4691478074777,
+              "y": 480.2260951750601
+            },
+            "bottomLeft": {
+              "x": 77.9891478074777,
+              "y": 488.2260951750601
+            }
+          },
+          "score": 0.2379,
+          "metrics": {
+            "borderPenalty": 0.2294,
+            "edgeStrength": 0.6952
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 63.56728277984267,
+            "y": 55.29279865964756
+          },
+          "topRight": {
+            "x": 403.64406694158015,
+            "y": 54.84418855190734
+          },
+          "bottomRight": {
+            "x": 406.8334604891644,
+            "y": 606.7049833798642
+          },
+          "bottomLeft": {
+            "x": 60.37788923225841,
+            "y": 607.1535934876044
+          }
+        },
+        "score": 0.5388,
+        "metrics": {
+          "borderPenalty": 0.0982,
+          "edgeStrength": 0.6174
+        }
+      },
+      "quality": {
+        "brightness": 161.43,
+        "blur": 22.06,
+        "glare": 0.0349
+      },
+      "detectionMs": 20.9
+    },
+    {
+      "id": "controlled-lab-seq-01-f024",
+      "tsMs": 792,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 60.287459179643,
+          "y": 55.38542551654555
+        },
+        "topRight": {
+          "x": 403.7585655143269,
+          "y": 50.43546303354333
+        },
+        "bottomRight": {
+          "x": 406.02301234698496,
+          "y": 603.3854255165455
+        },
+        "bottomLeft": {
+          "x": 58.023012346984956,
+          "y": 608.3353879995477
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 61.178385818973524,
+              "y": 52.00156383810792
+            },
+            "topRight": {
+              "x": 393.24592242148634,
+              "y": 52.5265577387446
+            },
+            "bottomRight": {
+              "x": 400.8139473745656,
+              "y": 588.6807929480399
+            },
+            "bottomLeft": {
+              "x": 53.61036086589424,
+              "y": 588.1557990474032
+            }
+          },
+          "score": 0.4225,
+          "metrics": {
+            "borderPenalty": 0.0453,
+            "edgeStrength": 0.7643
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 72.12224996798956,
+              "y": 92.87707917464985
+            },
+            "topRight": {
+              "x": 364.60224996798956,
+              "y": 84.87707917464985
+            },
+            "bottomRight": {
+              "x": 350.60224996798956,
+              "y": 487.43707917464985
+            },
+            "bottomLeft": {
+              "x": 86.12224996798956,
+              "y": 495.43707917464985
+            }
+          },
+          "score": 0.3135,
+          "metrics": {
+            "borderPenalty": 0.1783,
+            "edgeStrength": 0.6383
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 62.0058094665367,
+            "y": 55.38928706129863
+          },
+          "topRight": {
+            "x": 401.5124921465462,
+            "y": 55.73928299505641
+          },
+          "bottomRight": {
+            "x": 405.29650462308587,
+            "y": 598.2746504468203
+          },
+          "bottomLeft": {
+            "x": 58.22179698999705,
+            "y": 597.9246545130625
+          }
+        },
+        "score": 0.5587,
+        "metrics": {
+          "borderPenalty": 0.0812,
+          "edgeStrength": 0.5735
+        }
+      },
+      "quality": {
+        "brightness": 144.54,
+        "blur": 19.98,
+        "glare": 0.0538
+      },
+      "detectionMs": 25.15
+    },
+    {
+      "id": "controlled-lab-seq-01-f025",
+      "tsMs": 825,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 61.58022756604917,
+          "y": 55.923857498461516
+        },
+        "topRight": {
+          "x": 402.91268113799316,
+          "y": 50.92454577305308
+        },
+        "bottomRight": {
+          "x": 406.24645435202115,
+          "y": 603.9238574984615
+        },
+        "bottomLeft": {
+          "x": 58.24645435202117,
+          "y": 608.92316922387
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 67.98687366310766,
+              "y": 54.80510611149942
+            },
+            "topRight": {
+              "x": 394.70383296333245,
+              "y": 56.507079224278776
+            },
+            "bottomRight": {
+              "x": 403.25135903572084,
+              "y": 599.7628430339129
+            },
+            "bottomLeft": {
+              "x": 59.439347590719265,
+              "y": 598.0608699211335
+            }
+          },
+          "score": 0.6173,
+          "metrics": {
+            "borderPenalty": 0.0795,
+            "edgeStrength": 0.7802
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 83.40827446357119,
+              "y": 95.95596558357161
+            },
+            "topRight": {
+              "x": 375.8882744635712,
+              "y": 87.95596558357161
+            },
+            "bottomRight": {
+              "x": 361.8882744635712,
+              "y": 490.51596558357164
+            },
+            "bottomLeft": {
+              "x": 97.40827446357119,
+              "y": 498.51596558357164
+            }
+          },
+          "score": 0.5324,
+          "metrics": {
+            "borderPenalty": 0.3268,
+            "edgeStrength": 0.5795
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 63.63258229331807,
+            "y": 55.60063371632967
+          },
+          "topRight": {
+            "x": 400.2881013100427,
+            "y": 56.735282458182574
+          },
+          "bottomRight": {
+            "x": 404.5618643462369,
+            "y": 610.5825785947846
+          },
+          "bottomLeft": {
+            "x": 59.358819257123876,
+            "y": 609.4479298529318
+          }
+        },
+        "score": 0.5784,
+        "metrics": {
+          "borderPenalty": 0.0385,
+          "edgeStrength": 0.767
+        }
+      },
+      "quality": {
+        "brightness": 144,
+        "blur": 18.11,
+        "glare": 0.0572
+      },
+      "detectionMs": 15.29
+    },
+    {
+      "id": "controlled-lab-seq-01-f026",
+      "tsMs": 858,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 63.03445110215432,
+          "y": 56.519826732149845
+        },
+        "topRight": {
+          "x": 402.36409302920384,
+          "y": 51.549178351747116
+        },
+        "bottomRight": {
+          "x": 406.6992720656791,
+          "y": 604.5198267321498
+        },
+        "bottomLeft": {
+          "x": 58.69927206567908,
+          "y": 609.4904751125525
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 66.79029543421181,
+              "y": 55.855409787666474
+            },
+            "topRight": {
+              "x": 393.9880468391782,
+              "y": 58.666509815468736
+            },
+            "bottomRight": {
+              "x": 403.2781918518858,
+              "y": 588.8152960615134
+            },
+            "bottomLeft": {
+              "x": 57.500150421504195,
+              "y": 586.0041960337112
+            }
+          },
+          "score": 0.6372,
+          "metrics": {
+            "borderPenalty": 0.0533,
+            "edgeStrength": 0.6604
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 95.08400888383937,
+              "y": 94.14893562900392
+            },
+            "topRight": {
+              "x": 387.5640088838394,
+              "y": 86.14893562900392
+            },
+            "bottomRight": {
+              "x": 373.5640088838394,
+              "y": 488.7089356290039
+            },
+            "bottomLeft": {
+              "x": 109.08400888383937,
+              "y": 496.7089356290039
+            }
+          },
+          "score": 0.5102,
+          "metrics": {
+            "borderPenalty": 0.2018,
+            "edgeStrength": 0.6292
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 63.66819880076825,
+            "y": 54.84683382555517
+          },
+          "topRight": {
+            "x": 401.98090601495335,
+            "y": 56.72090051075668
+          },
+          "bottomRight": {
+            "x": 406.62597852130716,
+            "y": 605.752366031014
+          },
+          "bottomLeft": {
+            "x": 59.02312629441444,
+            "y": 603.8782993458126
+          }
+        },
+        "score": 0.5969,
+        "metrics": {
+          "borderPenalty": 0.0778,
+          "edgeStrength": 0.6432
+        }
+      },
+      "quality": {
+        "brightness": 120.46,
+        "blur": 54.18,
+        "glare": 0.0409
+      },
+      "detectionMs": 20.62
+    },
+    {
+      "id": "controlled-lab-seq-01-f027",
+      "tsMs": 891,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 64.61167525406283,
+          "y": 57.15681680227688
+        },
+        "topRight": {
+          "x": 402.11515089526534,
+          "y": 52.29239707237964
+        },
+        "bottomRight": {
+          "x": 407.3634130746641,
+          "y": 605.1568168022769
+        },
+        "bottomLeft": {
+          "x": 59.36341307466408,
+          "y": 610.0212365321742
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 68.74579910966362,
+              "y": 55.46177780374907
+            },
+            "topRight": {
+              "x": 392.24749672433666,
+              "y": 59.26993505940488
+            },
+            "bottomRight": {
+              "x": 402.02279790098765,
+              "y": 604.5549024130066
+            },
+            "bottomLeft": {
+              "x": 58.97049793301265,
+              "y": 600.7467451573508
+            }
+          },
+          "score": 0.656,
+          "metrics": {
+            "borderPenalty": 0.1397,
+            "edgeStrength": 0.703
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 104.2908262372389,
+              "y": 87.89841326619784
+            },
+            "topRight": {
+              "x": 396.7708262372389,
+              "y": 79.89841326619784
+            },
+            "bottomRight": {
+              "x": 382.7708262372389,
+              "y": 482.45841326619785
+            },
+            "bottomLeft": {
+              "x": 118.2908262372389,
+              "y": 490.45841326619785
+            }
+          },
+          "score": 0.5166,
+          "metrics": {
+            "borderPenalty": 0.3552,
+            "edgeStrength": 0.3042
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 64.10724544382532,
+            "y": 56.133037791902595
+          },
+          "topRight": {
+            "x": 400.156475496553,
+            "y": 58.671809295673135
+          },
+          "bottomRight": {
+            "x": 405.0441260848785,
+            "y": 612.692138118567
+          },
+          "bottomLeft": {
+            "x": 59.219594855499835,
+            "y": 610.1533666147964
+          }
+        },
+        "score": 0.6135,
+        "metrics": {
+          "borderPenalty": 0.0208,
+          "edgeStrength": 0.7717
+        }
+      },
+      "quality": {
+        "brightness": 109.34,
+        "blur": 50.36,
+        "glare": 0.053
+      },
+      "detectionMs": 12.17
+    },
+    {
+      "id": "controlled-lab-seq-01-f028",
+      "tsMs": 924,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 66.2668201352295,
+          "y": 57.81717446104568
+        },
+        "topRight": {
+          "x": 402.15798021030264,
+          "y": 53.1348910245917
+        },
+        "bottomRight": {
+          "x": 408.2124001727661,
+          "y": 605.8171744610456
+        },
+        "bottomLeft": {
+          "x": 60.21240017276607,
+          "y": 610.4994578974996
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.08855829690798,
+              "y": 55.179131750298
+            },
+            "topRight": {
+              "x": 402.36918549364344,
+              "y": 59.832527021359496
+            },
+            "bottomRight": {
+              "x": 412.3587346646227,
+              "y": 597.5612459168071
+            },
+            "bottomLeft": {
+              "x": 61.09900912592869,
+              "y": 592.9078506457456
+            }
+          },
+          "score": 0.6726,
+          "metrics": {
+            "borderPenalty": 0.0814,
+            "edgeStrength": 0.8006
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 108.77457653667689,
+              "y": 78.73474436415667
+            },
+            "topRight": {
+              "x": 401.2545765366769,
+              "y": 70.73474436415667
+            },
+            "bottomRight": {
+              "x": 387.2545765366769,
+              "y": 473.29474436415666
+            },
+            "bottomLeft": {
+              "x": 122.77457653667689,
+              "y": 481.29474436415666
+            }
+          },
+          "score": 0.5837,
+          "metrics": {
+            "borderPenalty": 0.2983,
+            "edgeStrength": 0.6253
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 67.39741710078407,
+            "y": 57.447347526421815
+          },
+          "topRight": {
+            "x": 404.2284151186094,
+            "y": 60.549611040462814
+          },
+          "bottomRight": {
+            "x": 409.22318970409907,
+            "y": 605.3282108517109
+          },
+          "bottomLeft": {
+            "x": 62.402642515294424,
+            "y": 602.2259473376699
+          }
+        },
+        "score": 0.6276,
+        "metrics": {
+          "borderPenalty": 0.0289,
+          "edgeStrength": 0.6077
+        }
+      },
+      "quality": {
+        "brightness": 167.37,
+        "blur": 48.04,
+        "glare": 0.0579
+      },
+      "detectionMs": 17.97
+    },
+    {
+      "id": "controlled-lab-seq-01-f029",
+      "tsMs": 957,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 67.9496150704367,
+          "y": 58.48259886212982
+        },
+        "topRight": {
+          "x": 402.4751587765982,
+          "y": 54.05551718611472
+        },
+        "bottomRight": {
+          "x": 409.21238692351744,
+          "y": 606.4825988621299
+        },
+        "bottomLeft": {
+          "x": 61.21238692351746,
+          "y": 610.9096805381449
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.31542842927776,
+              "y": 56.403566978462486
+            },
+            "topRight": {
+              "x": 402.74606567561193,
+              "y": 61.7166840801104
+            },
+            "bottomRight": {
+              "x": 412.6730171016135,
+              "y": 596.0675970500496
+            },
+            "bottomLeft": {
+              "x": 61.38847700327623,
+              "y": 590.7544799484017
+            }
+          },
+          "score": 0.6858,
+          "metrics": {
+            "borderPenalty": 0.1056,
+            "edgeStrength": 0.7476
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 107.4374813325924,
+              "y": 68.9015146642259
+            },
+            "topRight": {
+              "x": 399.9174813325924,
+              "y": 60.9015146642259
+            },
+            "bottomRight": {
+              "x": 385.9174813325924,
+              "y": 463.4615146642259
+            },
+            "bottomLeft": {
+              "x": 121.4374813325924,
+              "y": 471.4615146642259
+            }
+          },
+          "score": 0.5659,
+          "metrics": {
+            "borderPenalty": 0.3181,
+            "edgeStrength": 0.4449
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 67.85212484573408,
+            "y": 57.793490583486346
+          },
+          "topRight": {
+            "x": 405.0998399470463,
+            "y": 61.33556865125162
+          },
+          "bottomRight": {
+            "x": 410.06331566004707,
+            "y": 606.9082952568504
+          },
+          "bottomLeft": {
+            "x": 62.88864913273331,
+            "y": 603.3662171890851
+          }
+        },
+        "score": 0.6386,
+        "metrics": {
+          "borderPenalty": 0.0214,
+          "edgeStrength": 0.7558
+        }
+      },
+      "quality": {
+        "brightness": 193.6,
+        "blur": 52.13,
+        "glare": 0.0599
+      },
+      "detectionMs": 15.54
+    },
+    {
+      "id": "controlled-lab-seq-01-f030",
+      "tsMs": 990,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 69.6062825652927,
+          "y": 59.13464874185291
+        },
+        "topRight": {
+          "x": 403.0407314563202,
+          "y": 55.031851955155105
+        },
+        "bottomRight": {
+          "x": 410.32350701080645,
+          "y": 607.1346487418529
+        },
+        "bottomLeft": {
+          "x": 62.323507010806445,
+          "y": 611.2374455285507
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 76.43912206865662,
+              "y": 58.258859057794126
+            },
+            "topRight": {
+              "x": 405.62718011052857,
+              "y": 64.01988077769633
+            },
+            "bottomRight": {
+              "x": 415.21642285715996,
+              "y": 606.4399109763204
+            },
+            "bottomLeft": {
+              "x": 66.84987932202523,
+              "y": 600.6788892564183
+            }
+          },
+          "score": 0.695,
+          "metrics": {
+            "borderPenalty": 0.0734,
+            "edgeStrength": 0.7732
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 100.60690816377081,
+              "y": 60.80624174282357
+            },
+            "topRight": {
+              "x": 393.08690816377083,
+              "y": 52.80624174282357
+            },
+            "bottomRight": {
+              "x": 379.08690816377083,
+              "y": 455.3662417428236
+            },
+            "bottomLeft": {
+              "x": 114.60690816377081,
+              "y": 463.3662417428236
+            }
+          },
+          "score": 0.6104,
+          "metrics": {
+            "borderPenalty": 0.1855,
+            "edgeStrength": 0.477
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 65.54016905077921,
+            "y": 58.20696126238723
+          },
+          "topRight": {
+            "x": 403.6513983969522,
+            "y": 62.04764240898869
+          },
+          "bottomRight": {
+            "x": 408.44601977026787,
+            "y": 606.5671310786826
+          },
+          "bottomLeft": {
+            "x": 60.74554767746352,
+            "y": 602.7264499320811
+          }
+        },
+        "score": 0.646,
+        "metrics": {
+          "borderPenalty": 0.026,
+          "edgeStrength": 0.7717
+        }
+      },
+      "quality": {
+        "brightness": 182.28,
+        "blur": 51.53,
+        "glare": 0.0502
+      },
+      "detectionMs": 18.51
+    },
+    {
+      "id": "controlled-lab-seq-01-f031",
+      "tsMs": 1023,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 71.18141106954968,
+          "y": 59.75525349182944
+        },
+        "topRight": {
+          "x": 403.8215160966404,
+          "y": 56.04076436608945
+        },
+        "bottomRight": {
+          "x": 411.501463583095,
+          "y": 607.7552534918294
+        },
+        "bottomLeft": {
+          "x": 63.501463583095024,
+          "y": 611.4697426175694
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 67.60873717530576,
+              "y": 56.84682014676539
+            },
+            "topRight": {
+              "x": 392.7946614977847,
+              "y": 62.82607272890469
+            },
+            "bottomRight": {
+              "x": 401.780443732592,
+              "y": 612.2819580296784
+            },
+            "bottomLeft": {
+              "x": 58.62295494049846,
+              "y": 606.3027054475391
+            }
+          },
+          "score": 0.6996,
+          "metrics": {
+            "borderPenalty": 0.0672,
+            "edgeStrength": 0.7926
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 89.95521956650711,
+              "y": 56.43093074362231
+            },
+            "topRight": {
+              "x": 382.43521956650716,
+              "y": 48.43093074362231
+            },
+            "bottomRight": {
+              "x": 368.43521956650716,
+              "y": 450.9909307436223
+            },
+            "bottomLeft": {
+              "x": 103.95521956650711,
+              "y": 458.9909307436223
+            }
+          },
+          "score": 0.6181,
+          "metrics": {
+            "borderPenalty": 0.1196,
+            "edgeStrength": 0.3421
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 70.61734110607811,
+            "y": 61.12115618895834
+          },
+          "topRight": {
+            "x": 410.9151692740261,
+            "y": 65.1073245770512
+          },
+          "bottomRight": {
+            "x": 415.40806039142973,
+            "y": 608.8421817019453
+          },
+          "bottomLeft": {
+            "x": 66.12444998867447,
+            "y": 604.8560133138524
+          }
+        },
+        "score": 0.6497,
+        "metrics": {
+          "borderPenalty": 0.0367,
+          "edgeStrength": 0.7465
+        }
+      },
+      "quality": {
+        "brightness": 109.57,
+        "blur": 63.15,
+        "glare": 0.0326
+      },
+      "detectionMs": 18.86
+    },
+    {
+      "id": "controlled-lab-seq-01-f032",
+      "tsMs": 1056,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 72.61994739786964,
+          "y": 60.32721395943668
+        },
+        "topRight": {
+          "x": 404.77864306033626,
+          "y": 57.058995855118624
+        },
+        "bottomRight": {
+          "x": 412.699295229103,
+          "y": 608.3272139594367
+        },
+        "bottomLeft": {
+          "x": 64.69929522910296,
+          "y": 611.5954320637547
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 69.75845114742233,
+              "y": 59.231067072337765
+            },
+            "topRight": {
+              "x": 405.7442986873383,
+              "y": 65.19017658488693
+            },
+            "bottomRight": {
+              "x": 413.8775926030141,
+              "y": 601.1752604809745
+            },
+            "bottomLeft": {
+              "x": 61.62515723174654,
+              "y": 595.2161509684254
+            }
+          },
+          "score": 0.6991,
+          "metrics": {
+            "borderPenalty": 0.1044,
+            "edgeStrength": 0.6455
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 78.09032040003844,
+              "y": 56.84681039353231
+            },
+            "topRight": {
+              "x": 370.57032040003844,
+              "y": 48.84681039353231
+            },
+            "bottomRight": {
+              "x": 356.57032040003844,
+              "y": 451.4068103935323
+            },
+            "bottomLeft": {
+              "x": 92.09032040003844,
+              "y": 459.4068103935323
+            }
+          },
+          "score": 0.5602,
+          "metrics": {
+            "borderPenalty": 0.2499,
+            "edgeStrength": 0.6546
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 71.6160585803274,
+            "y": 62.282115750263685
+          },
+          "topRight": {
+            "x": 411.2153935590048,
+            "y": 66.25485542529645
+          },
+          "bottomRight": {
+            "x": 415.2820405168427,
+            "y": 617.6009439488223
+          },
+          "bottomLeft": {
+            "x": 67.5494116224895,
+            "y": 613.6282042737895
+          }
+        },
+        "score": 0.6493,
+        "metrics": {
+          "borderPenalty": 0.0993,
+          "edgeStrength": 0.7406
+        }
+      },
+      "quality": {
+        "brightness": 140.41,
+        "blur": 54.32,
+        "glare": 0.0481
+      },
+      "detectionMs": 20.54
+    },
+    {
+      "id": "controlled-lab-seq-01-f033",
+      "tsMs": 1089,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 73.86923379068662,
+          "y": 60.834679097165036
+        },
+        "topRight": {
+          "x": 405.8692625714739,
+          "y": 58.063731464702954
+        },
+        "bottomRight": {
+          "x": 413.86924818108025,
+          "y": 608.834679097165
+        },
+        "bottomLeft": {
+          "x": 65.86924818108027,
+          "y": 611.6056267296271
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 68.33120423143325,
+              "y": 58.082851735917785
+            },
+            "topRight": {
+              "x": 397.406097883225,
+              "y": 63.78424728766896
+            },
+            "bottomRight": {
+              "x": 404.46150113892895,
+              "y": 608.5825837255172
+            },
+            "bottomLeft": {
+              "x": 61.27580097572933,
+              "y": 602.8811881737661
+            }
+          },
+          "score": 0.6938,
+          "metrics": {
+            "borderPenalty": 0.1031,
+            "edgeStrength": 0.6792
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 67.91715178314105,
+              "y": 61.95205884994573
+            },
+            "topRight": {
+              "x": 360.39715178314106,
+              "y": 53.95205884994573
+            },
+            "bottomRight": {
+              "x": 346.39715178314106,
+              "y": 456.51205884994573
+            },
+            "bottomLeft": {
+              "x": 81.91715178314105,
+              "y": 464.51205884994573
+            }
+          },
+          "score": 0.5859,
+          "metrics": {
+            "borderPenalty": 0.3305,
+            "edgeStrength": 0.3807
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 71.47993491274804,
+            "y": 63.62999464719591
+          },
+          "topRight": {
+            "x": 410.81323123061924,
+            "y": 67.43092501503003
+          },
+          "bottomRight": {
+            "x": 414.3409328584712,
+            "y": 613.4563546765395
+          },
+          "bottomLeft": {
+            "x": 67.95223328489608,
+            "y": 609.6554243087054
+          }
+        },
+        "score": 0.645,
+        "metrics": {
+          "borderPenalty": 0.0457,
+          "edgeStrength": 0.7687
+        }
+      },
+      "quality": {
+        "brightness": 191.32,
+        "blur": 46.12,
+        "glare": 0.0381
+      },
+      "detectionMs": 19.39
+    },
+    {
+      "id": "controlled-lab-seq-01-f034",
+      "tsMs": 1122,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 74.88101161760589,
+          "y": 61.26358525120773
+        },
+        "topRight": {
+          "x": 407.04834859605745,
+          "y": 59.03314780163876
+        },
+        "bottomRight": {
+          "x": 414.9646801068317,
+          "y": 609.2635852512077
+        },
+        "bottomLeft": {
+          "x": 66.96468010683165,
+          "y": 611.4940227007767
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 77.01910419502528,
+              "y": 61.31564322865075
+            },
+            "topRight": {
+              "x": 411.97073742480364,
+              "y": 66.5320281707497
+            },
+            "bottomRight": {
+              "x": 417.75271984224673,
+              "y": 603.4315464613996
+            },
+            "bottomLeft": {
+              "x": 71.23712177758219,
+              "y": 598.2151615193008
+            }
+          },
+          "score": 0.6839,
+          "metrics": {
+            "borderPenalty": 0.1303,
+            "edgeStrength": 0.7783
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 61.92646019489064,
+              "y": 70.49673323896806
+            },
+            "topRight": {
+              "x": 354.40646019489066,
+              "y": 62.49673323896806
+            },
+            "bottomRight": {
+              "x": 340.40646019489066,
+              "y": 465.05673323896804
+            },
+            "bottomLeft": {
+              "x": 75.92646019489064,
+              "y": 473.05673323896804
+            }
+          },
+          "score": 0.5567,
+          "metrics": {
+            "borderPenalty": 0.331,
+            "edgeStrength": 0.5207
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 69.89171576611893,
+            "y": 61.21854874455729
+          },
+          "topRight": {
+            "x": 414.9709365298438,
+            "y": 64.69613870595659
+          },
+          "bottomRight": {
+            "x": 417.8619277385654,
+            "y": 610.8454779160664
+          },
+          "bottomLeft": {
+            "x": 67.00072455739739,
+            "y": 607.3678879546671
+          }
+        },
+        "score": 0.6369,
+        "metrics": {
+          "borderPenalty": 0.0452,
+          "edgeStrength": 0.6358
+        }
+      },
+      "quality": {
+        "brightness": 147.25,
+        "blur": 53.23,
+        "glare": 0.0568
+      },
+      "detectionMs": 15.26
+    },
+    {
+      "id": "controlled-lab-seq-01-f035",
+      "tsMs": 1155,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 75.61331378961783,
+          "y": 61.602045915049146
+        },
+        "topRight": {
+          "x": 408.2705253950076,
+          "y": 59.94692387878471
+        },
+        "bottomRight": {
+          "x": 415.94191959231273,
+          "y": 609.6020459150492
+        },
+        "bottomLeft": {
+          "x": 67.94191959231273,
+          "y": 611.2571679513136
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 72.82984586628392,
+              "y": 59.14400746691593
+            },
+            "topRight": {
+              "x": 408.80170846667977,
+              "y": 63.66742099297576
+            },
+            "bottomRight": {
+              "x": 413.1500308629305,
+              "y": 614.2331092207983
+            },
+            "bottomLeft": {
+              "x": 68.48152347003315,
+              "y": 609.7096956947385
+            }
+          },
+          "score": 0.67,
+          "metrics": {
+            "borderPenalty": 0.1049,
+            "edgeStrength": 0.6628
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 61.58497586876422,
+              "y": 80.38879926422919
+            },
+            "topRight": {
+              "x": 354.06497586876424,
+              "y": 72.38879926422919
+            },
+            "bottomRight": {
+              "x": 340.06497586876424,
+              "y": 474.9487992642292
+            },
+            "bottomLeft": {
+              "x": 75.58497586876422,
+              "y": 482.9487992642292
+            }
+          },
+          "score": 0.5463,
+          "metrics": {
+            "borderPenalty": 0.314,
+            "edgeStrength": 0.4189
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 69.39014897466599,
+            "y": 61.90285784037625
+          },
+          "topRight": {
+            "x": 415.1922817750372,
+            "y": 64.91846685774946
+          },
+          "bottomRight": {
+            "x": 417.3664429731626,
+            "y": 612.4170167725441
+          },
+          "bottomLeft": {
+            "x": 67.2159877765406,
+            "y": 609.4014077551709
+          }
+        },
+        "score": 0.6254,
+        "metrics": {
+          "borderPenalty": 0.09,
+          "edgeStrength": 0.5921
+        }
+      },
+      "quality": {
+        "brightness": 173.65,
+        "blur": 58.75,
+        "glare": 0.0321
+      },
+      "detectionMs": 18.21
+    },
+    {
+      "id": "controlled-lab-seq-01-f036",
+      "tsMs": 1188,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 76.03217107753231,
+          "y": 61.84068114660146
+        },
+        "topRight": {
+          "x": 409.49184328865755,
+          "y": 60.786702149447564
+        },
+        "bottomRight": {
+          "x": 416.7620071830949,
+          "y": 609.8406811466015
+        },
+        "bottomLeft": {
+          "x": 68.76200718309492,
+          "y": 610.8946601437553
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 75.46641711861122,
+              "y": 58.563476885021096
+            },
+            "topRight": {
+              "x": 413.0113701413385,
+              "y": 62.213584772214624
+            },
+            "bottomRight": {
+              "x": 415.80552512332775,
+              "y": 592.9669849722973
+            },
+            "bottomLeft": {
+              "x": 72.67226213662195,
+              "y": 589.3168770851038
+            }
+          },
+          "score": 0.653,
+          "metrics": {
+            "borderPenalty": 0.0569,
+            "edgeStrength": 0.665
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 66.97630607747978,
+              "y": 89.20633416488161
+            },
+            "topRight": {
+              "x": 359.4563060774798,
+              "y": 81.20633416488161
+            },
+            "bottomRight": {
+              "x": 345.4563060774798,
+              "y": 483.76633416488164
+            },
+            "bottomLeft": {
+              "x": 80.97630607747978,
+              "y": 491.76633416488164
+            }
+          },
+          "score": 0.563,
+          "metrics": {
+            "borderPenalty": 0.1783,
+            "edgeStrength": 0.3523
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 70.54668313621947,
+            "y": 64.24380473821869
+          },
+          "topRight": {
+            "x": 418.082574098748,
+            "y": 66.6772099963477
+          },
+          "bottomRight": {
+            "x": 419.4796515897426,
+            "y": 622.9916578990421
+          },
+          "bottomLeft": {
+            "x": 69.14960564522484,
+            "y": 620.5582526409131
+          }
+        },
+        "score": 0.6108,
+        "metrics": {
+          "borderPenalty": 0.0479,
+          "edgeStrength": 0.5916
+        }
+      },
+      "quality": {
+        "brightness": 171.16,
+        "blur": 49.32,
+        "glare": 0.0457
+      },
+      "detectionMs": 16.14
+    },
+    {
+      "id": "controlled-lab-seq-01-f037",
+      "tsMs": 1221,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 76.11306363423331,
+          "y": 61.97287751957559
+        },
+        "topRight": {
+          "x": 410.67143351550624,
+          "y": 61.536488551270416
+        },
+        "bottomRight": {
+          "x": 417.39224857486977,
+          "y": 609.9728775195756
+        },
+        "bottomLeft": {
+          "x": 69.39224857486977,
+          "y": 610.4092664878808
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 66.02158365579628,
+              "y": 65.23963795358272
+            },
+            "topRight": {
+              "x": 406.42028000608127,
+              "y": 67.87092191902906
+            },
+            "bottomRight": {
+              "x": 407.5828316566836,
+              "y": 598.8023318316203
+            },
+            "bottomLeft": {
+              "x": 64.85903200519398,
+              "y": 596.171047866174
+            }
+          },
+          "score": 0.6339,
+          "metrics": {
+            "borderPenalty": 0.0792,
+            "edgeStrength": 0.6778
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 76.78046515672929,
+              "y": 94.79049787496513
+            },
+            "topRight": {
+              "x": 369.2604651567293,
+              "y": 86.79049787496513
+            },
+            "bottomRight": {
+              "x": 355.2604651567293,
+              "y": 489.35049787496513
+            },
+            "bottomLeft": {
+              "x": 90.78046515672929,
+              "y": 497.35049787496513
+            }
+          },
+          "score": 0.5321,
+          "metrics": {
+            "borderPenalty": 0.3418,
+            "edgeStrength": 0.5995
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 69.75057162536541,
+            "y": 62.96063146187343
+          },
+          "topRight": {
+            "x": 414.3221457403845,
+            "y": 64.714820772171
+          },
+          "bottomRight": {
+            "x": 414.9034215656856,
+            "y": 611.8084201346662
+          },
+          "bottomLeft": {
+            "x": 69.16929580006426,
+            "y": 610.0542308243687
+          }
+        },
+        "score": 0.5939,
+        "metrics": {
+          "borderPenalty": 0.0346,
+          "edgeStrength": 0.6696
+        }
+      },
+      "quality": {
+        "brightness": 162.4,
+        "blur": 59.68,
+        "glare": 0.0377
+      },
+      "detectionMs": 18.68
+    },
+    {
+      "id": "controlled-lab-seq-01-f038",
+      "tsMs": 1254,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 75.84205787128623,
+          "y": 61.99497140491448
+        },
+        "topRight": {
+          "x": 411.7729781930916,
+          "y": 62.18298216935436
+        },
+        "bottomRight": {
+          "x": 417.8075180321889,
+          "y": 609.9949714049145
+        },
+        "bottomLeft": {
+          "x": 69.80751803218892,
+          "y": 609.8069606404746
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 73.49036186750305,
+              "y": 63.55706695406971
+            },
+            "topRight": {
+              "x": 418.5688557606956,
+              "y": 65.06462600956324
+            },
+            "bottomRight": {
+              "x": 418.06758566187386,
+              "y": 599.7274970923
+            },
+            "bottomLeft": {
+              "x": 73.99163196632477,
+              "y": 598.2199380368065
+            }
+          },
+          "score": 0.614,
+          "metrics": {
+            "borderPenalty": 0.0463,
+            "edgeStrength": 0.8102
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 88.59705303191086,
+              "y": 95.77409236373339
+            },
+            "topRight": {
+              "x": 381.07705303191085,
+              "y": 87.77409236373339
+            },
+            "bottomRight": {
+              "x": 367.07705303191085,
+              "y": 490.33409236373336
+            },
+            "bottomLeft": {
+              "x": 102.59705303191086,
+              "y": 498.33409236373336
+            }
+          },
+          "score": 0.4659,
+          "metrics": {
+            "borderPenalty": 0.2201,
+            "edgeStrength": 0.5456
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 69.55889090088151,
+            "y": 61.56163891807911
+          },
+          "topRight": {
+            "x": 417.6266939602022,
+            "y": 62.566678288408134
+          },
+          "bottomRight": {
+            "x": 417.37605891079136,
+            "y": 617.3833548034049
+          },
+          "bottomLeft": {
+            "x": 69.80952595029237,
+            "y": 616.378315433076
+          }
+        },
+        "score": 0.5751,
+        "metrics": {
+          "borderPenalty": 0.0215,
+          "edgeStrength": 0.6058
+        }
+      },
+      "quality": {
+        "brightness": 100.15,
+        "blur": 55.33,
+        "glare": 0.0304
+      },
+      "detectionMs": 12.09
+    },
+    {
+      "id": "controlled-lab-seq-01-f039",
+      "tsMs": 1287,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 75.21658011974787,
+          "y": 61.90635050291209
+        },
+        "topRight": {
+          "x": 412.7659400247474,
+          "y": 62.71582715499977
+        },
+        "bottomRight": {
+          "x": 417.99126007224766,
+          "y": 609.9063505029121
+        },
+        "bottomLeft": {
+          "x": 69.99126007224763,
+          "y": 609.0968738508244
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 71.78041819044395,
+              "y": 63.35204283437849
+            },
+            "topRight": {
+              "x": 418.7844818577796,
+              "y": 63.67577535775438
+            },
+            "bottomRight": {
+              "x": 416.63328197690146,
+              "y": 621.3197378347754
+            },
+            "bottomLeft": {
+              "x": 73.9316180713221,
+              "y": 620.9960053113995
+            }
+          },
+          "score": 0.5944,
+          "metrics": {
+            "borderPenalty": 0.0444,
+            "edgeStrength": 0.6773
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 99.53295687327042,
+              "y": 91.91629939627887
+            },
+            "topRight": {
+              "x": 392.01295687327047,
+              "y": 83.91629939627887
+            },
+            "bottomRight": {
+              "x": 378.01295687327047,
+              "y": 486.4762993962789
+            },
+            "bottomLeft": {
+              "x": 113.53295687327042,
+              "y": 494.4762993962789
+            }
+          },
+          "score": 0.4713,
+          "metrics": {
+            "borderPenalty": 0.2539,
+            "edgeStrength": 0.6164
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 66.107607829318,
+            "y": 60.00411139223403
+          },
+          "topRight": {
+            "x": 417.2267090293949,
+            "y": 60.21993307448463
+          },
+          "bottomRight": {
+            "x": 416.1511090889558,
+            "y": 616.4045946673466
+          },
+          "bottomLeft": {
+            "x": 67.18320776975708,
+            "y": 616.188772985096
+          }
+        },
+        "score": 0.5554,
+        "metrics": {
+          "borderPenalty": 0.048,
+          "edgeStrength": 0.6977
+        }
+      },
+      "quality": {
+        "brightness": 86.79,
+        "blur": 61.45,
+        "glare": 0.0537
+      },
+      "detectionMs": 14.71
+    },
+    {
+      "id": "controlled-lab-seq-01-f040",
+      "tsMs": 1320,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 74.24579178682954,
+          "y": 61.709470812203904
+        },
+        "topRight": {
+          "x": 413.62650717265103,
+          "y": 63.12778173952003
+        },
+        "bottomRight": {
+          "x": 417.93614947974027,
+          "y": 609.7094708122039
+        },
+        "bottomLeft": {
+          "x": 69.9361494797403,
+          "y": 608.2911598848877
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 66.58564883798485,
+              "y": 64.67738834415108
+            },
+            "topRight": {
+              "x": 425.3642118170856,
+              "y": 63.804388141299405
+            },
+            "bottomRight": {
+              "x": 421.6226995113734,
+              "y": 613.2815399980832
+            },
+            "bottomLeft": {
+              "x": 70.32716114369705,
+              "y": 614.1545402009349
+            }
+          },
+          "score": 0.5765,
+          "metrics": {
+            "borderPenalty": 0.0897,
+            "edgeStrength": 0.6722
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 106.91068601746306,
+              "y": 84.16164123626784
+            },
+            "topRight": {
+              "x": 399.39068601746305,
+              "y": 76.16164123626784
+            },
+            "bottomRight": {
+              "x": 385.39068601746305,
+              "y": 478.7216412362678
+            },
+            "bottomLeft": {
+              "x": 120.91068601746306,
+              "y": 486.7216412362678
+            }
+          },
+          "score": 0.4892,
+          "metrics": {
+            "borderPenalty": 0.3204,
+            "edgeStrength": 0.5319
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 70.19404425388721,
+            "y": 59.43012987138855
+          },
+          "topRight": {
+            "x": 422.49660765616255,
+            "y": 58.8481297361541
+          },
+          "bottomRight": {
+            "x": 420.6258515033065,
+            "y": 608.8165442711916
+          },
+          "bottomLeft": {
+            "x": 72.06480040674332,
+            "y": 609.398544406426
+          }
+        },
+        "score": 0.5354,
+        "metrics": {
+          "borderPenalty": 0.0307,
+          "edgeStrength": 0.6342
+        }
+      },
+      "quality": {
+        "brightness": 146.85,
+        "blur": 71.46,
+        "glare": 0.0554
+      },
+      "detectionMs": 13.43
+    },
+    {
+      "id": "controlled-lab-seq-01-f041",
+      "tsMs": 1353,
+      "hasDocument": true,
+      "groundTruth": {
+        "topLeft": {
+          "x": 72.95054549925575,
+          "y": 61.40978856535811
+        },
+        "topRight": {
+          "x": 414.33822118090154,
+          "y": 63.414801500248295
+        },
+        "bottomRight": {
+          "x": 417.64438334007866,
+          "y": 609.4097885653581
+        },
+        "bottomLeft": {
+          "x": 69.64438334007863,
+          "y": 607.404775630468
+        }
+      },
+      "cvCandidates": [
+        {
+          "quad": {
+            "topLeft": {
+              "x": 68.41845260189119,
+              "y": 57.794336524204795
+            },
+            "topRight": {
+              "x": 430.74104961180154,
+              "y": 55.759407358301786
+            },
+            "bottomRight": {
+              "x": 425.5129154205047,
+              "y": 604.2286924160379
+            },
+            "bottomLeft": {
+              "x": 73.64658679318798,
+              "y": 606.2636215819409
+            }
+          },
+          "score": 0.5612,
+          "metrics": {
+            "borderPenalty": 0.136,
+            "edgeStrength": 0.7355
+          }
+        },
+        {
+          "quad": {
+            "topLeft": {
+              "x": 108.92391506269118,
+              "y": 74.4087286544292
+            },
+            "topRight": {
+              "x": 401.4039150626912,
+              "y": 66.4087286544292
+            },
+            "bottomRight": {
+              "x": 387.4039150626912,
+              "y": 468.9687286544292
+            },
+            "bottomLeft": {
+              "x": 122.92391506269118,
+              "y": 476.9687286544292
+            }
+          },
+          "score": 0.4462,
+          "metrics": {
+            "borderPenalty": 0.328,
+            "edgeStrength": 0.3946
+          }
+        }
+      ],
+      "mlCandidate": {
+        "quad": {
+          "topLeft": {
+            "x": 67.45610946126972,
+            "y": 58.592028417693875
+          },
+          "topRight": {
+            "x": 417.8272815489926,
+            "y": 57.23540897375854
+          },
+          "bottomRight": {
+            "x": 415.21321445334416,
+            "y": 615.6772966745949
+          },
+          "bottomLeft": {
+            "x": 70.07017655691811,
+            "y": 617.0339161185302
+          }
+        },
+        "score": 0.5161,
+        "metrics": {
+          "borderPenalty": 0.0969,
+          "edgeStrength": 0.7467
+        }
+      },
+      "quality": {
+        "brightness": 126.84,
+        "blur": 49.99,
+        "glare": 0.034
+      },
+      "detectionMs": 13.41
+    }
+  ]
+}
