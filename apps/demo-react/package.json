@@ -1,0 +1,28 @@
+{
+  "name": "@docuscan/demo-react",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "e2e": "playwright test",
+    "phase0:bench": "playwright test e2e/phase0-bench.spec.ts --workers=1",
+    "bakeoff:bench": "playwright test e2e/bakeoff-bench.spec.ts --workers=1"
+  },
+  "dependencies": {
+    "@docuscan/core-engine": "workspace:*",
+    "@docuscan/runtime-web": "workspace:*",
+    "@docuscan/sdk-headless": "workspace:*",
+    "@docuscan/sdk-react": "workspace:*",
+    "@docuscan/warp-cpu": "workspace:*",
+    "@docuscan/warp-webgl": "workspace:*",
+    "@docuscan/worker-runtime": "workspace:*",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}
