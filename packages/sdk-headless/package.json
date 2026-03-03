@@ -1,0 +1,60 @@
+{
+  "name": "@docuscan/sdk-headless",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
+    },
+    "./webgl-warp": {
+      "types": "./dist/webgl-warp.d.ts",
+      "import": "./dist/webgl-warp.js",
+      "require": "./dist/webgl-warp.cjs"
+    },
+    "./enhance": {
+      "types": "./dist/enhance.d.ts",
+      "import": "./dist/enhance.js",
+      "require": "./dist/enhance.cjs"
+    },
+    "./hybrid-corner": {
+      "types": "./dist/hybrid-corner.d.ts",
+      "import": "./dist/hybrid-corner.js",
+      "require": "./dist/hybrid-corner.cjs"
+    },
+    "./ml-fallback": {
+      "types": "./dist/ml-fallback.d.ts",
+      "import": "./dist/ml-fallback.js",
+      "require": "./dist/ml-fallback.cjs"
+    },
+    "./ml-primary-v2-beta": {
+      "types": "./dist/ml-primary-v2-beta.d.ts",
+      "import": "./dist/ml-primary-v2-beta.js",
+      "require": "./dist/ml-primary-v2-beta.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts src/core.ts src/webgl-warp.ts src/enhance.ts src/hybrid-corner.ts src/ml-fallback.ts src/ml-primary-v2-beta.ts src/flavors.ts --format esm,cjs --dts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "@docuscan/runtime-web": "workspace:*"
+  }
+}
