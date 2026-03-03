@@ -3,11 +3,11 @@ import {
   defaultEngineConfig,
   mergeEngineConfig,
   type FrameProcessResult,
-} from '@docuscan/core-engine';
-import { detectCapabilities, selectExecutionMode, type Capabilities } from '@docuscan/runtime-web';
-import { warpPerspectiveCpu } from '@docuscan/warp-cpu';
-import { warpPerspectiveWebGL } from '@docuscan/warp-webgl';
-import { createDocuscanWorker, type WorkerRequest, type WorkerResponse } from '@docuscan/worker-runtime';
+} from '@document-autocapture/core-engine';
+import { detectCapabilities, selectExecutionMode, type Capabilities } from '@document-autocapture/runtime-web';
+import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
+import { warpPerspectiveWebGL } from '@document-autocapture/warp-webgl';
+import { createScannerWorker, type WorkerRequest, type WorkerResponse } from '@document-autocapture/worker-runtime';
 
 interface Stats {
   min: number;
@@ -160,7 +160,7 @@ function createSyntheticImageData(width: number, height: number): ImageData {
 type PendingResolver = { resolve: (value: FrameProcessResult) => void; reject: (error: Error) => void };
 
 async function createWorkerClient() {
-  const worker = createDocuscanWorker();
+  const worker = createScannerWorker();
   let frameId = 0;
   const pending = new Map<number, PendingResolver>();
 

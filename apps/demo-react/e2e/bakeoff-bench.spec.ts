@@ -11,14 +11,14 @@ for (const candidate of candidates) {
     await page.goto(`http://127.0.0.1:4173/?bakeoff=1&candidate=${candidate}`);
 
     await page.waitForFunction(
-      () => Boolean((window as { __DOCUSCAN_BAKEOFF__?: unknown }).__DOCUSCAN_BAKEOFF__),
+      () => Boolean((window as { __DOCUMENT_AUTOCAPTURE_BAKEOFF__?: unknown }).__DOCUMENT_AUTOCAPTURE_BAKEOFF__),
       {
         timeout: 240000,
       },
     );
 
     const result = await page.evaluate(
-      () => (window as { __DOCUSCAN_BAKEOFF__?: unknown }).__DOCUSCAN_BAKEOFF__,
+      () => (window as { __DOCUMENT_AUTOCAPTURE_BAKEOFF__?: unknown }).__DOCUMENT_AUTOCAPTURE_BAKEOFF__,
     );
     expect(result).toBeTruthy();
 

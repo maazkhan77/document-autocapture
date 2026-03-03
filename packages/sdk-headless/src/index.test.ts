@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createScanner } from './index';
 
-describe('@docuscan/sdk-headless exports', () => {
+describe('js-document-autocapture exports', () => {
   it('creates scanner session with required API surface', async () => {
     const scanner = createScanner();
     expect(typeof scanner.getCapabilities).toBe('function');

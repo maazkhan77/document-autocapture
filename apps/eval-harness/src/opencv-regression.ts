@@ -303,7 +303,7 @@ async function main() {
   const realClipPath = process.argv[2] ?? path.resolve(root, 'datasets/real-clips');
   const outputPath =
     process.argv[3] ?? path.resolve(process.cwd(), 'output/opencv-regression/latest.json');
-  const externalFixturePathArg = process.argv[4] ?? process.env.DOCUSCAN_OPENCV_FIXTURE_PATH;
+  const externalFixturePathArg = process.argv[4] ?? process.env.DOCUMENT_AUTOCAPTURE_OPENCV_FIXTURE_PATH;
   const externalFixturePath = externalFixturePathArg
     ? path.resolve(externalFixturePathArg)
     : undefined;

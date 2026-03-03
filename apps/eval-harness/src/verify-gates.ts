@@ -202,9 +202,9 @@ async function hasFile(filePath: string): Promise<boolean> {
 
 async function verifyPhysicalAndroid(outputRoot: string): Promise<{ issues: string[]; checked: boolean }> {
   const issues: string[] = [];
-  const requirePhysical = process.env.DOCUSCAN_REQUIRE_PHYSICAL_ANDROID === '1';
+  const requirePhysical = process.env.DOCUMENT_AUTOCAPTURE_REQUIRE_PHYSICAL_ANDROID === '1';
   const reportPath =
-    process.env.DOCUSCAN_PHYSICAL_ANDROID_REPORT ??
+    process.env.DOCUMENT_AUTOCAPTURE_PHYSICAL_ANDROID_REPORT ??
     path.resolve(outputRoot, 'physical-android', 'latest.json');
 
   const exists = await hasFile(reportPath);

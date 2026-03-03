@@ -5,7 +5,7 @@ import {
   maxCornerDisplacement,
   type DetectionRejectionReason,
   type Quad,
-} from '@docuscan/core-engine';
+} from '@document-autocapture/core-engine';
 import { mean, median, percentile, quadIoU, type NormalizedCandidate, type NormalizedFrame } from './realclip-shared';
 
 export interface ThresholdProfile {

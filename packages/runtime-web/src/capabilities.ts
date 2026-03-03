@@ -1,4 +1,4 @@
-import type { ExecutionMode } from '@docuscan/core-engine';
+import type { ExecutionMode } from '@document-autocapture/core-engine';
 import type { Capabilities } from './types';
 
 async function probeWorkerWebglSupport(timeoutMs = 1200): Promise<boolean> {

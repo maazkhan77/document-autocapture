@@ -7,7 +7,7 @@ export type {
   WorkerResponse,
 } from './protocol';
 
-export function createDocuscanWorker(): Worker {
+export function createScannerWorker(): Worker {
   const workerUrl = new URL('./worker.js', import.meta.url);
   return new Worker(workerUrl, { type: 'module' });
 }

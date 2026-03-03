@@ -15,11 +15,11 @@ import {
   runQualityChecks,
   setOpenCVReady,
   StabilityTracker,
-} from '@docuscan/core-engine';
+} from '@document-autocapture/core-engine';
 import {
   createTfjsMlQuadProvider,
   type MlQuadProvider,
-} from '@docuscan/ml-tf-fallback';
+} from '@document-autocapture/ml-tf-fallback';
 import { FallbackStateMachine } from './fallback-state';
 import type {
   CvFallbackReason,
@@ -303,7 +303,7 @@ async function ensureOpenCv(scriptUrl: string, debug: boolean): Promise<boolean>
       setOpenCVReady();
 
       if (debug) {
-        console.warn(`[docuscan:worker] OpenCV ready from ${scriptUrl}`);
+        console.warn(`[document-autocapture:worker] OpenCV ready from ${scriptUrl}`);
       }
       openCvRetryAfterMs = 0;
 
@@ -318,14 +318,14 @@ async function ensureOpenCv(scriptUrl: string, debug: boolean): Promise<boolean>
     if (!openCvWarned) {
       openCvWarned = true;
       warn(
-        `[docuscan] OpenCV unavailable from ${scriptUrl}; using fallback detector. ${
+        `[document-autocapture] OpenCV unavailable from ${scriptUrl}; using fallback detector. ${
           error instanceof Error ? error.message : 'init failed'
         }`,
       );
     }
     if (debug) {
       console.warn(
-        `[docuscan:worker] Failed to initialize OpenCV from ${scriptUrl}. Falling back to simple pipeline.`,
+        `[document-autocapture:worker] Failed to initialize OpenCV from ${scriptUrl}. Falling back to simple pipeline.`,
         error,
       );
     }
@@ -354,7 +354,7 @@ async function ensureMlProvider(): Promise<void> {
       }
       if (detectorConfig.debug) {
         console.warn(
-          `[docuscan:worker] TFJS init | ` +
+          `[document-autocapture:worker] TFJS init | ` +
             `pipeline=${detectorConfig.mlPipelineVersion ?? 'v1-heuristic'} | ` +
             `modelId=${detectorConfig.mlModelId ?? 'doc-corner-v1'} | ` +
             `modelUrl=${detectorConfig.mlModelUrl ?? 'n/a'} | ` +
@@ -379,14 +379,14 @@ async function ensureMlProvider(): Promise<void> {
         if (detectorConfig.mlPipelineVersion === 'v2-graph') {
           const reason = diagnostics.lastError ? ` reason=${diagnostics.lastError}` : '';
           warn(
-            `[docuscan] ML v2 graph model unavailable, running heuristic fallback until graph model is loadable.${reason}`,
+            `[document-autocapture] ML v2 graph model unavailable, running heuristic fallback until graph model is loadable.${reason}`,
           );
         } else {
-          warn('[docuscan] ML running in heuristic mode (no graph model loaded). Provide a graphModelUrl artifact for best accuracy.');
+          warn('[document-autocapture] ML running in heuristic mode (no graph model loaded). Provide a graphModelUrl artifact for best accuracy.');
         }
       }
       if (detectorConfig.debug) {
-        console.warn(`[docuscan:worker] TFJS fallback ready | ${summarizeMlDiagnostics(diagnostics)}`);
+        console.warn(`[document-autocapture:worker] TFJS fallback ready | ${summarizeMlDiagnostics(diagnostics)}`);
       }
     })();
   }
@@ -400,14 +400,14 @@ async function ensureMlProvider(): Promise<void> {
     if (!mlWarned) {
       mlWarned = true;
       warn(
-        `[docuscan] TFJS fallback unavailable, continuing in CV-only mode: ${
+        `[document-autocapture] TFJS fallback unavailable, continuing in CV-only mode: ${
           error instanceof Error ? error.message : 'init failed'
         }`,
       );
     }
     if (detectorConfig.debug) {
       console.warn(
-        `[docuscan:worker] TFJS init failed | ` +
+        `[document-autocapture:worker] TFJS init failed | ` +
           `pipeline=${detectorConfig.mlPipelineVersion ?? 'v1-heuristic'} | ` +
           `modelId=${detectorConfig.mlModelId ?? 'doc-corner-v1'} | ` +
           `inputSize=${detectorConfig.mlInputSize ?? 320}`,
@@ -606,7 +606,7 @@ async function tryMlRescueInference(
   if (!detectorConfig.mlRescueEnabled) {
     if (detectorConfig.debug && !mlRescueDisabledWarned) {
       mlRescueDisabledWarned = true;
-      console.warn('[docuscan:worker] ML rescue disabled by config');
+      console.warn('[document-autocapture:worker] ML rescue disabled by config');
     }
     return undefined;
   }
@@ -615,7 +615,7 @@ async function tryMlRescueInference(
     if (detectorConfig.debug && !mlRescueUnavailableWarned) {
       mlRescueUnavailableWarned = true;
       console.warn(
-        `[docuscan:worker] ML rescue unavailable | ` +
+        `[document-autocapture:worker] ML rescue unavailable | ` +
           `mlReady=${mlReady} mlDisabled=${mlDisabled} mlModelLoaded=${mlModelLoaded}`,
       );
     }
@@ -636,7 +636,7 @@ async function tryMlRescueInference(
 
   if (detectorConfig.debug) {
     console.warn(
-      `[docuscan:worker] ML rescue attempt | reason=${reason} stride=${rescueStride} counter=${mlRescueCounter}`,
+      `[document-autocapture:worker] ML rescue attempt | reason=${reason} stride=${rescueStride} counter=${mlRescueCounter}`,
     );
   }
 
@@ -650,11 +650,11 @@ async function tryMlRescueInference(
     mlRescueCounter = 0;
     if (detectorConfig.debug) {
       console.warn(
-        `[docuscan:worker] ML rescue inference recovered candidate (reason=${reason})`,
+        `[document-autocapture:worker] ML rescue inference recovered candidate (reason=${reason})`,
       );
     }
   } else if (detectorConfig.debug) {
-    console.warn(`[docuscan:worker] ML rescue inference miss (reason=${reason})`);
+    console.warn(`[document-autocapture:worker] ML rescue inference miss (reason=${reason})`);
   }
   return rescue;
 }
@@ -1034,14 +1034,14 @@ async function handleMessage(msg: WorkerRequest): Promise<void> {
         mergeDetectorConfig({ ...defaultDetectorConfig, ...msg.detectorConfig });
         if (detectorConfig.detectorMode === 'ml') {
           if (debug) {
-            console.warn('[docuscan:worker] OpenCV lazy-load enabled for ML mode (loads on first CV fallback)');
+            console.warn('[document-autocapture:worker] OpenCV lazy-load enabled for ML mode (loads on first CV fallback)');
           }
         } else {
           await ensureOpenCv(configuredOpenCvScriptUrl, debug);
         }
         if (debug) {
           console.warn(
-            `[docuscan:worker] init config | ` +
+            `[document-autocapture:worker] init config | ` +
               `detectorMode=${detectorConfig.detectorMode} | ` +
               `mlPipeline=${detectorConfig.mlPipelineVersion ?? 'v1-heuristic'} | ` +
               `mlModelId=${detectorConfig.mlModelId ?? 'doc-corner-v1'} | ` +
@@ -1101,7 +1101,7 @@ async function handleMessage(msg: WorkerRequest): Promise<void> {
           mlRescueUnavailableWarned = false;
           if (detectorConfig.debug) {
             console.warn(
-              `[docuscan:worker] ML provider reset after config update | ` +
+              `[document-autocapture:worker] ML provider reset after config update | ` +
                 `mlPipeline=${detectorConfig.mlPipelineVersion ?? 'v1-heuristic'} | ` +
                 `mlModelId=${detectorConfig.mlModelId ?? 'doc-corner-v1'} | ` +
                 `mlInputSize=${detectorConfig.mlInputSize ?? 320}`,

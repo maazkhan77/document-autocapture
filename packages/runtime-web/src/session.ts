@@ -10,15 +10,15 @@ import {
   type GuidanceCode,
   type Quad,
   quadAspectRatio,
-} from '@docuscan/core-engine';
-import { warpPerspectiveCpu } from '@docuscan/warp-cpu';
-import { warpPerspectiveWebGL } from '@docuscan/warp-webgl';
+} from '@document-autocapture/core-engine';
+import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
+import { warpPerspectiveWebGL } from '@document-autocapture/warp-webgl';
 import {
-  createDocuscanWorker,
+  createScannerWorker,
   type WorkerDetectorConfig,
   type WorkerRequest,
   type WorkerResponse,
-} from '@docuscan/worker-runtime';
+} from '@document-autocapture/worker-runtime';
 import { detectCapabilities, selectExecutionMode } from './capabilities';
 import { sanitizeQuadForCapture, scaleQuadToCapture } from './capture-quad';
 import { TypedEmitter } from './emitter';
@@ -364,7 +364,7 @@ class ScannerSessionImpl implements ScannerSession {
           selectedMode: this.executionMode,
         };
         if (this.config.debug) {
-          console.warn('[docuscan] capabilities', this.capabilities);
+          console.warn('[document-autocapture] capabilities', this.capabilities);
         }
         this.emitter.emit('capabilities', this.capabilities);
 
@@ -397,7 +397,7 @@ class ScannerSessionImpl implements ScannerSession {
 
         if (this.executionMode !== 'fallback' && this.capabilities.workerSupported) {
           const workerDetectorConfig = toWorkerDetectorConfig(this.config);
-          this.worker = (this.config.workerFactory ?? createDocuscanWorker)();
+          this.worker = (this.config.workerFactory ?? createScannerWorker)();
           this.workerReady = false;
           this.worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
             this.onWorkerMessage(event.data);
@@ -426,7 +426,7 @@ class ScannerSessionImpl implements ScannerSession {
         if (this.config.debug) {
           const workerDetectorConfig = toWorkerDetectorConfig(this.config);
           console.warn(
-            `[docuscan] Scanner started | mode=${this.executionMode} | ` +
+            `[document-autocapture] Scanner started | mode=${this.executionMode} | ` +
               `detectorMode=${this.config.detectorMode} | autoCapture=${this.config.autoCapture} | ` +
               `detectionWidth=${this.config.detectionWidth ?? 480} | ` +
               `video=${this.video.videoWidth}x${this.video.videoHeight} | ` +
@@ -734,7 +734,7 @@ class ScannerSessionImpl implements ScannerSession {
     } catch (error) {
       const err = error instanceof Error ? error : new Error('Frame processing failed');
       if (this.config.debug) {
-        console.warn('[docuscan] processFrame error:', err.message);
+        console.warn('[document-autocapture] processFrame error:', err.message);
       }
       this.emitter.emit('error', err);
     }
@@ -904,7 +904,7 @@ class ScannerSessionImpl implements ScannerSession {
       ) {
         this.mlGraphUnavailableWarned = true;
         console.warn(
-          '[docuscan] ML graph model is not loaded; detector is running heuristic ML. Set mlPipelineVersion=v2-graph and mlModelId=doc-corner-v2 to force graph loading.',
+          '[document-autocapture] ML graph model is not loaded; detector is running heuristic ML. Set mlPipelineVersion=v2-graph and mlModelId=doc-corner-v2 to force graph loading.',
         );
       }
       if (
@@ -916,7 +916,7 @@ class ScannerSessionImpl implements ScannerSession {
         const mlRescue =
           (message.telemetry as { mlRescueUsed?: boolean } | undefined)?.mlRescueUsed ?? false;
         console.warn(
-          `[docuscan] ML mode fell back to CV (reason=${fallbackReason}) ` +
+          `[document-autocapture] ML mode fell back to CV (reason=${fallbackReason}) ` +
             `cvAttempted=${message.telemetry?.cvAttempted ?? false} ` +
             `mlReady=${message.telemetry?.mlReady ?? false} ` +
             `mlLoaded=${message.telemetry?.mlModelLoaded ?? false} ` +
@@ -1054,7 +1054,7 @@ class ScannerSessionImpl implements ScannerSession {
       const cooldownRemaining = Math.max(0, cooldown - (Date.now() - this.lastCaptureAt));
 
       console.warn(
-        `[docuscan] frame#${this.debugFrameCount} | ` +
+        `[document-autocapture] frame#${this.debugFrameCount} | ` +
           `det: ${detStatus} score=${detScore} conf=${detConfidence} reject=${detReject} src=${detSource} cands=${detCandidates}` +
           `${mlTelemetry} | ` +
           `quality: ${qOk} bright=${qBright} blur=${qBlur} glare=${qGlare} area=${qArea} | ` +
@@ -1065,7 +1065,7 @@ class ScannerSessionImpl implements ScannerSession {
 
       if (best) {
         console.warn(
-          `[docuscan]   candidate metrics: ` +
+          `[document-autocapture]   candidate metrics: ` +
             `areaFrac=${(best.metrics.areaFraction * 100).toFixed(1)}% ` +
             `aspect=${best.metrics.aspectPlausibility.toFixed(2)} ` +
             `edgeContrast=${best.metrics.edgeContrast.toFixed(2)} ` +
@@ -1099,7 +1099,7 @@ class ScannerSessionImpl implements ScannerSession {
 
     if (this.config.debug) {
       console.warn(
-        `[docuscan] Auto-capture triggered | ` +
+        `[document-autocapture] Auto-capture triggered | ` +
           `streak=${this.autoCaptureStableStreak} score=${((result.detection.bestCandidate?.score ?? 0) * 100).toFixed(1)}% ` +
           `src=${result.detection.source} guidance=${result.guidance}`,
       );
@@ -1111,7 +1111,7 @@ class ScannerSessionImpl implements ScannerSession {
       .then((capture) => {
         if (this.config.debug) {
           console.warn(
-            `[docuscan] Capture complete: warp=${capture.warpTierUsed} ` +
+            `[document-autocapture] Capture complete: warp=${capture.warpTierUsed} ` +
               `${capture.warpRejected ? `reject=${capture.warpRejectionReason} ` : ''}` +
               `elapsed=${capture.elapsedMs.toFixed(0)}ms`,
           );
@@ -1120,7 +1120,7 @@ class ScannerSessionImpl implements ScannerSession {
       })
       .catch((error) => {
         if (this.config.debug) {
-          console.warn(`[docuscan] Capture failed: ${error instanceof Error ? error.message : 'unknown'}`);
+          console.warn(`[document-autocapture] Capture failed: ${error instanceof Error ? error.message : 'unknown'}`);
         }
         this.emitter.emit('error', error instanceof Error ? error : new Error('Auto-capture failed'));
       });
@@ -1223,7 +1223,7 @@ class ScannerSessionImpl implements ScannerSession {
 
       if (this.config.debug) {
         console.warn(
-          `[docuscan] post-refine | applied=${refineResult.applied} reason=${refineResult.reason} ` +
+          `[document-autocapture] post-refine | applied=${refineResult.applied} reason=${refineResult.reason} ` +
             `initialScore=${refineResult.initialScore.toFixed(2)} refinedScore=${refineResult.refinedScore.toFixed(2)} ` +
             `elapsed=${refineResult.elapsedMs.toFixed(1)}ms`,
         );
@@ -1279,7 +1279,7 @@ class ScannerSessionImpl implements ScannerSession {
         const preferCpuWarp = source === 'auto';
         if (preferCpuWarp && this.config.debug && !this.autoCaptureCpuWarpWarned) {
           this.autoCaptureCpuWarpWarned = true;
-          console.warn('[docuscan] Auto-capture warp policy active: CPU-first (WebGL bypassed for stability).');
+          console.warn('[document-autocapture] Auto-capture warp policy active: CPU-first (WebGL bypassed for stability).');
         }
         if (!preferCpuWarp) {
           const webglResult = warpPerspectiveWebGL({
@@ -1315,7 +1315,7 @@ class ScannerSessionImpl implements ScannerSession {
                 rejectionStage = 'webgl';
                 if (this.config.debug) {
                   console.warn(
-                    `[docuscan] WebGL warp rejected reason=${webglValidation.validation.reason} ` +
+                    `[document-autocapture] WebGL warp rejected reason=${webglValidation.validation.reason} ` +
                       `(var=${webglValidation.validation.warpedStats.variance.toFixed(1)}, ` +
                       `range=${webglValidation.validation.warpedStats.dynamicRange.toFixed(1)}, ` +
                       `blockiness=${webglValidation.validation.integrity.blockiness.toFixed(2)}, ` +
@@ -1325,7 +1325,7 @@ class ScannerSessionImpl implements ScannerSession {
                 }
               }
             } else if (this.config.debug) {
-              console.warn('[docuscan] Could not snapshot WebGL warp canvas; trying CPU warp');
+              console.warn('[document-autocapture] Could not snapshot WebGL warp canvas; trying CPU warp');
             }
           }
         }
@@ -1357,7 +1357,7 @@ class ScannerSessionImpl implements ScannerSession {
               rejectionStage = 'cpu';
               if (this.config.debug) {
                 console.warn(
-                  `[docuscan] CPU warp rejected reason=${cpuValidation.validation.reason} ` +
+                  `[document-autocapture] CPU warp rejected reason=${cpuValidation.validation.reason} ` +
                     `(var=${cpuValidation.validation.warpedStats.variance.toFixed(1)}, ` +
                     `range=${cpuValidation.validation.warpedStats.dynamicRange.toFixed(1)}, ` +
                     `blockiness=${cpuValidation.validation.integrity.blockiness.toFixed(2)}, ` +
@@ -1386,7 +1386,7 @@ class ScannerSessionImpl implements ScannerSession {
     if (postRefineApplied && warpAttempt.tier === 'raw' && warpAttempt.rejectionReason) {
       if (this.config.debug) {
         console.warn(
-          `[docuscan] post-refine fallback | refined quad failed warp validation (${warpAttempt.rejectionReason}), retrying original quad`,
+          `[document-autocapture] post-refine fallback | refined quad failed warp validation (${warpAttempt.rejectionReason}), retrying original quad`,
         );
       }
       sourceQuad = sourceQuadOriginal;

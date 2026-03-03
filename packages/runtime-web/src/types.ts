@@ -8,7 +8,7 @@ import type {
   QualityResult,
   Quad,
   StabilityResult,
-} from '@docuscan/core-engine';
+} from '@document-autocapture/core-engine';
 
 export interface Capabilities {
   workerSupported: boolean;

@@ -1,6 +1,6 @@
 import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { clamp, type Quad } from '@docuscan/core-engine';
+import { clamp, type Quad } from '@document-autocapture/core-engine';
 import { ingestMidv, ingestSmartDoc } from './external-datasets';
 import {
   normalizeFrame,
@@ -227,7 +227,7 @@ function buildSummary(frames: NormalizedFrame[]) {
 
 function parseOptions(): IngestOptions {
   const variantsArg = Number.parseInt(process.argv[4] ?? '', 10);
-  const envVariants = Number.parseInt(process.env.DOCUSCAN_RANDOM_VARIANTS ?? '', 10);
+  const envVariants = Number.parseInt(process.env.DOCUMENT_AUTOCAPTURE_RANDOM_VARIANTS ?? '', 10);
   const variantsPerFrame = Number.isFinite(variantsArg)
     ? variantsArg
     : Number.isFinite(envVariants)
@@ -286,8 +286,8 @@ async function main() {
   const sourcePath = process.argv[2] ?? path.resolve(root, 'datasets/real-clips');
   const outputPath = process.argv[3] ?? path.resolve(process.cwd(), 'output/realclip/ingested.json');
   const reportPath = path.resolve(root, 'docs/realclip-ingestion-report.md');
-  const smartDocPath = process.env.DOCUSCAN_SMARTDOC_PATH;
-  const midvPath = process.env.DOCUSCAN_MIDV_PATH;
+  const smartDocPath = process.env.DOCUMENT_AUTOCAPTURE_SMARTDOC_PATH;
+  const midvPath = process.env.DOCUMENT_AUTOCAPTURE_MIDV_PATH;
   const options = parseOptions();
 
   const files: string[] = [];

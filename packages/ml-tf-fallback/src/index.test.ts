@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { __testUtils, resolveModelUrl } from './index';
 
-describe('@docuscan/ml-tf-fallback letterbox mapping', () => {
+describe('@document-autocapture/ml-tf-fallback letterbox mapping', () => {
   it('computes deterministic letterbox transform', () => {
     const transform = __testUtils.computeLetterboxTransform(1920, 1080, 320);
     expect(transform.scaledWidth).toBe(320);

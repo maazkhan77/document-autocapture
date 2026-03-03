@@ -297,7 +297,7 @@ async function main() {
   const rolloutVerdict = promoteWinner ? 'PROMOTE' : 'NO_GO';
 
   const lines: string[] = [];
-  lines.push('# Docuscan Bakeoff Report');
+  lines.push('# Document Auto Capture Bakeoff Report');
   lines.push('');
   lines.push(`Generated: ${new Date().toISOString()}`);
   lines.push(`Artifacts analyzed: ${runs.length}`);

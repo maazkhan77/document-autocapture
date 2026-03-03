@@ -7,7 +7,7 @@ import { createScanner as createMlFallbackScanner } from './ml-fallback';
 import { createScanner as createMlPrimaryV2BetaScanner } from './ml-primary-v2-beta';
 import { createScanner as createWebglWarpScanner } from './webgl-warp';
 
-describe('@docuscan/sdk-headless flavor defaults', () => {
+describe('js-document-autocapture flavor defaults', () => {
   it('provides locked default profiles', () => {
     expect(scannerFlavorDefaults['webgl-warp'].preferredMode).toBe('best');
     expect(scannerFlavorDefaults.enhance.outputMaxWidth).toBe(2048);
@@ -28,7 +28,7 @@ describe('@docuscan/sdk-headless flavor defaults', () => {
   });
 });
 
-describe('@docuscan/sdk-headless flavor entrypoints', () => {
+describe('js-document-autocapture flavor entrypoints', () => {
   it('creates scanner sessions for all flavor entrypoints', async () => {
     const scanners = [
       createScannerWithFlavor('core'),

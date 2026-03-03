@@ -1,4 +1,4 @@
-import { clamp, polygonArea, quadArea, quadAspectRatio, quadToPoints, type Point, type Quad } from '@docuscan/core-engine';
+import { clamp, polygonArea, quadArea, quadAspectRatio, quadToPoints, type Point, type Quad } from '@document-autocapture/core-engine';
 
 export interface ClipCandidateMetrics {
   areaFraction?: number;

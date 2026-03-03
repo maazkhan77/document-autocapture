@@ -1,4 +1,4 @@
-import { computeHomography, type Point, type Quad } from '@docuscan/core-engine';
+import { computeHomography, type Point, type Quad } from '@document-autocapture/core-engine';
 
 export interface WebglWarpRequest {
   imageData: ImageData;

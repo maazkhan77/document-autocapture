@@ -7,16 +7,16 @@ import {
   type FrameProcessResult,
   type Point,
   type Quad,
-} from '@docuscan/core-engine';
-import { detectCapabilities, selectExecutionMode, type Capabilities } from '@docuscan/runtime-web';
-import { warpPerspectiveCpu } from '@docuscan/warp-cpu';
-import { warpPerspectiveWebGL } from '@docuscan/warp-webgl';
+} from '@document-autocapture/core-engine';
+import { detectCapabilities, selectExecutionMode, type Capabilities } from '@document-autocapture/runtime-web';
+import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
+import { warpPerspectiveWebGL } from '@document-autocapture/warp-webgl';
 import {
-  createDocuscanWorker,
+  createScannerWorker,
   type WorkerDetectorConfig,
   type WorkerRequest,
   type WorkerResponse,
-} from '@docuscan/worker-runtime';
+} from '@document-autocapture/worker-runtime';
 
 type CandidateId = 'candidate-a' | 'candidate-b' | 'candidate-c';
 type WorkerFrameTelemetry = Extract<WorkerResponse, { type: 'frame-result' }>['telemetry'];
@@ -494,7 +494,7 @@ async function createWorkerClient(
   engineConfig: EngineConfig,
   detectorConfig?: Partial<WorkerDetectorConfig>,
 ) {
-  const worker = createDocuscanWorker();
+  const worker = createScannerWorker();
   let frameId = 0;
   const pending = new Map<number, PendingResolver>();
 

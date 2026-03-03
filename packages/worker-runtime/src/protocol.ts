@@ -1,4 +1,4 @@
-import type { EngineConfig, FrameProcessResult } from '@docuscan/core-engine';
+import type { EngineConfig, FrameProcessResult } from '@document-autocapture/core-engine';
 
 export type DetectorMode = 'cv' | 'hybrid' | 'ml';
 export type MlPipelineVersion = 'v1-heuristic' | 'v2-graph';

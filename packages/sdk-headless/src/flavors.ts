@@ -8,7 +8,7 @@ import {
   type ScannerEventName,
   type ScannerSession,
   type WarpTierUsed,
-} from '@docuscan/runtime-web';
+} from '@document-autocapture/runtime-web';
 
 export type ScannerFlavor =
   | 'core'

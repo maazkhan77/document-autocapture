@@ -1,4 +1,4 @@
-import type { Quad } from '@docuscan/core-engine';
+import type { Quad } from '@document-autocapture/core-engine';
 import { describe, expect, it } from 'vitest';
 import { refineQuadPostCapture } from './post-refine';
 

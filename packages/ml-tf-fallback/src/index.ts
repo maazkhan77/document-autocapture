@@ -1,4 +1,4 @@
-import { clamp, orderQuadCorners, quadArea, quadPerimeter, quadToPoints, type Quad } from '@docuscan/core-engine';
+import { clamp, orderQuadCorners, quadArea, quadPerimeter, quadToPoints, type Quad } from '@document-autocapture/core-engine';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface TfjsGraphModel {
@@ -469,7 +469,7 @@ class TfjsCornerProvider implements MlQuadProvider {
       }
       await tf.ready();
       if (config.debug) {
-        console.warn('[docuscan:ml] WASM backend unavailable, using CPU backend', wasmError);
+        console.warn('[document-autocapture:ml] WASM backend unavailable, using CPU backend', wasmError);
       }
       return 'cpu';
     }
@@ -579,7 +579,7 @@ class TfjsCornerProvider implements MlQuadProvider {
       this.diagnostics.modelVersion = this.artifact.modelVersion;
     } catch (error) {
       if (this.config.debug) {
-        console.warn('[docuscan:ml] fallback artifact load failed, using defaults', error);
+        console.warn('[document-autocapture:ml] fallback artifact load failed, using defaults', error);
       }
       this.diagnostics.lastError = error instanceof Error ? error.message : 'Artifact load failed';
     }

@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { polygonArea, quadToPoints, type Point, type Quad } from '@docuscan/core-engine';
+import { polygonArea, quadToPoints, type Point, type Quad } from '@document-autocapture/core-engine';
 
 interface FrameRecord {
   id: string;

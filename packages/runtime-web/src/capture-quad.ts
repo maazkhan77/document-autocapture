@@ -1,4 +1,4 @@
-import { quadArea, type Quad } from '@docuscan/core-engine';
+import { quadArea, type Quad } from '@document-autocapture/core-engine';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));

@@ -1,4 +1,4 @@
-import { quadArea, quadAspectRatio, type Point, type Quad } from '@docuscan/core-engine';
+import { quadArea, quadAspectRatio, type Point, type Quad } from '@document-autocapture/core-engine';
 
 type CornerName = keyof Quad;
 

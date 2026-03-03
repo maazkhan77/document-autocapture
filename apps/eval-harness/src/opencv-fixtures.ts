@@ -1,4 +1,4 @@
-import type { Quad } from '@docuscan/core-engine';
+import type { Quad } from '@document-autocapture/core-engine';
 import type { ClipCandidateInput, RealClipFrameInput, RealClipManifest } from './realclip-shared';
 
 function makeQuad(

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createDocuscanWorker } from './index';
+import { createScannerWorker } from './index';
 
-describe('createDocuscanWorker', () => {
+describe('createScannerWorker', () => {
   const originalWorker = globalThis.Worker;
 
   afterEach(() => {
@@ -21,7 +21,7 @@ describe('createDocuscanWorker', () => {
     }
 
     vi.stubGlobal('Worker', WorkerMock as unknown as typeof Worker);
-    createDocuscanWorker();
+    createScannerWorker();
 
     expect(constructed).toHaveLength(1);
     expect(constructed[0].options.type).toBe('module');
