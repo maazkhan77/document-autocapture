@@ -18,7 +18,7 @@ type PendingResolver = {
   reject: (error: Error) => void;
 };
 
-export interface BenchmarkWorkerClient {
+interface BenchmarkWorkerClient {
   processRgba(width: number, height: number, rgbaBuffer: ArrayBuffer): Promise<WorkerFrameProcessResult>;
   processBitmap(bitmap: ImageBitmap): Promise<WorkerFrameProcessResult>;
   destroy(): Promise<void>;
@@ -35,22 +35,43 @@ export async function createBenchmarkWorkerClient(
   const worker = createScannerWorker();
   let frameId = 0;
   const pending = new Map<number, PendingResolver>();
+  let readySettled = false;
+
+  const rejectPending = (error: Error) => {
+    for (const [id, slot] of pending.entries()) {
+      pending.delete(id);
+      slot.reject(error);
+    }
+  };
 
   const ready = new Promise<void>((resolve, reject) => {
+    const settleReady = (fn: () => void) => {
+      if (readySettled) {
+        return;
+      }
+      readySettled = true;
+      clearTimeout(timer);
+      fn();
+    };
+
     const timer = window.setTimeout(() => {
-      reject(new Error('Worker init timeout'));
+      settleReady(() => reject(new Error('Worker init timeout')));
     }, 3000);
 
     worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
       const message = event.data;
       if (message.type === 'ready') {
-        clearTimeout(timer);
-        resolve();
+        settleReady(resolve);
         return;
       }
 
       if (message.type === 'error') {
         const error = new Error(message.message);
+        if (!readySettled) {
+          rejectPending(error);
+          settleReady(() => reject(error));
+          return;
+        }
         if (typeof message.id === 'number') {
           const slot = pending.get(message.id);
           if (slot) {
@@ -58,10 +79,7 @@ export async function createBenchmarkWorkerClient(
             slot.reject(error);
           }
         } else {
-          for (const [id, slot] of pending.entries()) {
-            pending.delete(id);
-            slot.reject(error);
-          }
+          rejectPending(error);
         }
         return;
       }
@@ -85,7 +103,12 @@ export async function createBenchmarkWorkerClient(
     detectorConfig: options.detectorConfig,
   } satisfies WorkerRequest);
 
-  await ready;
+  try {
+    await ready;
+  } catch (error) {
+    worker.terminate();
+    throw error;
+  }
 
   return {
     async processRgba(width: number, height: number, rgbaBuffer: ArrayBuffer): Promise<WorkerFrameProcessResult> {
@@ -94,17 +117,22 @@ export async function createBenchmarkWorkerClient(
         pending.set(id, { resolve, reject });
       });
 
-      worker.postMessage(
-        {
-          type: 'process-frame',
-          id,
-          width,
-          height,
-          nowMs: performance.now(),
-          rgbaBuffer,
-        } satisfies WorkerRequest,
-        [rgbaBuffer],
-      );
+      try {
+        worker.postMessage(
+          {
+            type: 'process-frame',
+            id,
+            width,
+            height,
+            nowMs: performance.now(),
+            rgbaBuffer,
+          } satisfies WorkerRequest,
+          [rgbaBuffer],
+        );
+      } catch (error) {
+        pending.delete(id);
+        throw error instanceof Error ? error : new Error('Failed to post RGBA frame to worker');
+      }
       return promise;
     },
 
@@ -114,21 +142,28 @@ export async function createBenchmarkWorkerClient(
         pending.set(id, { resolve, reject });
       });
 
-      worker.postMessage(
-        {
-          type: 'process-image-bitmap',
-          id,
-          nowMs: performance.now(),
-          bitmap,
-        } satisfies WorkerRequest,
-        [bitmap],
-      );
+      try {
+        worker.postMessage(
+          {
+            type: 'process-image-bitmap',
+            id,
+            nowMs: performance.now(),
+            bitmap,
+          } satisfies WorkerRequest,
+          [bitmap],
+        );
+      } catch (error) {
+        pending.delete(id);
+        throw error instanceof Error ? error : new Error('Failed to post bitmap frame to worker');
+      }
       return promise;
     },
 
     async destroy(): Promise<void> {
+      rejectPending(new Error('Benchmark worker client destroyed'));
+      worker.onmessage = null;
+      worker.onerror = null;
       worker.terminate();
-      pending.clear();
     },
   };
 }

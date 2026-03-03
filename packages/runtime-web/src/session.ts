@@ -245,6 +245,8 @@ class ScannerSessionImpl implements ScannerSession {
   }
 
   updateConfig(partial: Partial<ScannerConfig>): void {
+    const hasVideoElementOverride = Object.prototype.hasOwnProperty.call(partial, 'videoElement');
+    const nextVideoElement = hasVideoElementOverride ? partial.videoElement : undefined;
     const mergedScoreWeights = {
       ...defaultEngineConfig.scoreWeights,
       ...(this.config.scoreWeights ?? {}),
@@ -269,6 +271,24 @@ class ScannerSessionImpl implements ScannerSession {
 
     this.engineConfig = mergeEngineConfig(toEngineConfig(this.config));
     this.fallbackEngine = createEngine(this.engineConfig);
+
+    if (nextVideoElement && nextVideoElement !== this.video) {
+      nextVideoElement.muted = true;
+      nextVideoElement.playsInline = true;
+      nextVideoElement.autoplay = true;
+      if (this.stream) {
+        nextVideoElement.srcObject = this.stream;
+      }
+      this.video = nextVideoElement;
+      if (this.running) {
+        void this.ensureVideoPlayback(nextVideoElement).catch((error) => {
+          this.emitter.emit(
+            'error',
+            error instanceof Error ? error : new Error('Failed to bind updated video element'),
+          );
+        });
+      }
+    }
 
     if (this.worker) {
       const request: WorkerRequest = {

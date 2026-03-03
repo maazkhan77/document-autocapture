@@ -21,8 +21,6 @@ export interface TelemetrySample {
   qualityScore: number;
 }
 
-export type StudioLogLevel = EventItem['level'];
-
 export interface QualityScoreSummary {
   avgFps: number;
   avgDetectionScore: number;
