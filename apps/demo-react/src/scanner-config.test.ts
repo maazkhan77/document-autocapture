@@ -7,6 +7,11 @@ describe('createDemoScannerConfig', () => {
     expect(config.detectorMode).toBe('ml');
     expect(config.mlPipelineVersion).toBe('v2-graph');
     expect(config.mlModelId).toBe('doc-corner-v2');
+    expect(config.graphMlEnabled).toBe(true);
+    expect(config.cocoBookEnabled).toBe(true);
+    expect(config.cocoMinScore).toBe(0.45);
+    expect(config.cvContourEnabled).toBe(false);
+    expect(config.houghSecondaryEnabled).toBe(true);
     expect(config.captureMimeType).toBe('image/png');
     expect(config.warpValidationLevel).toBe('strict');
     expect(config.videoConstraints?.facingMode).toBe('environment');

@@ -9,6 +9,12 @@ interface PresetConfig {
   autoStableFrames: number;
   detectionWidth: number;
   detectorMode: DetectorMode;
+  graphMlEnabled: boolean;
+  cocoBookEnabled: boolean;
+  cocoMinScore: number;
+  cocoUseAsPrimaryInMlMode: boolean;
+  cvContourEnabled: boolean;
+  houghSecondaryEnabled: boolean;
   mlFallbackEnabled: boolean;
   mlFallbackFrameStride: number;
   mlFallbackTriggerConsecutiveMisses: number;
@@ -26,6 +32,12 @@ const PRESETS: Record<PresetId, PresetConfig> = {
     autoStableFrames: 2,
     detectionWidth: 480,
     detectorMode: 'ml',
+    graphMlEnabled: true,
+    cocoBookEnabled: true,
+    cocoMinScore: 0.45,
+    cocoUseAsPrimaryInMlMode: true,
+    cvContourEnabled: false,
+    houghSecondaryEnabled: true,
     mlFallbackEnabled: true,
     mlFallbackFrameStride: 5,
     mlFallbackTriggerConsecutiveMisses: 3,
@@ -48,6 +60,12 @@ export function buildShareUrl(input: {
   autoCapture: boolean;
   debugOverlayLevel: DebugOverlayLevel;
   detectionWidth: number;
+  graphMlEnabled: boolean;
+  cocoBookEnabled: boolean;
+  cocoMinScore: number;
+  cocoUseAsPrimaryInMlMode: boolean;
+  cvContourEnabled: boolean;
+  houghSecondaryEnabled: boolean;
   mlFallbackEnabled: boolean;
   mlFallbackFrameStride: number;
   mlFallbackTriggerConsecutiveMisses: number;
@@ -65,6 +83,12 @@ export function buildShareUrl(input: {
   params.set('autoCapture', input.autoCapture ? '1' : '0');
   params.set('debugOverlayLevel', input.debugOverlayLevel);
   params.set('detectionWidth', String(input.detectionWidth));
+  params.set('graphMlEnabled', input.graphMlEnabled ? '1' : '0');
+  params.set('cocoBookEnabled', input.cocoBookEnabled ? '1' : '0');
+  params.set('cocoMinScore', String(input.cocoMinScore));
+  params.set('cocoUseAsPrimaryInMlMode', input.cocoUseAsPrimaryInMlMode ? '1' : '0');
+  params.set('cvContourEnabled', input.cvContourEnabled ? '1' : '0');
+  params.set('houghSecondaryEnabled', input.houghSecondaryEnabled ? '1' : '0');
   params.set('mlFallbackEnabled', input.mlFallbackEnabled ? '1' : '0');
   params.set('mlFallbackFrameStride', String(input.mlFallbackFrameStride));
   params.set(

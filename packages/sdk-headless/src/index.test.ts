@@ -16,4 +16,11 @@ describe('js-document-autocapture exports', () => {
     expect(capabilities.selectedMode).toBe('fallback');
     await scanner.destroy();
   });
+
+  it('injects bundled model base URL by default', async () => {
+    const scanner = createScanner();
+    const scannerConfig = (scanner as unknown as { config?: { mlModelBaseUrl?: string } }).config;
+    expect(scannerConfig?.mlModelBaseUrl).toMatch(/\/models\/$/);
+    await scanner.destroy();
+  });
 });

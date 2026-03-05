@@ -12,6 +12,7 @@ function clamp(value: number, min: number, max: number): number {
 export function ControlPanel({ studio }: ControlPanelProps) {
   const hybridControlsDisabled = studio.detectorMode !== 'hybrid';
   const rescueControlsDisabled = studio.detectorMode !== 'ml';
+  const providerControlsDisabled = studio.detectorMode !== 'ml';
 
   return (
     <aside className="panel control-panel">
@@ -46,6 +47,72 @@ export function ControlPanel({ studio }: ControlPanelProps) {
             onChange={(event) => studio.setAutoCapture(event.target.checked)}
           />
           <span>Auto capture</span>
+        </label>
+      </div>
+
+      <div className="control-grid two">
+        <label className="toggle">
+          <input
+            type="checkbox"
+            checked={studio.graphMlEnabled}
+            disabled={providerControlsDisabled}
+            onChange={(event) => studio.setGraphMlEnabled(event.target.checked)}
+          />
+          <span>Graph ML provider</span>
+        </label>
+        <label className="toggle">
+          <input
+            type="checkbox"
+            checked={studio.cocoBookEnabled}
+            disabled={providerControlsDisabled}
+            onChange={(event) => studio.setCocoBookEnabled(event.target.checked)}
+          />
+          <span>COCO book provider</span>
+        </label>
+      </div>
+
+      <div className="control-group">
+        <label htmlFor="coco-min-score">COCO min score: {studio.cocoMinScore.toFixed(2)}</label>
+        <input
+          id="coco-min-score"
+          type="range"
+          min={0.05}
+          max={0.95}
+          step={0.01}
+          value={studio.cocoMinScore}
+          disabled={providerControlsDisabled || !studio.cocoBookEnabled}
+          onChange={(event) => studio.setCocoMinScore(Number(event.target.value))}
+        />
+      </div>
+
+      <div className="control-grid two">
+        <label className="toggle">
+          <input
+            type="checkbox"
+            checked={studio.cocoUseAsPrimaryInMlMode}
+            disabled={providerControlsDisabled || !studio.cocoBookEnabled}
+            onChange={(event) => studio.setCocoUseAsPrimaryInMlMode(event.target.checked)}
+          />
+          <span>COCO primary tiebreak</span>
+        </label>
+      </div>
+
+      <div className="control-grid two">
+        <label className="toggle">
+          <input
+            type="checkbox"
+            checked={studio.cvContourEnabled}
+            onChange={(event) => studio.setCvContourEnabled(event.target.checked)}
+          />
+          <span>CV contour</span>
+        </label>
+        <label className="toggle">
+          <input
+            type="checkbox"
+            checked={studio.houghSecondaryEnabled}
+            onChange={(event) => studio.setHoughSecondaryEnabled(event.target.checked)}
+          />
+          <span>CV hough</span>
         </label>
       </div>
 
@@ -255,6 +322,22 @@ export function ControlPanel({ studio }: ControlPanelProps) {
         <div>
           <span>Detector</span>
           <strong>{studio.detectorMode}</strong>
+        </div>
+        <div>
+          <span>Graph ML</span>
+          <strong>{studio.graphMlEnabled ? 'on' : 'off'}</strong>
+        </div>
+        <div>
+          <span>COCO book</span>
+          <strong>{studio.cocoBookEnabled ? 'on' : 'off'}</strong>
+        </div>
+        <div>
+          <span>CV contour</span>
+          <strong>{studio.cvContourEnabled ? 'on' : 'off'}</strong>
+        </div>
+        <div>
+          <span>CV hough</span>
+          <strong>{studio.houghSecondaryEnabled ? 'on' : 'off'}</strong>
         </div>
         <div>
           <span>Mode</span>

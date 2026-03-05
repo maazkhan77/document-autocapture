@@ -10,6 +10,12 @@ describe('demo app logic', () => {
     expect(recommended.autoStableFrames).toBe(2);
     expect(recommended.detectionWidth).toBe(480);
     expect(recommended.detectorMode).toBe('ml');
+    expect(recommended.graphMlEnabled).toBe(true);
+    expect(recommended.cocoBookEnabled).toBe(true);
+    expect(recommended.cocoMinScore).toBe(0.45);
+    expect(recommended.cocoUseAsPrimaryInMlMode).toBe(true);
+    expect(recommended.cvContourEnabled).toBe(false);
+    expect(recommended.houghSecondaryEnabled).toBe(true);
     expect(recommended.mlFallbackEnabled).toBe(true);
     expect(recommended.mlFallbackFrameStride).toBe(5);
     expect(recommended.mlFallbackTriggerConsecutiveMisses).toBe(3);
@@ -35,6 +41,12 @@ describe('demo app logic', () => {
       autoCapture: true,
       debugOverlayLevel: 'full',
       detectionWidth: 480,
+      graphMlEnabled: true,
+      cocoBookEnabled: true,
+      cocoMinScore: 0.45,
+      cocoUseAsPrimaryInMlMode: true,
+      cvContourEnabled: false,
+      houghSecondaryEnabled: true,
       mlFallbackEnabled: true,
       mlFallbackFrameStride: 5,
       mlFallbackTriggerConsecutiveMisses: 8,
@@ -53,6 +65,12 @@ describe('demo app logic', () => {
     expect(parsed.searchParams.get('autoCapture')).toBe('1');
     expect(parsed.searchParams.get('debugOverlayLevel')).toBe('full');
     expect(parsed.searchParams.get('detectionWidth')).toBe('480');
+    expect(parsed.searchParams.get('graphMlEnabled')).toBe('1');
+    expect(parsed.searchParams.get('cocoBookEnabled')).toBe('1');
+    expect(parsed.searchParams.get('cocoMinScore')).toBe('0.45');
+    expect(parsed.searchParams.get('cocoUseAsPrimaryInMlMode')).toBe('1');
+    expect(parsed.searchParams.get('cvContourEnabled')).toBe('0');
+    expect(parsed.searchParams.get('houghSecondaryEnabled')).toBe('1');
     expect(parsed.searchParams.get('mlFallbackEnabled')).toBe('1');
     expect(parsed.searchParams.get('mlFallbackFrameStride')).toBe('5');
     expect(parsed.searchParams.get('mlFallbackTriggerConsecutiveMisses')).toBe('8');

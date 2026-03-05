@@ -63,4 +63,11 @@ describe('js-document-autocapture flavor entrypoints', () => {
     expect(v2.mlModelId).toBe('doc-corner-v2');
     expect(v2.warpValidationLevel).toBe('strict');
   });
+
+  it('injects bundled model base URL for flavor-created scanners', async () => {
+    const scanner = createScannerWithFlavor('ml-primary-v2-beta');
+    const scannerConfig = (scanner as unknown as { config?: { mlModelBaseUrl?: string } }).config;
+    expect(scannerConfig?.mlModelBaseUrl).toMatch(/\/models\/$/);
+    await scanner.destroy();
+  });
 });

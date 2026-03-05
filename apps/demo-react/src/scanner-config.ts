@@ -12,6 +12,12 @@ const DEFAULT_SCANNER_CONFIG: ScannerConfig = {
   mlPipelineVersion: 'v2-graph',
   mlModelId: 'doc-corner-v2',
   mlInputSize: 224,
+  graphMlEnabled: true,
+  cocoBookEnabled: true,
+  cocoMinScore: 0.45,
+  cocoUseAsPrimaryInMlMode: true,
+  cvContourEnabled: false,
+  houghSecondaryEnabled: true,
   detectionWidth: 480,
   fallbackDetectionWidth: 320,
   fallbackFps: 9,
@@ -51,6 +57,35 @@ const DEFAULT_SCANNER_CONFIG: ScannerConfig = {
   debug: true,
   videoConstraints: DEFAULT_VIDEO_CONSTRAINTS,
 };
+
+function defaultMlModelBaseUrl(): string {
+  if (typeof window === 'undefined') {
+    return '/models/';
+  }
+  try {
+    return new URL('/models/', window.location.origin).toString();
+  } catch {
+    return '/models/';
+  }
+}
+
+function normalizeMlModelBaseUrl(value: string | undefined): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+  try {
+    return new URL(value).toString();
+  } catch {
+    if (typeof window === 'undefined') {
+      return value;
+    }
+    try {
+      return new URL(value, window.location.origin).toString();
+    } catch {
+      return value;
+    }
+  }
+}
 
 export function defaultOpenCvScriptUrl(): string {
   if (typeof window === 'undefined') {
@@ -103,6 +138,7 @@ export function createDemoScannerConfig(overrides: Partial<ScannerConfig> = {}):
   return {
     ...DEFAULT_SCANNER_CONFIG,
     ...overrides,
+    mlModelBaseUrl: normalizeMlModelBaseUrl(overrides.mlModelBaseUrl) ?? defaultMlModelBaseUrl(),
     videoConstraints: mergedVideoConstraints,
     opencvScriptUrl: overrides.opencvScriptUrl ?? defaultOpenCvScriptUrl(),
   };

@@ -36,6 +36,28 @@ export function useStudioController() {
   const [detectionWidth, setDetectionWidth] = useState(
     parseIntParam(search, 'detectionWidth', defaultPreset.detectionWidth, 320, 640),
   );
+  const [graphMlEnabled, setGraphMlEnabled] = useState(
+    parseBooleanParam(search, 'graphMlEnabled', defaultPreset.graphMlEnabled),
+  );
+  const [cocoBookEnabled, setCocoBookEnabled] = useState(
+    parseBooleanParam(search, 'cocoBookEnabled', defaultPreset.cocoBookEnabled),
+  );
+  const [cocoMinScore, setCocoMinScore] = useState(
+    parseNumberParam(search, 'cocoMinScore', defaultPreset.cocoMinScore, 0.05, 0.95),
+  );
+  const [cocoUseAsPrimaryInMlMode, setCocoUseAsPrimaryInMlMode] = useState(
+    parseBooleanParam(
+      search,
+      'cocoUseAsPrimaryInMlMode',
+      defaultPreset.cocoUseAsPrimaryInMlMode,
+    ),
+  );
+  const [cvContourEnabled, setCvContourEnabled] = useState(
+    parseBooleanParam(search, 'cvContourEnabled', defaultPreset.cvContourEnabled),
+  );
+  const [houghSecondaryEnabled, setHoughSecondaryEnabled] = useState(
+    parseBooleanParam(search, 'houghSecondaryEnabled', defaultPreset.houghSecondaryEnabled),
+  );
   const [confidenceThreshold, setConfidenceThreshold] = useState(
     parseNumberParam(search, 'confidenceThreshold', defaultPreset.confidenceThreshold, 0.2, 0.85),
   );
@@ -106,6 +128,12 @@ export function useStudioController() {
       createDemoScannerConfig({
         detectionWidth,
         detectorMode,
+        graphMlEnabled,
+        cocoBookEnabled,
+        cocoMinScore,
+        cocoUseAsPrimaryInMlMode,
+        cvContourEnabled,
+        houghSecondaryEnabled,
         mlFallbackEnabled,
         mlFallbackFrameStride,
         mlFallbackTriggerConsecutiveMisses,
@@ -129,6 +157,12 @@ export function useStudioController() {
     [
       detectionWidth,
       detectorMode,
+      graphMlEnabled,
+      cocoBookEnabled,
+      cocoMinScore,
+      cocoUseAsPrimaryInMlMode,
+      cvContourEnabled,
+      houghSecondaryEnabled,
       mlFallbackEnabled,
       mlFallbackFrameStride,
       mlFallbackTriggerConsecutiveMisses,
@@ -278,6 +312,12 @@ export function useStudioController() {
       autoCapture,
       debugOverlayLevel,
       detectionWidth,
+      graphMlEnabled,
+      cocoBookEnabled,
+      cocoMinScore,
+      cocoUseAsPrimaryInMlMode,
+      cvContourEnabled,
+      houghSecondaryEnabled,
       mlFallbackEnabled,
       mlFallbackFrameStride,
       mlFallbackTriggerConsecutiveMisses,
@@ -303,6 +343,12 @@ export function useStudioController() {
     autoCapture,
     debugOverlayLevel,
     detectionWidth,
+    graphMlEnabled,
+    cocoBookEnabled,
+    cocoMinScore,
+    cocoUseAsPrimaryInMlMode,
+    cvContourEnabled,
+    houghSecondaryEnabled,
     mlFallbackEnabled,
     mlFallbackFrameStride,
     mlFallbackTriggerConsecutiveMisses,
@@ -405,6 +451,12 @@ export function useStudioController() {
     setStabilityWindowMs(next.stabilityWindowMs);
     setAutoStableFrames(next.autoStableFrames);
     setDetectionWidth(next.detectionWidth);
+    setGraphMlEnabled(next.graphMlEnabled);
+    setCocoBookEnabled(next.cocoBookEnabled);
+    setCocoMinScore(next.cocoMinScore);
+    setCocoUseAsPrimaryInMlMode(next.cocoUseAsPrimaryInMlMode);
+    setCvContourEnabled(next.cvContourEnabled);
+    setHoughSecondaryEnabled(next.houghSecondaryEnabled);
     setMlFallbackEnabled(next.mlFallbackEnabled);
     setMlFallbackFrameStride(next.mlFallbackFrameStride);
     setMlFallbackTriggerConsecutiveMisses(next.mlFallbackTriggerConsecutiveMisses);
@@ -468,6 +520,18 @@ export function useStudioController() {
     setDebugOverlayLevel,
     autoCapture,
     setAutoCapture,
+    graphMlEnabled,
+    setGraphMlEnabled,
+    cocoBookEnabled,
+    setCocoBookEnabled,
+    cocoMinScore,
+    setCocoMinScore,
+    cocoUseAsPrimaryInMlMode,
+    setCocoUseAsPrimaryInMlMode,
+    cvContourEnabled,
+    setCvContourEnabled,
+    houghSecondaryEnabled,
+    setHoughSecondaryEnabled,
     mlFallbackEnabled,
     setMlFallbackEnabled,
     mlFallbackFrameStride,

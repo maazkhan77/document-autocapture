@@ -25,6 +25,16 @@ function formatConfidence(value: number | undefined): string {
 }
 
 export function mount(container: HTMLElement): () => Promise<void> {
+  const search = new URLSearchParams(window.location.search);
+  const initialGraphMlEnabled = search.get('graphMlEnabled') !== '0';
+  const initialCocoBookEnabled = search.get('cocoBookEnabled') !== '0';
+  const initialCocoMinScore = Math.max(
+    0.05,
+    Math.min(0.95, Number.parseFloat(search.get('cocoMinScore') ?? '0.45') || 0.45),
+  );
+  const initialCvContourEnabled = search.get('cvContourEnabled') === '1';
+  const initialHoughSecondaryEnabled = search.get('houghSecondaryEnabled') !== '0';
+
   const root = createNode('div', 'integration-demo-grid js-headless-root');
   const liveCard = createNode('section', 'integration-live-card');
   const outputCard = createNode('section', 'integration-output-card');
@@ -48,6 +58,45 @@ export function mount(container: HTMLElement): () => Promise<void> {
   const guidanceChip = createNode('span', 'chip', 'Guidance n/a');
   const fpsChip = createNode('span', 'chip', 'FPS 0');
   const warningLine = createNode('p', 'integration-note', 'Event stream active');
+  const providerControls = createNode('div', 'control-grid two');
+  const graphToggleLabel = createNode('label', 'toggle');
+  const graphToggle = createNode('input') as HTMLInputElement;
+  graphToggle.type = 'checkbox';
+  graphToggle.checked = initialGraphMlEnabled;
+  graphToggleLabel.append(graphToggle, createNode('span', undefined, 'Graph ML'));
+
+  const cocoToggleLabel = createNode('label', 'toggle');
+  const cocoToggle = createNode('input') as HTMLInputElement;
+  cocoToggle.type = 'checkbox';
+  cocoToggle.checked = initialCocoBookEnabled;
+  cocoToggleLabel.append(cocoToggle, createNode('span', undefined, 'COCO book'));
+  providerControls.append(graphToggleLabel, cocoToggleLabel);
+
+  const cocoControls = createNode('div', 'control-grid two');
+  const cocoScoreGroup = createNode('div', 'control-group');
+  const cocoScoreLabel = createNode('label', undefined, 'COCO min score');
+  const cocoScoreInput = createNode('input') as HTMLInputElement;
+  cocoScoreInput.type = 'range';
+  cocoScoreInput.min = '0.05';
+  cocoScoreInput.max = '0.95';
+  cocoScoreInput.step = '0.01';
+  cocoScoreInput.value = String(initialCocoMinScore);
+  cocoScoreGroup.append(cocoScoreLabel, cocoScoreInput);
+  cocoControls.append(cocoScoreGroup);
+
+  const cvControls = createNode('div', 'control-grid two');
+  const contourToggleLabel = createNode('label', 'toggle');
+  const contourToggle = createNode('input') as HTMLInputElement;
+  contourToggle.type = 'checkbox';
+  contourToggle.checked = initialCvContourEnabled;
+  contourToggleLabel.append(contourToggle, createNode('span', undefined, 'CV contour'));
+
+  const houghToggleLabel = createNode('label', 'toggle');
+  const houghToggle = createNode('input') as HTMLInputElement;
+  houghToggle.type = 'checkbox';
+  houghToggle.checked = initialHoughSecondaryEnabled;
+  houghToggleLabel.append(houghToggle, createNode('span', undefined, 'CV hough'));
+  cvControls.append(contourToggleLabel, houghToggleLabel);
 
   const outputTitle = createNode('h3', undefined, 'Latest Capture');
   const preview = createNode('img', 'integration-capture-preview') as HTMLImageElement;
@@ -63,7 +112,7 @@ export function mount(container: HTMLElement): () => Promise<void> {
   stage.append(video);
   actions.append(startButton, stopButton, captureButton);
   chipRow.append(runningChip, sourceChip, statusChip, candidateChip, confidenceChip, guidanceChip, fpsChip);
-  liveCard.append(stage, actions, chipRow, warningLine);
+  liveCard.append(stage, providerControls, cocoControls, cvControls, actions, chipRow, warningLine);
   captureMeta.append(decisionMeta, detectorMeta, warpMeta, elapsedMeta);
   outputCard.append(outputTitle, preview, emptyState, captureMeta);
   root.append(liveCard, outputCard);
@@ -73,6 +122,12 @@ export function mount(container: HTMLElement): () => Promise<void> {
     detectorMode: 'ml',
     mlPipelineVersion: 'v2-graph',
     mlModelId: 'doc-corner-v2',
+    graphMlEnabled: initialGraphMlEnabled,
+    cocoBookEnabled: initialCocoBookEnabled,
+    cocoMinScore: initialCocoMinScore,
+    cocoUseAsPrimaryInMlMode: true,
+    cvContourEnabled: initialCvContourEnabled,
+    houghSecondaryEnabled: initialHoughSecondaryEnabled,
     postCaptureRefine: 'safe',
     warpValidationLevel: 'strict',
     debugOverlayLevel: 'basic',
@@ -128,6 +183,26 @@ export function mount(container: HTMLElement): () => Promise<void> {
     runningChip.className = running ? 'pill pill-ok' : 'pill pill-muted';
   };
 
+  const applyConfigControls = (): void => {
+    const scoreValue = Math.max(0.05, Math.min(0.95, Number(cocoScoreInput.value) || 0.45));
+    scanner.updateConfig({
+      graphMlEnabled: graphToggle.checked,
+      cocoBookEnabled: cocoToggle.checked,
+      cocoMinScore: scoreValue,
+      cvContourEnabled: contourToggle.checked,
+      houghSecondaryEnabled: houghToggle.checked,
+    });
+    const params = new URLSearchParams(window.location.search);
+    params.set('graphMlEnabled', graphToggle.checked ? '1' : '0');
+    params.set('cocoBookEnabled', cocoToggle.checked ? '1' : '0');
+    params.set('cocoMinScore', String(scoreValue));
+    params.set('cvContourEnabled', contourToggle.checked ? '1' : '0');
+    params.set('houghSecondaryEnabled', houghToggle.checked ? '1' : '0');
+    const query = params.toString();
+    const nextUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+    window.history.replaceState(null, '', nextUrl);
+  };
+
   const startScanner = async (): Promise<void> => {
     try {
       await scanner.start();
@@ -168,12 +243,26 @@ export function mount(container: HTMLElement): () => Promise<void> {
     void captureNow();
   };
 
+  const onControlChange = (): void => {
+    applyConfigControls();
+  };
+  graphToggle.onchange = onControlChange;
+  cocoToggle.onchange = onControlChange;
+  cocoScoreInput.oninput = onControlChange;
+  contourToggle.onchange = onControlChange;
+  houghToggle.onchange = onControlChange;
+
   void startScanner();
 
   return async () => {
     startButton.onclick = null;
     stopButton.onclick = null;
     captureButton.onclick = null;
+    graphToggle.onchange = null;
+    cocoToggle.onchange = null;
+    cocoScoreInput.oninput = null;
+    contourToggle.onchange = null;
+    houghToggle.onchange = null;
     for (const unsubscribe of unsubscribers) {
       unsubscribe();
     }

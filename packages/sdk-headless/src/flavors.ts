@@ -9,6 +9,7 @@ import {
   type ScannerSession,
   type WarpTierUsed,
 } from '@document-autocapture/runtime-web';
+import { defaultMlModelBaseUrl } from './model-base-url';
 
 export type ScannerFlavor =
   | 'core'
@@ -85,7 +86,14 @@ export function withScannerFlavor(flavor: ScannerFlavor, config: ScannerConfig =
 }
 
 export function createScannerWithFlavor(flavor: ScannerFlavor, config: ScannerConfig = {}): ScannerSession {
-  return createScannerSession(withScannerFlavor(flavor, config));
+  const flavoredConfig = withScannerFlavor(flavor, config);
+  if (flavoredConfig.mlModelBaseUrl) {
+    return createScannerSession(flavoredConfig);
+  }
+  return createScannerSession({
+    ...flavoredConfig,
+    mlModelBaseUrl: defaultMlModelBaseUrl(),
+  });
 }
 
 export {

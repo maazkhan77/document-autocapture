@@ -1,10 +1,58 @@
 import { useDocumentAutoCapture } from 'react-document-autocapture';
 import type { ScannerConfig } from 'js-document-autocapture';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { IntegrationShell } from './shared/IntegrationShell';
 import { createDemoScannerConfig } from '../scanner-config';
 
+interface IntegrationControlsState {
+  graphMlEnabled: boolean;
+  cocoBookEnabled: boolean;
+  cocoMinScore: number;
+  cvContourEnabled: boolean;
+  houghSecondaryEnabled: boolean;
+}
+
+type ControlsAction = {
+  type: 'patch';
+  patch: Partial<IntegrationControlsState>;
+};
+
+function clampFloat(value: number, min: number, max: number, fallback: number): number {
+  if (!Number.isFinite(value)) {
+    return fallback;
+  }
+  return Math.max(min, Math.min(max, value));
+}
+
+function parseControlsState(search: URLSearchParams): IntegrationControlsState {
+  return {
+    graphMlEnabled: search.get('graphMlEnabled') !== '0',
+    cocoBookEnabled: search.get('cocoBookEnabled') !== '0',
+    cocoMinScore: clampFloat(Number.parseFloat(search.get('cocoMinScore') ?? '0.45'), 0.05, 0.95, 0.45),
+    cvContourEnabled: search.get('cvContourEnabled') === '1',
+    houghSecondaryEnabled: search.get('houghSecondaryEnabled') !== '0',
+  };
+}
+
+function controlsReducer(
+  state: IntegrationControlsState,
+  action: ControlsAction,
+): IntegrationControlsState {
+  switch (action.type) {
+    case 'patch':
+      return {
+        ...state,
+        ...action.patch,
+      };
+    default:
+      return state;
+  }
+}
+
 export function ReactIntegrationPage() {
+  const search = useMemo(() => new URLSearchParams(window.location.search), []);
+  const [controls, dispatch] = useReducer(controlsReducer, search, parseControlsState);
+
   const captureUrlRef = useRef<string | undefined>(undefined);
   const [capturePreviewUrl, setCapturePreviewUrl] = useState<string>('');
 
@@ -14,11 +62,17 @@ export function ReactIntegrationPage() {
         detectorMode: 'ml',
         mlPipelineVersion: 'v2-graph',
         mlModelId: 'doc-corner-v2',
+        graphMlEnabled: controls.graphMlEnabled,
+        cocoBookEnabled: controls.cocoBookEnabled,
+        cocoMinScore: controls.cocoMinScore,
+        cocoUseAsPrimaryInMlMode: true,
+        cvContourEnabled: controls.cvContourEnabled,
+        houghSecondaryEnabled: controls.houghSecondaryEnabled,
         postCaptureRefine: 'safe',
         warpValidationLevel: 'strict',
         debugOverlayLevel: 'basic',
       }),
-    [],
+    [controls],
   );
 
   const {
@@ -63,6 +117,19 @@ export function ReactIntegrationPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('graphMlEnabled', controls.graphMlEnabled ? '1' : '0');
+    params.set('cocoBookEnabled', controls.cocoBookEnabled ? '1' : '0');
+    params.set('cocoMinScore', String(controls.cocoMinScore));
+    params.set('cvContourEnabled', controls.cvContourEnabled ? '1' : '0');
+    params.set('houghSecondaryEnabled', controls.houghSecondaryEnabled ? '1' : '0');
+
+    const query = params.toString();
+    const nextUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+    window.history.replaceState(null, '', nextUrl);
+  }, [controls]);
+
   const snippets = useMemo(
     () => [
       {
@@ -80,6 +147,11 @@ export function ScannerView() {
     detectorMode: 'ml',
     mlPipelineVersion: 'v2-graph',
     mlModelId: 'doc-corner-v2',
+    graphMlEnabled: true,
+    cocoBookEnabled: true,
+    cocoMinScore: 0.45,
+    cvContourEnabled: false,
+    houghSecondaryEnabled: true,
     warpValidationLevel: 'strict',
     captureMimeType: 'image/png',
   });
@@ -110,6 +182,63 @@ export function ScannerView() {
         <section className="integration-live-card">
           <div className="integration-camera-stage">
             <video ref={videoRef} autoPlay playsInline muted />
+          </div>
+
+          <div className="control-grid two">
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={controls.graphMlEnabled}
+                onChange={(event) => dispatch({ type: 'patch', patch: { graphMlEnabled: event.target.checked } })}
+              />
+              <span>Graph ML</span>
+            </label>
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={controls.cocoBookEnabled}
+                onChange={(event) => dispatch({ type: 'patch', patch: { cocoBookEnabled: event.target.checked } })}
+              />
+              <span>COCO book</span>
+            </label>
+          </div>
+
+          <div className="control-group">
+            <label htmlFor="react-coco-score">COCO min score</label>
+            <input
+              id="react-coco-score"
+              type="range"
+              min={0.05}
+              max={0.95}
+              step={0.01}
+              value={controls.cocoMinScore}
+              onChange={(event) => {
+                dispatch({
+                  type: 'patch',
+                  patch: { cocoMinScore: clampFloat(Number(event.target.value), 0.05, 0.95, 0.45) },
+                });
+              }}
+              disabled={!controls.cocoBookEnabled}
+            />
+          </div>
+
+          <div className="control-grid two">
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={controls.cvContourEnabled}
+                onChange={(event) => dispatch({ type: 'patch', patch: { cvContourEnabled: event.target.checked } })}
+              />
+              <span>CV contour</span>
+            </label>
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={controls.houghSecondaryEnabled}
+                onChange={(event) => dispatch({ type: 'patch', patch: { houghSecondaryEnabled: event.target.checked } })}
+              />
+              <span>CV hough</span>
+            </label>
           </div>
 
           <div className="action-row">
