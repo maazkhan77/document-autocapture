@@ -13,6 +13,9 @@ export function toEngineConfig(config: Partial<ScannerConfig>): Partial<EngineCo
       engineConfig[key] = config[key] as never;
     }
   }
+  if (config.cvContourEnabled !== undefined) {
+    engineConfig.contourEnabled = config.cvContourEnabled;
+  }
   return engineConfig;
 }
 
@@ -33,6 +36,10 @@ export function toWorkerDetectorConfig(config: ScannerConfig): WorkerDetectorCon
       : config.mlModelId ?? 'doc-corner-v1';
   return {
     detectorMode: normalizeDetectorMode(config.detectorMode),
+    graphMlEnabled: config.graphMlEnabled !== false,
+    cocoBookEnabled: config.cocoBookEnabled !== false,
+    cocoMinScore: Math.max(0, Math.min(1, config.cocoMinScore ?? 0.45)),
+    cocoUseAsPrimaryInMlMode: config.cocoUseAsPrimaryInMlMode !== false,
     mlFallbackEnabled: config.mlFallbackEnabled !== false,
     mlFallbackFrameStride: Math.max(1, Math.floor(config.mlFallbackFrameStride ?? 5)),
     mlFallbackTriggerConsecutiveMisses: Math.max(
@@ -59,4 +66,3 @@ export function toWorkerDetectorConfig(config: ScannerConfig): WorkerDetectorCon
     debug: config.debug,
   };
 }
-

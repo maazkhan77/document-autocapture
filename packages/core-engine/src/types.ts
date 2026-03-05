@@ -1,6 +1,6 @@
 export type ExecutionMode = 'best' | 'standard' | 'fallback';
 export type DetectorSource = 'cv' | 'ml';
-export type ProposalSource = 'contour' | 'hough' | 'ml';
+export type ProposalSource = 'contour' | 'hough' | 'ml' | 'coco';
 export type FallbackState = 'inactive' | 'armed' | 'active';
 export type DetectionRejectionReason =
   | 'none'
@@ -164,6 +164,7 @@ export interface EngineConfig {
   identitySwitchThresholdPx: number;
   detectionFrameBudgetMs: number;
   workerHardCeilingMs: number;
+  contourEnabled: boolean;
   houghSecondaryEnabled: boolean;
   houghEdgeDensityMin: number;
   houghEdgeDensityMax: number;

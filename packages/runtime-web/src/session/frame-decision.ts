@@ -8,6 +8,12 @@ interface WorkerFrameTelemetry {
   mlModelLoaded?: boolean;
   mlInferenceUsed?: boolean;
   mlRescueUsed?: boolean;
+  graphAttempted?: boolean;
+  cocoAttempted?: boolean;
+  cocoReady?: boolean;
+  cocoUsed?: boolean;
+  providerUsed?: string;
+  providerRejectReason?: string;
 }
 
 export interface AutoCaptureReadiness {
@@ -103,7 +109,7 @@ export function logFrameDebug({
   const mlRescue = telemetry?.mlRescueUsed ?? false;
   const mlTelemetry =
     telemetry
-      ? ` cvAttempted=${cvAttempted} cvFallback=${cvFallbackReason} mlReady=${telemetry.mlReady} mlLoaded=${telemetry.mlModelLoaded} mlInfer=${telemetry.mlInferenceUsed} mlRescue=${mlRescue}`
+      ? ` cvAttempted=${cvAttempted} cvFallback=${cvFallbackReason} mlReady=${telemetry.mlReady} mlLoaded=${telemetry.mlModelLoaded} mlInfer=${telemetry.mlInferenceUsed} mlRescue=${mlRescue} graph=${telemetry.graphAttempted} coco=${telemetry.cocoAttempted} cocoReady=${telemetry.cocoReady} cocoUsed=${telemetry.cocoUsed} provider=${telemetry.providerUsed ?? 'n/a'} reject=${telemetry.providerRejectReason ?? 'none'}`
       : '';
   const detTimings = det.timings
     ? `${det.timings.totalMs.toFixed(1)}ms (gray:${det.timings.grayscaleMs.toFixed(0)} blur:${det.timings.blurMs.toFixed(0)} edge:${det.timings.edgesMs.toFixed(0)} cand:${det.timings.candidateMs.toFixed(0)} score:${det.timings.scoringMs.toFixed(0)})`

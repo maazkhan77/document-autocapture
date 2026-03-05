@@ -81,6 +81,11 @@ export interface ScannerConfig extends Partial<EngineConfig> {
   mlWasmBaseUrl?: string;
   mlInputSize?: number;
   mlPipelineVersion?: MlPipelineVersion;
+  graphMlEnabled?: boolean;
+  cocoBookEnabled?: boolean;
+  cocoMinScore?: number;
+  cocoUseAsPrimaryInMlMode?: boolean;
+  cvContourEnabled?: boolean;
   mlRescueEnabled?: boolean;
   mlRescueFrameStride?: number;
   warpValidationLevel?: WarpValidationLevel;

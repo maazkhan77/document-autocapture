@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ScannerConfig } from '../types';
-import { normalizeDetectorMode, toWorkerDetectorConfig } from './config-mapper';
+import { normalizeDetectorMode, toEngineConfig, toWorkerDetectorConfig } from './config-mapper';
 
 describe('session config mapper', () => {
   it('normalizes detector mode values', () => {
@@ -15,6 +15,10 @@ describe('session config mapper', () => {
       detectorMode: 'ml',
       mlPipelineVersion: 'v2-graph',
       mlModelId: 'doc-corner-v2',
+      graphMlEnabled: true,
+      cocoBookEnabled: true,
+      cocoMinScore: 0.5,
+      cocoUseAsPrimaryInMlMode: true,
       mlRescueEnabled: false,
       mlRescueFrameStride: 4,
       mlFallbackEnabled: true,
@@ -27,11 +31,22 @@ describe('session config mapper', () => {
     expect(mapped.detectorMode).toBe('ml');
     expect(mapped.mlPipelineVersion).toBe('v2-graph');
     expect(mapped.mlModelId).toBe('doc-corner-v2');
+    expect(mapped.graphMlEnabled).toBe(true);
+    expect(mapped.cocoBookEnabled).toBe(true);
+    expect(mapped.cocoMinScore).toBe(0.5);
+    expect(mapped.cocoUseAsPrimaryInMlMode).toBe(true);
     expect(mapped.mlFallbackFrameStride).toBe(6);
     expect(mapped.mlFallbackTriggerConsecutiveMisses).toBe(5);
     expect(mapped.mlFallbackMinCvConfidence).toBe(0.6);
     expect(mapped.mlRescueEnabled).toBe(false);
     expect(mapped.mlRescueFrameStride).toBe(4);
   });
-});
 
+  it('maps cvContourEnabled into engine contourEnabled', () => {
+    const scannerConfig: ScannerConfig = {
+      cvContourEnabled: true,
+    };
+    const mapped = toEngineConfig(scannerConfig);
+    expect(mapped.contourEnabled).toBe(true);
+  });
+});

@@ -6,6 +6,10 @@ export type CvFallbackReason = 'none' | 'ml_miss' | 'ml_reject' | 'ml_unavailabl
 
 export interface WorkerDetectorConfig {
   detectorMode: DetectorMode;
+  graphMlEnabled: boolean;
+  cocoBookEnabled: boolean;
+  cocoMinScore: number;
+  cocoUseAsPrimaryInMlMode: boolean;
   mlFallbackEnabled: boolean;
   mlFallbackFrameStride: number;
   mlFallbackTriggerConsecutiveMisses: number;
@@ -79,6 +83,12 @@ export type WorkerFrameResultMessage = {
     mlModelLoaded: boolean;
     mlInferenceUsed: boolean;
     mlRescueUsed?: boolean;
+    graphAttempted: boolean;
+    cocoAttempted: boolean;
+    cocoReady: boolean;
+    cocoUsed: boolean;
+    providerUsed?: 'graph_v2' | 'graph_v1' | 'coco_book' | 'cv_hough' | 'cv_contour';
+    providerRejectReason?: string;
     cvAttempted: boolean;
     cvFallbackReason: CvFallbackReason;
     warpRejected?: boolean;

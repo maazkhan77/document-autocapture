@@ -80,4 +80,14 @@ describe('opencv hough helpers', () => {
     );
     expect(shouldRun).toBe(true);
   });
+
+  it('disables contour collection when contourEnabled is false', () => {
+    expect(__opencvTestUtils.shouldCollectContourCandidates(defaultEngineConfig)).toBe(false);
+    expect(
+      __opencvTestUtils.shouldCollectContourCandidates({
+        ...defaultEngineConfig,
+        contourEnabled: true,
+      }),
+    ).toBe(true);
+  });
 });

@@ -2,6 +2,7 @@ import { clamp, orderQuadCorners, quadArea, quadPerimeter, quadToPoints, type Qu
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface TfjsGraphModel {
+  execute?: (input: any) => any | any[];
   executeAsync: (input: any) => Promise<any | any[]>;
 }
 
@@ -123,10 +124,33 @@ interface LetterboxTransform {
   padTop: number;
 }
 
+function resolveBaseUrl(base: string): string {
+  try {
+    return new URL(base).toString();
+  } catch {
+    const maybeLocation = (globalThis as { location?: { href?: string; origin?: string } }).location;
+    if (maybeLocation?.href) {
+      try {
+        return new URL(base, maybeLocation.href).toString();
+      } catch {
+        // Fall through to origin/import.meta fallback.
+      }
+    }
+    if (maybeLocation?.origin) {
+      try {
+        return new URL(base, maybeLocation.origin).toString();
+      } catch {
+        // Fall through to import.meta fallback.
+      }
+    }
+    return new URL(base, import.meta.url).toString();
+  }
+}
+
 function safeUrl(base: string, relative: string): string {
   const looksLikeFile = /\/[^/]+\.[^/]+(?:[?#].*)?$/.test(base);
   const normalizedBase = base.endsWith('/') || looksLikeFile ? base : `${base}/`;
-  return new URL(relative, normalizedBase).toString();
+  return new URL(relative, resolveBaseUrl(normalizedBase)).toString();
 }
 
 function percentile(values: number[], pct: number): number {
@@ -619,7 +643,19 @@ class TfjsCornerProvider implements MlQuadProvider {
         );
       });
 
-      const output = await this.model.executeAsync(tensor);
+      let output: unknown;
+      if (typeof this.model.execute === 'function') {
+        try {
+          output = this.model.execute(tensor);
+          if (output instanceof Promise) {
+            output = await output;
+          }
+        } catch {
+          output = await this.model.executeAsync(tensor);
+        }
+      } else {
+        output = await this.model.executeAsync(tensor);
+      }
       this.tf.dispose(tensor);
 
       const outputTensors: TfjsTensorLike[] = Array.isArray(output)

@@ -113,7 +113,11 @@ class ScannerSessionImpl implements ScannerSession {
 
   private pendingFrames = new Map<
     number,
-    { resolve: (result: FrameProcessResult) => void; reject: (error: Error) => void }
+    {
+      resolve: (result: FrameProcessResult) => void;
+      reject: (error: Error) => void;
+      timeoutHandle: number;
+    }
   >();
 
   private worker?: Worker;
@@ -219,6 +223,11 @@ class ScannerSessionImpl implements ScannerSession {
       mlPipelineVersion: 'v1-heuristic',
       mlModelId: 'doc-corner-v1',
       mlInputSize: 320,
+      graphMlEnabled: true,
+      cocoBookEnabled: true,
+      cocoMinScore: 0.45,
+      cocoUseAsPrimaryInMlMode: true,
+      cvContourEnabled: false,
       warpValidationLevel: 'standard',
       postCaptureRefine: 'off',
       opencvScriptUrl: defaultOpenCvScriptUrl(),
@@ -412,6 +421,11 @@ class ScannerSessionImpl implements ScannerSession {
               `mlPipeline=${workerDetectorConfig.mlPipelineVersion ?? 'v1-heuristic'} | ` +
               `mlModelId=${workerDetectorConfig.mlModelId ?? 'doc-corner-v1'} | ` +
               `mlInputSize=${workerDetectorConfig.mlInputSize ?? this.config.mlInputSize ?? 'auto'} | ` +
+              `graphMl=${workerDetectorConfig.graphMlEnabled ? 'on' : 'off'} | ` +
+              `cocoBook=${workerDetectorConfig.cocoBookEnabled ? 'on' : 'off'} ` +
+              `(everyFrame=on, minScore=${workerDetectorConfig.cocoMinScore.toFixed(2)}, primary=${workerDetectorConfig.cocoUseAsPrimaryInMlMode ? 'on' : 'off'}) | ` +
+              `cvContour=${this.engineConfig.contourEnabled ? 'on' : 'off'} | ` +
+              `hough=${this.engineConfig.houghSecondaryEnabled ? 'on' : 'off'} | ` +
               `warpValidation=${this.config.warpValidationLevel ?? 'standard'} | ` +
               `postRefine=${this.config.postCaptureRefine ?? 'off'} | ` +
               `captureMime=${this.config.captureMimeType ?? 'image/png'} | ` +
@@ -543,6 +557,9 @@ class ScannerSessionImpl implements ScannerSession {
   private rejectPendingFrames(error: Error): void {
     for (const [id, pending] of this.pendingFrames.entries()) {
       this.pendingFrames.delete(id);
+      if (pending.timeoutHandle) {
+        clearTimeout(pending.timeoutHandle);
+      }
       pending.reject(error);
     }
     this.frameBusy = false;
@@ -670,9 +687,21 @@ class ScannerSessionImpl implements ScannerSession {
 
     const id = ++this.frameId;
     this.frameBusy = true;
+    const workerFrameTimeoutMs = Math.max(
+      350,
+      (this.engineConfig.workerHardCeilingMs ?? defaultEngineConfig.workerHardCeilingMs) * 6,
+    );
 
     const promise = new Promise<FrameProcessResult>((resolve, reject) => {
-      this.pendingFrames.set(id, { resolve, reject });
+      const timeoutHandle = window.setTimeout(() => {
+        const pending = this.pendingFrames.get(id);
+        if (!pending) {
+          return;
+        }
+        this.pendingFrames.delete(id);
+        pending.reject(new Error(`Worker frame timeout after ${workerFrameTimeoutMs}ms`));
+      }, workerFrameTimeoutMs);
+      this.pendingFrames.set(id, { resolve, reject, timeoutHandle });
     });
 
     if (this.executionMode === 'best' && this.prepareBestIngestionCanvas(targetWidth, targetHeight)) {
@@ -692,6 +721,10 @@ class ScannerSessionImpl implements ScannerSession {
         } catch (error) {
           bitmap.close();
           this.frameBusy = false;
+          const pending = this.pendingFrames.get(id);
+          if (pending?.timeoutHandle) {
+            clearTimeout(pending.timeoutHandle);
+          }
           this.pendingFrames.delete(id);
           this.emitter.emit(
             'error',
@@ -725,6 +758,10 @@ class ScannerSessionImpl implements ScannerSession {
         );
       } catch (error) {
         this.frameBusy = false;
+        const pending = this.pendingFrames.get(id);
+        if (pending?.timeoutHandle) {
+          clearTimeout(pending.timeoutHandle);
+        }
         this.pendingFrames.delete(id);
         this.emitter.emit(
           'error',
@@ -793,11 +830,17 @@ class ScannerSessionImpl implements ScannerSession {
         const pending = this.pendingFrames.get(message.id);
         if (pending) {
           this.pendingFrames.delete(message.id);
+          if (pending.timeoutHandle) {
+            clearTimeout(pending.timeoutHandle);
+          }
           pending.reject(error);
         }
       } else {
         for (const [id, pending] of this.pendingFrames.entries()) {
           this.pendingFrames.delete(id);
+          if (pending.timeoutHandle) {
+            clearTimeout(pending.timeoutHandle);
+          }
           pending.reject(error);
         }
       }
@@ -827,18 +870,30 @@ class ScannerSessionImpl implements ScannerSession {
         const fallbackReason = message.telemetry?.cvFallbackReason ?? 'none';
         const mlRescue =
           (message.telemetry as { mlRescueUsed?: boolean } | undefined)?.mlRescueUsed ?? false;
+        const providerUsed =
+          (message.telemetry as { providerUsed?: string } | undefined)?.providerUsed ?? 'n/a';
+        const providerReject =
+          (message.telemetry as { providerRejectReason?: string } | undefined)?.providerRejectReason ??
+          'none';
         console.warn(
           `[document-autocapture] ML mode fell back to CV (reason=${fallbackReason}) ` +
             `cvAttempted=${message.telemetry?.cvAttempted ?? false} ` +
             `mlReady=${message.telemetry?.mlReady ?? false} ` +
             `mlLoaded=${message.telemetry?.mlModelLoaded ?? false} ` +
             `mlInfer=${message.telemetry?.mlInferenceUsed ?? false} ` +
-            `mlRescue=${mlRescue}`,
+            `mlRescue=${mlRescue} ` +
+            `provider=${providerUsed} reject=${providerReject} ` +
+            `graphAttempted=${(message.telemetry as { graphAttempted?: boolean } | undefined)?.graphAttempted ?? false} ` +
+            `cocoAttempted=${(message.telemetry as { cocoAttempted?: boolean } | undefined)?.cocoAttempted ?? false} ` +
+            `cocoReady=${(message.telemetry as { cocoReady?: boolean } | undefined)?.cocoReady ?? false}`,
         );
       }
       const pending = this.pendingFrames.get(message.id);
       if (pending) {
         this.pendingFrames.delete(message.id);
+        if (pending.timeoutHandle) {
+          clearTimeout(pending.timeoutHandle);
+        }
         pending.resolve(message.result);
       }
     }

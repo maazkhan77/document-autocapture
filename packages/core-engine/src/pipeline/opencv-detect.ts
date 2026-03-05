@@ -1,8 +1,8 @@
 /**
  * OpenCV.js document detection pipeline.
  *
- * Primary path: contour-based quad extraction.
- * Recovery path: Hough-line quad reconstruction (guarded by edge-density and contour confidence proxies).
+ * Primary path: configurable contour extraction and/or Hough-line reconstruction.
+ * Hough remains the robust recovery path and can run as the only CV provider when contour is disabled.
  */
 
 import type { DetectionCandidate, EngineConfig, Point, ProposalSource, Quad } from '../types';
@@ -37,6 +37,7 @@ interface ContourLike {
 interface ContourVectorLike {
   size: () => number;
   get: (index: number) => ContourLike;
+  delete: () => void;
 }
 
 interface HoughLineSegment {
@@ -215,6 +216,10 @@ function shouldRunHoughFallback(
       contourWeakProxy ||
       contourTinyProxy)
   );
+}
+
+function shouldCollectContourCandidates(config: EngineConfig): boolean {
+  return config.contourEnabled !== false;
 }
 
 function dedupeCandidates(
@@ -700,20 +705,27 @@ export function detectWithOpenCV(
     suppressFrameBorderEdges(edges.data as Uint8Array, width, height, borderMargin);
     suppressFrameBorderEdges(dilated.data as Uint8Array, width, height, borderMargin);
 
-    const contours = new cv.MatVector();
-    mats.push(contours);
-    const hierarchy = new cv.Mat();
-    mats.push(hierarchy);
-    cv.findContours(dilated, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+    const contourEnabled = config.contourEnabled !== false;
+    let contours: ContourVectorLike | undefined;
+    if (contourEnabled) {
+      const contourMatVector = new cv.MatVector() as ContourVectorLike;
+      mats.push(contourMatVector);
+      const hierarchy = new cv.Mat();
+      mats.push(hierarchy);
+      cv.findContours(dilated, contourMatVector, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+      contours = contourMatVector;
+    }
 
     const rawEdgeMap = edges.data as ArrayLike<number>;
     const edgeMap = dilated.data as ArrayLike<number>;
     // Use pre-dilation density for hough gating; dilated maps overstate density.
     const edgeDensity = computeEdgeDensity(rawEdgeMap);
 
-    let contourCandidates = collectContourCandidates(contours, edgeMap, width, height, config, 'contour');
+    let contourCandidates = contours
+      ? collectContourCandidates(contours, edgeMap, width, height, config, 'contour')
+      : [];
 
-    if (contourCandidates.length === 0) {
+    if (contourEnabled && contourCandidates.length === 0) {
       const adaptive = new cv.Mat();
       mats.push(adaptive);
       cv.adaptiveThreshold(
@@ -736,7 +748,7 @@ export function detectWithOpenCV(
       mats.push(fallbackKernel);
       cv.morphologyEx(inverted, fallbackMask, cv.MORPH_CLOSE, fallbackKernel);
 
-      const fallbackContours = new cv.MatVector();
+      const fallbackContours = new cv.MatVector() as ContourVectorLike;
       mats.push(fallbackContours);
       const fallbackHierarchy = new cv.Mat();
       mats.push(fallbackHierarchy);
@@ -799,7 +811,9 @@ export function detectWithOpenCV(
       magnitudeData[i] = dilated.data[i] > 0 ? 255 : 0;
     }
 
-    const proposalSources = Array.from(new Set(merged.map((candidate) => candidate.source ?? 'contour')));
+    const proposalSources = Array.from(
+      new Set(merged.map((candidate) => candidate.source ?? (config.contourEnabled === false ? 'hough' : 'contour'))),
+    );
 
     if (config.debug) {
       console.warn(
@@ -834,5 +848,6 @@ export const __opencvTestUtils = {
   computeEdgeDensity,
   isHoughEdgeDensityAllowed,
   shouldRunHoughFallback,
+  shouldCollectContourCandidates,
   hasOrthogonalShape,
 };

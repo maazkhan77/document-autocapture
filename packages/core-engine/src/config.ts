@@ -28,6 +28,7 @@ export const defaultEngineConfig: EngineConfig = {
   identitySwitchThresholdPx: 46,
   detectionFrameBudgetMs: 25,
   workerHardCeilingMs: 80,
+  contourEnabled: false,
   houghSecondaryEnabled: true,
   houghEdgeDensityMin: 0.005,
   houghEdgeDensityMax: 0.25,
