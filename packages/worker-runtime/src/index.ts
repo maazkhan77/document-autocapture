@@ -8,6 +8,5 @@ export type {
 } from './protocol';
 
 export function createScannerWorker(): Worker {
-  const workerUrl = new URL(/* @vite-ignore */ './worker.js', import.meta.url);
-  return new Worker(workerUrl, { type: 'module' });
+  return new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
 }

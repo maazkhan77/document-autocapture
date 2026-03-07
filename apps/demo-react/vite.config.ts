@@ -6,6 +6,9 @@ export default defineConfig({
   server: {
     port: 4173,
   },
+  worker: {
+    format: 'es',
+  },
   build: {
     chunkSizeWarningLimit: 650,
     rollupOptions: {

@@ -78,4 +78,9 @@ describe('buildScannerConfig', () => {
     });
     expect(config.captureMimeType).toBe('image/png');
   });
+
+  it('does not force fallback mode when webglWarp is false', () => {
+    const config = buildScannerConfig({ webglWarp: false });
+    expect(config.preferredMode).toBe('best');
+  });
 });
