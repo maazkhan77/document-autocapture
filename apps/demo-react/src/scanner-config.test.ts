@@ -4,11 +4,12 @@ import { createDemoScannerConfig } from './scanner-config';
 describe('createDemoScannerConfig', () => {
   it('returns normalized defaults for demo integrations', () => {
     const config = createDemoScannerConfig();
+    expect(config.detection).toBe('ml');
     expect(config.detectorMode).toBe('ml');
     expect(config.mlPipelineVersion).toBe('v2-graph');
     expect(config.mlModelId).toBe('doc-corner-v2');
     expect(config.graphMlEnabled).toBe(true);
-    expect(config.cocoBookEnabled).toBe(true);
+    expect(config.cocoSsd).toBe(true);
     expect(config.cocoMinScore).toBe(0.45);
     expect(config.cvContourEnabled).toBe(false);
     expect(config.houghSecondaryEnabled).toBe(true);

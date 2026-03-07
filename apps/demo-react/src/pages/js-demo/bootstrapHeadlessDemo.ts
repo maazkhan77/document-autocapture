@@ -102,7 +102,11 @@ export function mount(container: HTMLElement): () => Promise<void> {
   const preview = createNode('img', 'integration-capture-preview') as HTMLImageElement;
   preview.alt = 'Latest captured document';
   preview.hidden = true;
-  const emptyState = createNode('div', 'empty-state', 'No capture yet. Start scanner and tap Capture.');
+  const emptyState = createNode(
+    'div',
+    'empty-state',
+    'No capture yet. Start scanner and tap Capture.',
+  );
   const captureMeta = createNode('div', 'capture-meta');
   const decisionMeta = createNode('span', undefined, 'Decision: n/a');
   const detectorMeta = createNode('span', undefined, 'Detector: n/a');
@@ -111,28 +115,38 @@ export function mount(container: HTMLElement): () => Promise<void> {
 
   stage.append(video);
   actions.append(startButton, stopButton, captureButton);
-  chipRow.append(runningChip, sourceChip, statusChip, candidateChip, confidenceChip, guidanceChip, fpsChip);
+  chipRow.append(
+    runningChip,
+    sourceChip,
+    statusChip,
+    candidateChip,
+    confidenceChip,
+    guidanceChip,
+    fpsChip,
+  );
   liveCard.append(stage, providerControls, cocoControls, cvControls, actions, chipRow, warningLine);
   captureMeta.append(decisionMeta, detectorMeta, warpMeta, elapsedMeta);
   outputCard.append(outputTitle, preview, emptyState, captureMeta);
   root.append(liveCard, outputCard);
   container.replaceChildren(root);
 
-  const scanner = createScanner(createDemoScannerConfig({
-    detectorMode: 'ml',
-    mlPipelineVersion: 'v2-graph',
-    mlModelId: 'doc-corner-v2',
-    graphMlEnabled: initialGraphMlEnabled,
-    cocoBookEnabled: initialCocoBookEnabled,
-    cocoMinScore: initialCocoMinScore,
-    cocoUseAsPrimaryInMlMode: true,
-    cvContourEnabled: initialCvContourEnabled,
-    houghSecondaryEnabled: initialHoughSecondaryEnabled,
-    postCaptureRefine: 'safe',
-    warpValidationLevel: 'strict',
-    debugOverlayLevel: 'basic',
-    videoElement: video,
-  }));
+  const scanner = createScanner(
+    createDemoScannerConfig({
+      detectorMode: 'ml',
+      mlPipelineVersion: 'v2-graph',
+      mlModelId: 'doc-corner-v2',
+      graphMlEnabled: initialGraphMlEnabled,
+      cocoBookEnabled: initialCocoBookEnabled,
+      cocoMinScore: initialCocoMinScore,
+      cocoUseAsPrimaryInMlMode: true,
+      cvContourEnabled: initialCvContourEnabled,
+      houghSecondaryEnabled: initialHoughSecondaryEnabled,
+      postCaptureRefineMode: 'safe',
+      warpValidationLevel: 'strict',
+      debugOverlay: 'basic',
+      videoElement: video,
+    }),
+  );
 
   let captureUrl: string | undefined;
 

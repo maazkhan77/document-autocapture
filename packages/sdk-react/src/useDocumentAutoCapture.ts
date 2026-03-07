@@ -7,7 +7,7 @@ import {
   type ScannerSession,
 } from 'js-document-autocapture';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
-import { normalizeConfig, shallowRecordEqual } from './config-utils';
+import { normalizeConfig, deepRecordEqual } from './config-utils';
 
 type FrameProcessResult = ScannerEventMap['frame'];
 type DetectionResult = FrameProcessResult['detection'];
@@ -106,7 +106,7 @@ export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoC
       return;
     }
     const normalized = normalizeConfig(config as Record<string, unknown> | undefined);
-    if (shallowRecordEqual(lastAppliedConfigRef.current, normalized)) {
+    if (deepRecordEqual(lastAppliedConfigRef.current, normalized)) {
       return;
     }
     lastAppliedConfigRef.current = normalized;
@@ -172,14 +172,8 @@ export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoC
     () => state.frame?.stability as StabilityResult | undefined,
     [state.frame],
   );
-  const quality = useMemo(
-    () => state.frame?.quality as QualityResult | undefined,
-    [state.frame],
-  );
-  const guidance = useMemo(
-    () => state.frame?.guidance as GuidanceCode | undefined,
-    [state.frame],
-  );
+  const quality = useMemo(() => state.frame?.quality as QualityResult | undefined, [state.frame]);
+  const guidance = useMemo(() => state.frame?.guidance as GuidanceCode | undefined, [state.frame]);
 
   return {
     videoRef,

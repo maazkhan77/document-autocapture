@@ -1,4 +1,4 @@
-import { clamp, type Quad } from '@document-autocapture/core-engine';
+import { borderPenalty, clamp, type Quad } from '@document-autocapture/core-engine';
 
 type CocoBase = 'lite_mobilenet_v2' | 'mobilenet_v2' | 'mobilenet_v1';
 
@@ -9,11 +9,7 @@ interface CocoPrediction {
 }
 
 interface CocoModelLike {
-  detect: (
-    input: ImageData,
-    maxNumBoxes?: number,
-    minScore?: number,
-  ) => Promise<CocoPrediction[]>;
+  detect: (input: ImageData, maxNumBoxes?: number, minScore?: number) => Promise<CocoPrediction[]>;
 }
 
 interface TfjsLike {
@@ -62,7 +58,12 @@ function bboxToQuad(
   frameHeight: number,
 ): Quad | undefined {
   const [rawX, rawY, rawW, rawH] = bbox;
-  if (!Number.isFinite(rawX) || !Number.isFinite(rawY) || !Number.isFinite(rawW) || !Number.isFinite(rawH)) {
+  if (
+    !Number.isFinite(rawX) ||
+    !Number.isFinite(rawY) ||
+    !Number.isFinite(rawW) ||
+    !Number.isFinite(rawH)
+  ) {
     return undefined;
   }
   const x1 = clamp(rawX, 0, frameWidth - 1);
@@ -89,29 +90,10 @@ function pickBestBookPrediction(
     .sort((a, b) => b.score - a.score)[0];
 }
 
-function calcBorderPenalty(quad: Quad, width: number, height: number, margin: number): number {
-  const points = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
-  const touchCount = points.filter(
-    (point) =>
-      point.x <= margin ||
-      point.y <= margin ||
-      point.x >= width - 1 - margin ||
-      point.y >= height - 1 - margin,
-  ).length;
-  return touchCount / 4;
-}
-
 function isCenterPlausible(quad: Quad, width: number, height: number): boolean {
-  const cx =
-    (quad.topLeft.x + quad.topRight.x + quad.bottomRight.x + quad.bottomLeft.x) / 4;
-  const cy =
-    (quad.topLeft.y + quad.topRight.y + quad.bottomRight.y + quad.bottomLeft.y) / 4;
-  return (
-    cx >= width * 0.1 &&
-    cx <= width * 0.9 &&
-    cy >= height * 0.1 &&
-    cy <= height * 0.9
-  );
+  const cx = (quad.topLeft.x + quad.topRight.x + quad.bottomRight.x + quad.bottomLeft.x) / 4;
+  const cy = (quad.topLeft.y + quad.topRight.y + quad.bottomRight.y + quad.bottomLeft.y) / 4;
+  return cx >= width * 0.1 && cx <= width * 0.9 && cy >= height * 0.1 && cy <= height * 0.9;
 }
 
 interface GeometryGuardInput {
@@ -136,13 +118,13 @@ function passesGeometryGuards(input: GeometryGuardInput): boolean {
   if (aspect < input.minAspectRatio || aspect > input.maxAspectRatio) {
     return false;
   }
-  const borderPenalty = calcBorderPenalty(
+  const borderPenaltyVal = borderPenalty(
     input.quad,
     input.frameWidth,
     input.frameHeight,
     input.edgeTouchMarginPx,
   );
-  if (borderPenalty > 0.3) {
+  if (borderPenaltyVal > 0.3) {
     return false;
   }
   return isCenterPlausible(input.quad, input.frameWidth, input.frameHeight);
@@ -192,7 +174,8 @@ export function createCocoQuadProvider(): CocoQuadProvider {
           }
           backend = tf.getBackend();
 
-          const cocoModule = (await import('@tensorflow-models/coco-ssd')) as unknown as CocoSsdLike;
+          const cocoModule =
+            (await import('@tensorflow-models/coco-ssd')) as unknown as CocoSsdLike;
           coco = cocoModule;
           model = await coco.load({ base: modelBase });
           ready = true;
@@ -226,11 +209,7 @@ export function createCocoQuadProvider(): CocoQuadProvider {
       if (!ready || !model) {
         return undefined;
       }
-      const imageData = new ImageData(
-        new Uint8ClampedArray(input.rgba),
-        input.width,
-        input.height,
-      );
+      const imageData = new ImageData(new Uint8ClampedArray(input.rgba), input.width, input.height);
       const predictions = await model.detect(
         imageData,
         8,
@@ -286,7 +265,7 @@ export function createCocoQuadProvider(): CocoQuadProvider {
 export const __cocoTestUtils = {
   bboxToQuad,
   pickBestBookPrediction,
-  calcBorderPenalty,
+  calcBorderPenalty: borderPenalty,
   isCenterPlausible,
   passesGeometryGuards,
 };

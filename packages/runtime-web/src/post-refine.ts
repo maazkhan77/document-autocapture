@@ -1,4 +1,10 @@
-import { quadArea, quadAspectRatio, type Point, type Quad } from '@document-autocapture/core-engine';
+import {
+  nowMs,
+  quadArea,
+  quadAspectRatio,
+  type Point,
+  type Quad,
+} from '@document-autocapture/core-engine';
 
 type CornerName = keyof Quad;
 
@@ -28,10 +34,6 @@ export interface PostCaptureRefineResult {
   refinedScore: number;
 }
 
-function now(): number {
-  return typeof performance !== 'undefined' ? performance.now() : Date.now();
-}
-
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
@@ -47,11 +49,15 @@ function cloneQuad(quad: Quad): Quad {
 
 function quadSelfIntersects(quad: Quad): boolean {
   const points = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
-  const ccw = (a: Point, b: Point, c: Point) => (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
+  const ccw = (a: Point, b: Point, c: Point) =>
+    (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
   const intersects = (a: Point, b: Point, c: Point, d: Point) =>
     ccw(a, c, d) !== ccw(b, c, d) && ccw(a, b, c) !== ccw(a, b, d);
 
-  return intersects(points[0], points[1], points[2], points[3]) || intersects(points[1], points[2], points[3], points[0]);
+  return (
+    intersects(points[0], points[1], points[2], points[3]) ||
+    intersects(points[1], points[2], points[3], points[0])
+  );
 }
 
 function quadWithinBounds(quad: Quad, width: number, height: number): boolean {
@@ -100,13 +106,25 @@ function buildLumaAndGradient(imageData: ImageData): { luma: Float32Array; grad:
   return { luma, grad };
 }
 
-function sampleGradient(grad: Float32Array, width: number, height: number, x: number, y: number): number {
+function sampleGradient(
+  grad: Float32Array,
+  width: number,
+  height: number,
+  x: number,
+  y: number,
+): number {
   const px = clamp(Math.round(x), 0, width - 1);
   const py = clamp(Math.round(y), 0, height - 1);
   return grad[py * width + px];
 }
 
-function scoreQuad(quad: Quad, grad: Float32Array, width: number, height: number, edgeSamples: number): number {
+function scoreQuad(
+  quad: Quad,
+  grad: Float32Array,
+  width: number,
+  height: number,
+  edgeSamples: number,
+): number {
   const points = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
   let edgeSum = 0;
   let edgeCount = 0;
@@ -155,7 +173,7 @@ function moveCorner(
 }
 
 export function refineQuadPostCapture(params: PostCaptureRefineParams): PostCaptureRefineResult {
-  const start = now();
+  const start = nowMs();
   const { imageData, initialQuad } = params;
   const width = imageData.width;
   const height = imageData.height;
@@ -173,7 +191,7 @@ export function refineQuadPostCapture(params: PostCaptureRefineParams): PostCapt
       quad: cloneQuad(initialQuad),
       applied: false,
       reason: 'invalid_initial_quad',
-      elapsedMs: now() - start,
+      elapsedMs: nowMs() - start,
       initialScore: 0,
       refinedScore: 0,
     };
@@ -192,12 +210,12 @@ export function refineQuadPostCapture(params: PostCaptureRefineParams): PostCapt
 
       for (let dy = -searchRadiusPx; dy <= searchRadiusPx; dy += searchStepPx) {
         for (let dx = -searchRadiusPx; dx <= searchRadiusPx; dx += searchStepPx) {
-          if (now() - start > budgetMs) {
+          if (nowMs() - start > budgetMs) {
             return {
               quad: cloneQuad(initialQuad),
               applied: false,
               reason: 'timeout',
-              elapsedMs: now() - start,
+              elapsedMs: nowMs() - start,
               initialScore,
               refinedScore: currentScore,
             };
@@ -237,7 +255,7 @@ export function refineQuadPostCapture(params: PostCaptureRefineParams): PostCapt
       quad: cloneQuad(initialQuad),
       applied: false,
       reason: 'invalid_refined_quad',
-      elapsedMs: now() - start,
+      elapsedMs: nowMs() - start,
       initialScore,
       refinedScore: currentScore,
     };
@@ -250,7 +268,7 @@ export function refineQuadPostCapture(params: PostCaptureRefineParams): PostCapt
       quad: cloneQuad(initialQuad),
       applied: false,
       reason: 'low_gain',
-      elapsedMs: now() - start,
+      elapsedMs: nowMs() - start,
       initialScore,
       refinedScore: currentScore,
     };
@@ -260,7 +278,7 @@ export function refineQuadPostCapture(params: PostCaptureRefineParams): PostCapt
     quad: current,
     applied: true,
     reason: 'applied',
-    elapsedMs: now() - start,
+    elapsedMs: nowMs() - start,
     initialScore,
     refinedScore: currentScore,
   };

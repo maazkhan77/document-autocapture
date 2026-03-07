@@ -30,7 +30,7 @@ function drawQuad(
 
 export function DocumentAutoCaptureCamera(props: DocumentAutoCaptureCameraProps) {
   const { className, autoStart = true, onCapture, ...config } = props;
-  const debugOverlayLevel = config.debugOverlayLevel ?? 'basic';
+  const debugOverlayLevel = config.debugOverlay ?? config.debugOverlayLevel ?? 'basic';
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
   const videoNodeRef = useRef<HTMLVideoElement | null>(null);
   const emittedCaptureRef = useRef<CaptureResult | undefined>(undefined);
@@ -160,14 +160,15 @@ export function DocumentAutoCaptureCamera(props: DocumentAutoCaptureCameraProps)
 
       <div style={{ fontFamily: 'monospace', fontSize: 12 }}>Guidance: {status}</div>
       <div style={{ fontFamily: 'monospace', fontSize: 12 }}>
-        Detection: {detection?.status ?? 'idle'} | Source: {detection?.source ?? 'n/a'} | Candidates:{' '}
-        {detection?.candidates.length ?? 0}
+        Detection: {detection?.status ?? 'idle'} | Source: {detection?.source ?? 'n/a'} |
+        Candidates: {detection?.candidates.length ?? 0}
       </div>
       <div style={{ fontFamily: 'monospace', fontSize: 12 }}>
         Rejection: {detection?.rejectionReason ?? 'none'}
       </div>
       <div style={{ fontFamily: 'monospace', fontSize: 12 }}>
-        Stable: {stability?.stable ? 'yes' : 'no'} | StableMs: {Math.round(stability?.stableMs ?? 0)}
+        Stable: {stability?.stable ? 'yes' : 'no'} | StableMs:{' '}
+        {Math.round(stability?.stableMs ?? 0)}
       </div>
     </div>
   );

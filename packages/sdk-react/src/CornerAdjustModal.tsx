@@ -80,6 +80,10 @@ export function CornerAdjustModal(props: CornerAdjustModalProps) {
   const dragState = useRef(defaultDragState());
 
   useEffect(() => {
+    setQuad(initialQuad);
+  }, [initialQuad]);
+
+  useEffect(() => {
     if (!open) {
       return;
     }
@@ -121,7 +125,9 @@ export function CornerAdjustModal(props: CornerAdjustModalProps) {
       }}
     >
       <div style={{ background: '#fff', padding: 16, borderRadius: 10, width: 'min(90vw, 840px)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}
+        >
           <h3 style={{ marginTop: 0, marginBottom: 0 }}>Adjust corners</h3>
           {autoRefined ? (
             <span
@@ -140,7 +146,9 @@ export function CornerAdjustModal(props: CornerAdjustModalProps) {
             </span>
           ) : null}
         </div>
-        <p style={{ fontSize: 13, color: '#333' }}>Drag corner handles and confirm to re-run perspective warp.</p>
+        <p style={{ fontSize: 13, color: '#333' }}>
+          Drag corner handles and confirm to re-run perspective warp.
+        </p>
         <div
           style={{
             maxHeight: '68vh',
@@ -162,6 +170,7 @@ export function CornerAdjustModal(props: CornerAdjustModalProps) {
               if (!canvas) {
                 return;
               }
+              canvas.setPointerCapture(event.pointerId);
               const rect = canvas.getBoundingClientRect();
               const x = ((event.clientX - rect.left) / rect.width) * canvas.width;
               const y = ((event.clientY - rect.top) / rect.height) * canvas.height;
@@ -190,10 +199,9 @@ export function CornerAdjustModal(props: CornerAdjustModalProps) {
                 [corner]: { x, y },
               }));
             }}
-            onPointerUp={() => {
-              dragState.current = defaultDragState();
-            }}
-            onPointerLeave={() => {
+            onPointerUp={(event) => {
+              const canvas = canvasRef.current;
+              if (canvas) canvas.releasePointerCapture(event.pointerId);
               dragState.current = defaultDragState();
             }}
           />

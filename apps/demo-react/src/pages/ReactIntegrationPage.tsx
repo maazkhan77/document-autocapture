@@ -28,7 +28,12 @@ function parseControlsState(search: URLSearchParams): IntegrationControlsState {
   return {
     graphMlEnabled: search.get('graphMlEnabled') !== '0',
     cocoBookEnabled: search.get('cocoBookEnabled') !== '0',
-    cocoMinScore: clampFloat(Number.parseFloat(search.get('cocoMinScore') ?? '0.45'), 0.05, 0.95, 0.45),
+    cocoMinScore: clampFloat(
+      Number.parseFloat(search.get('cocoMinScore') ?? '0.45'),
+      0.05,
+      0.95,
+      0.45,
+    ),
     cvContourEnabled: search.get('cvContourEnabled') === '1',
     houghSecondaryEnabled: search.get('houghSecondaryEnabled') !== '0',
   };
@@ -68,9 +73,9 @@ export function ReactIntegrationPage() {
         cocoUseAsPrimaryInMlMode: true,
         cvContourEnabled: controls.cvContourEnabled,
         houghSecondaryEnabled: controls.houghSecondaryEnabled,
-        postCaptureRefine: 'safe',
+        postCaptureRefineMode: 'safe',
         warpValidationLevel: 'strict',
-        debugOverlayLevel: 'basic',
+        debugOverlay: 'basic',
       }),
     [controls],
   );
@@ -189,7 +194,9 @@ export function ScannerView() {
               <input
                 type="checkbox"
                 checked={controls.graphMlEnabled}
-                onChange={(event) => dispatch({ type: 'patch', patch: { graphMlEnabled: event.target.checked } })}
+                onChange={(event) =>
+                  dispatch({ type: 'patch', patch: { graphMlEnabled: event.target.checked } })
+                }
               />
               <span>Graph ML</span>
             </label>
@@ -197,7 +204,9 @@ export function ScannerView() {
               <input
                 type="checkbox"
                 checked={controls.cocoBookEnabled}
-                onChange={(event) => dispatch({ type: 'patch', patch: { cocoBookEnabled: event.target.checked } })}
+                onChange={(event) =>
+                  dispatch({ type: 'patch', patch: { cocoBookEnabled: event.target.checked } })
+                }
               />
               <span>COCO book</span>
             </label>
@@ -227,7 +236,9 @@ export function ScannerView() {
               <input
                 type="checkbox"
                 checked={controls.cvContourEnabled}
-                onChange={(event) => dispatch({ type: 'patch', patch: { cvContourEnabled: event.target.checked } })}
+                onChange={(event) =>
+                  dispatch({ type: 'patch', patch: { cvContourEnabled: event.target.checked } })
+                }
               />
               <span>CV contour</span>
             </label>
@@ -235,17 +246,32 @@ export function ScannerView() {
               <input
                 type="checkbox"
                 checked={controls.houghSecondaryEnabled}
-                onChange={(event) => dispatch({ type: 'patch', patch: { houghSecondaryEnabled: event.target.checked } })}
+                onChange={(event) =>
+                  dispatch({
+                    type: 'patch',
+                    patch: { houghSecondaryEnabled: event.target.checked },
+                  })
+                }
               />
               <span>CV hough</span>
             </label>
           </div>
 
           <div className="action-row">
-            <button type="button" className="btn btn-primary" onClick={() => void start()} disabled={isRunning}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => void start()}
+              disabled={isRunning}
+            >
               Start
             </button>
-            <button type="button" className="btn btn-ghost" onClick={() => void stop()} disabled={!isRunning}>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => void stop()}
+              disabled={!isRunning}
+            >
               Stop
             </button>
             <button
@@ -270,20 +296,30 @@ export function ScannerView() {
           </div>
 
           <p className="integration-note">
-            {warning ? `Warning: ${warning}` : error ? `Error: ${error.message}` : 'Live React hook status stream'}
+            {warning
+              ? `Warning: ${warning}`
+              : error
+                ? `Error: ${error.message}`
+                : 'Live React hook status stream'}
           </p>
         </section>
 
         <section className="integration-output-card">
           <h3>Latest Capture</h3>
           {capturePreviewUrl ? (
-            <img src={capturePreviewUrl} alt="Latest captured document" className="integration-capture-preview" />
+            <img
+              src={capturePreviewUrl}
+              alt="Latest captured document"
+              className="integration-capture-preview"
+            />
           ) : (
             <div className="empty-state">No capture yet. Start scanner and tap Capture.</div>
           )}
           <div className="capture-meta">
             <span>Decision: {lastCapture?.captureDecisionSource ?? 'n/a'}</span>
-            <span>Detector: {lastCapture?.detectorSourceAtCapture ?? detection?.source ?? 'n/a'}</span>
+            <span>
+              Detector: {lastCapture?.detectorSourceAtCapture ?? detection?.source ?? 'n/a'}
+            </span>
             <span>Warp: {lastCapture?.warpTierUsed ?? 'n/a'}</span>
             <span>Quality: {quality?.ok ? 'ok' : 'pending'}</span>
           </div>

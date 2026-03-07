@@ -7,7 +7,7 @@ describe('session config mapper', () => {
     expect(normalizeDetectorMode('cv')).toBe('cv');
     expect(normalizeDetectorMode('hybrid')).toBe('hybrid');
     expect(normalizeDetectorMode('ml')).toBe('ml');
-    expect(normalizeDetectorMode('unknown')).toBe('hybrid');
+    expect(normalizeDetectorMode('unknown')).toBe('ml');
   });
 
   it('maps scanner config to worker detector config with v2 defaults', () => {
@@ -48,5 +48,38 @@ describe('session config mapper', () => {
     };
     const mapped = toEngineConfig(scannerConfig);
     expect(mapped.contourEnabled).toBe(true);
+  });
+
+  it('resolves high-level cocoSsd field into cocoBookEnabled', () => {
+    const withCocoOn = toWorkerDetectorConfig({
+      cocoSsd: true,
+      detectorMode: 'ml',
+    } as ScannerConfig);
+    expect(withCocoOn.cocoBookEnabled).toBe(true);
+
+    const withCocoOff = toWorkerDetectorConfig({
+      cocoSsd: false,
+      detectorMode: 'ml',
+    } as ScannerConfig);
+    expect(withCocoOff.cocoBookEnabled).toBe(false);
+  });
+
+  it('resolves high-level mlFallback field into mlFallbackEnabled', () => {
+    const withFallbackOff = toWorkerDetectorConfig({
+      mlFallback: false,
+      detectorMode: 'ml',
+    } as ScannerConfig);
+    expect(withFallbackOff.mlFallbackEnabled).toBe(false);
+
+    const withFallbackOn = toWorkerDetectorConfig({
+      mlFallback: true,
+      detectorMode: 'ml',
+    } as ScannerConfig);
+    expect(withFallbackOn.mlFallbackEnabled).toBe(true);
+  });
+
+  it('defaults cocoBookEnabled to true when neither cocoSsd nor cocoBookEnabled set', () => {
+    const mapped = toWorkerDetectorConfig({ detectorMode: 'ml' } as ScannerConfig);
+    expect(mapped.cocoBookEnabled).toBe(true);
   });
 });

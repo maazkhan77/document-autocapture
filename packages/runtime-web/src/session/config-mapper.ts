@@ -23,24 +23,29 @@ export function normalizeDetectorMode(value: unknown): DetectorMode {
   if (value === 'cv' || value === 'hybrid' || value === 'ml') {
     return value;
   }
-  return 'hybrid';
+  return 'ml';
 }
 
 export function toWorkerDetectorConfig(config: ScannerConfig): WorkerDetectorConfig {
-  const pipelineVersion = config.mlPipelineVersion ?? 'v1-heuristic';
+  const pipelineVersion = config.mlPipelineVersion ?? 'v2-graph';
   const resolvedModelId =
     pipelineVersion === 'v2-graph'
       ? config.mlModelId && config.mlModelId !== 'doc-corner-v1'
         ? config.mlModelId
         : 'doc-corner-v2'
-      : config.mlModelId ?? 'doc-corner-v1';
+      : (config.mlModelId ?? 'doc-corner-v1');
+
+  // Resolve from high-level fields first, fall through to internal fields
+  const mlFallbackEnabled = config.mlFallback ?? config.mlFallbackEnabled ?? true;
+  const cocoBookEnabled = config.cocoSsd ?? config.cocoBookEnabled ?? true;
+
   return {
     detectorMode: normalizeDetectorMode(config.detectorMode),
     graphMlEnabled: config.graphMlEnabled !== false,
-    cocoBookEnabled: config.cocoBookEnabled !== false,
+    cocoBookEnabled,
     cocoMinScore: Math.max(0, Math.min(1, config.cocoMinScore ?? 0.45)),
     cocoUseAsPrimaryInMlMode: config.cocoUseAsPrimaryInMlMode !== false,
-    mlFallbackEnabled: config.mlFallbackEnabled !== false,
+    mlFallbackEnabled,
     mlFallbackFrameStride: Math.max(1, Math.floor(config.mlFallbackFrameStride ?? 5)),
     mlFallbackTriggerConsecutiveMisses: Math.max(
       1,

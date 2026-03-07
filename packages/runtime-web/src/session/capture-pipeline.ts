@@ -1,4 +1,9 @@
-import { type DetectorSource, type FrameProcessResult, type Quad, quadAspectRatio } from '@document-autocapture/core-engine';
+import {
+  type DetectorSource,
+  type FrameProcessResult,
+  type Quad,
+  quadAspectRatio,
+} from '@document-autocapture/core-engine';
 import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
 import { warpPerspectiveWebGL } from '@document-autocapture/warp-webgl';
 import { sanitizeQuadForCapture, scaleQuadToCapture } from '../capture-quad';
@@ -17,7 +22,11 @@ interface CaptureWithWarpParams {
   emitWarning: (message: string) => void;
 }
 
-async function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality?: number): Promise<Blob> {
+async function canvasToBlob(
+  canvas: HTMLCanvasElement,
+  type: string,
+  quality?: number,
+): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => {
@@ -48,10 +57,7 @@ function resolveCaptureEncoding(config: ScannerConfig): {
       : 'image/png';
   return {
     mimeType,
-    quality:
-      mimeType === 'image/png'
-        ? undefined
-        : clamp(config.captureQuality ?? 1, 0.1, 1),
+    quality: mimeType === 'image/png' ? undefined : clamp(config.captureQuality ?? 1, 0.1, 1),
   };
 }
 
@@ -139,7 +145,7 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
   const borderlineCapture =
     hasReliableDetection &&
     (scoreInMediumBand || lowCornerConfidence || hasMildBorderPenalty || bestSource === 'hough');
-  const shouldRunPostRefine = config.postCaptureRefine === 'safe' && borderlineCapture;
+  const shouldRunPostRefine = config.postCaptureRefineMode === 'safe' && borderlineCapture;
   let postRefineApplied = false;
   let postRefineReason: string | undefined;
   let refinedQuad: Quad | undefined;
@@ -191,7 +197,12 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
     if (!candidateCtx) {
       return { accepted: false };
     }
-    const candidateImageData = candidateCtx.getImageData(0, 0, candidateCanvas.width, candidateCanvas.height);
+    const candidateImageData = candidateCtx.getImageData(
+      0,
+      0,
+      candidateCanvas.width,
+      candidateCanvas.height,
+    );
     const validation = assessWarpOutput({
       warpedImageData: candidateImageData,
       sourceImageData: imageData,
@@ -213,7 +224,9 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
       // Auto-capture prioritizes determinism over speed to avoid intermittent WebGL corruption artifacts.
       const preferCpuWarp = source === 'auto';
       if (preferCpuWarp && config.debug) {
-        console.warn('[document-autocapture] Auto-capture warp policy active: CPU-first (WebGL bypassed for stability).');
+        console.warn(
+          '[document-autocapture] Auto-capture warp policy active: CPU-first (WebGL bypassed for stability).',
+        );
       }
       if (!preferCpuWarp) {
         const webglResult = warpPerspectiveWebGL({
@@ -259,7 +272,9 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
               }
             }
           } else if (config.debug) {
-            console.warn('[document-autocapture] Could not snapshot WebGL warp canvas; trying CPU warp');
+            console.warn(
+              '[document-autocapture] Could not snapshot WebGL warp canvas; trying CPU warp',
+            );
           }
         }
       }
@@ -380,7 +395,6 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
     warpRejected: Boolean(rejectionReason),
     warpRejectionReason: rejectionReason,
     quality: latestResult?.quality,
-    source,
     captureDecisionSource: source,
     detectorSourceAtCapture: (latestResult?.detection.source ?? 'cv') as DetectorSource,
     elapsedMs: nowMs() - t0,

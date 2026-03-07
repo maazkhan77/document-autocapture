@@ -1,6 +1,6 @@
 {
   "name": "@document-autocapture/demo-react",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,6 +13,7 @@
     "test": "vitest run --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "e2e": "playwright test",
+    "e2e:android": "playwright test --config playwright-android.config.ts e2e/android-validation.spec.ts",
     "phase0:bench": "playwright test e2e/phase0-bench.spec.ts --workers=1",
     "bakeoff:bench": "playwright test e2e/bakeoff-bench.spec.ts --workers=1"
   },

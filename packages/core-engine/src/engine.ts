@@ -1,5 +1,5 @@
 import { mergeEngineConfig } from './config';
-import { clamp, maxCornerDisplacement, pointDistance, quadAspectRatio } from './math';
+import { clamp, maxCornerDisplacement, nowMs, pointDistance, quadAspectRatio } from './math';
 import type {
   DetectionRejectionReason,
   DetectionResult,
@@ -29,11 +29,9 @@ export interface Engine {
   resetStability(): void;
 }
 
-function nowMs(): number {
-  return typeof performance !== 'undefined' ? performance.now() : Date.now();
-}
-
-function pickPreferredCvCandidate(candidates: DetectionCandidate[]): DetectionCandidate | undefined {
+function pickPreferredCvCandidate(
+  candidates: DetectionCandidate[],
+): DetectionCandidate | undefined {
   const top = candidates[0];
   if (!top) {
     return undefined;
@@ -124,7 +122,9 @@ export function createEngine(config?: Partial<EngineConfig>): Engine {
           finalConfig,
         );
         proposalSources = ['contour'];
-        edgeDensity = edgeResult.edgeMap.reduce((acc, value) => acc + (value > 0 ? 1 : 0), 0) / Math.max(1, edgeResult.edgeMap.length);
+        edgeDensity =
+          edgeResult.edgeMap.reduce((acc, value) => acc + (value > 0 ? 1 : 0), 0) /
+          Math.max(1, edgeResult.edgeMap.length);
         candidateMs = nowMs() - candidateStart;
       }
 
@@ -168,34 +168,32 @@ export function createEngine(config?: Partial<EngineConfig>): Engine {
       const ambiguityMargin = bestScore - secondScore;
       const ambiguous = Boolean(
         bestCandidate &&
-          secondCandidate &&
-          ambiguityMargin < finalConfig.ambiguityScoreMargin &&
-          (() => {
-            const bestCenter = quadCenter(bestCandidate.quad);
-            const secondCenter = quadCenter(secondCandidate.quad);
-            const centerDistance = pointDistance(bestCenter, secondCenter);
-            const cornerDistance = maxCornerDisplacement(bestCandidate.quad, secondCandidate.quad);
-            const areaDistance = Math.abs(
-              bestCandidate.metrics.areaFraction - secondCandidate.metrics.areaFraction,
-            );
-            const diag = Math.hypot(input.width, input.height);
-            const materiallyDifferentCenter = centerDistance > diag * 0.05;
-            const materiallyDifferentCorners = cornerDistance > diag * 0.1;
-            const materiallyDifferentArea = areaDistance > 0.08;
-            if (materiallyDifferentCenter || materiallyDifferentCorners) {
-              return true;
-            }
-            // Ignore nested/similar proposals that differ mostly by scale.
-            return materiallyDifferentArea && centerDistance > diag * 0.02;
-          })(),
+        secondCandidate &&
+        ambiguityMargin < finalConfig.ambiguityScoreMargin &&
+        (() => {
+          const bestCenter = quadCenter(bestCandidate.quad);
+          const secondCenter = quadCenter(secondCandidate.quad);
+          const centerDistance = pointDistance(bestCenter, secondCenter);
+          const cornerDistance = maxCornerDisplacement(bestCandidate.quad, secondCandidate.quad);
+          const areaDistance = Math.abs(
+            bestCandidate.metrics.areaFraction - secondCandidate.metrics.areaFraction,
+          );
+          const diag = Math.hypot(input.width, input.height);
+          const materiallyDifferentCenter = centerDistance > diag * 0.05;
+          const materiallyDifferentCorners = cornerDistance > diag * 0.1;
+          const materiallyDifferentArea = areaDistance > 0.08;
+          if (materiallyDifferentCenter || materiallyDifferentCorners) {
+            return true;
+          }
+          // Ignore nested/similar proposals that differ mostly by scale.
+          return materiallyDifferentArea && centerDistance > diag * 0.02;
+        })(),
       );
 
       let rejectionReason: DetectionRejectionReason = 'none';
       const houghConfidenceFloor = Math.min(0.72, finalConfig.confidenceThreshold + 0.14);
       const requiredScore =
-        bestCandidate?.source === 'hough'
-          ? houghConfidenceFloor
-          : finalConfig.confidenceThreshold;
+        bestCandidate?.source === 'hough' ? houghConfidenceFloor : finalConfig.confidenceThreshold;
       const houghLikelyBackground =
         bestCandidate?.source === 'hough' &&
         ((bestCandidate.metrics.areaFraction < 0.12 &&

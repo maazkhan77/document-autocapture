@@ -47,11 +47,37 @@ export const defaultEngineConfig: EngineConfig = {
   debug: false,
 };
 
+function normalizeScoreWeights(
+  weights: EngineConfig['scoreWeights'],
+): EngineConfig['scoreWeights'] {
+  const sum =
+    weights.areaFraction +
+    weights.aspectPlausibility +
+    weights.edgeContrast +
+    weights.interiorHomogeneity +
+    weights.cornerAngleCloseness +
+    weights.borderPenalty;
+  if (sum <= 0) {
+    return defaultEngineConfig.scoreWeights;
+  }
+  if (Math.abs(sum - 1.0) < 0.001) {
+    return weights;
+  }
+  return {
+    areaFraction: weights.areaFraction / sum,
+    aspectPlausibility: weights.aspectPlausibility / sum,
+    edgeContrast: weights.edgeContrast / sum,
+    interiorHomogeneity: weights.interiorHomogeneity / sum,
+    cornerAngleCloseness: weights.cornerAngleCloseness / sum,
+    borderPenalty: weights.borderPenalty / sum,
+  };
+}
+
 export function mergeEngineConfig(override?: Partial<EngineConfig>): EngineConfig {
   if (!override) {
     return defaultEngineConfig;
   }
-  return {
+  const merged = {
     ...defaultEngineConfig,
     ...override,
     scoreWeights: {
@@ -59,4 +85,6 @@ export function mergeEngineConfig(override?: Partial<EngineConfig>): EngineConfi
       ...(override.scoreWeights ?? {}),
     },
   };
+  merged.scoreWeights = normalizeScoreWeights(merged.scoreWeights);
+  return merged;
 }

@@ -1,4 +1,5 @@
 import {
+  borderPenalty,
   clamp,
   confidenceFromQuality,
   pickGuidanceCode,
@@ -62,9 +63,15 @@ export function createMlStageTimings(
 
 export function calcAspect(quad: Quad): number {
   const top = Math.hypot(quad.topRight.x - quad.topLeft.x, quad.topRight.y - quad.topLeft.y);
-  const bottom = Math.hypot(quad.bottomRight.x - quad.bottomLeft.x, quad.bottomRight.y - quad.bottomLeft.y);
+  const bottom = Math.hypot(
+    quad.bottomRight.x - quad.bottomLeft.x,
+    quad.bottomRight.y - quad.bottomLeft.y,
+  );
   const left = Math.hypot(quad.bottomLeft.x - quad.topLeft.x, quad.bottomLeft.y - quad.topLeft.y);
-  const right = Math.hypot(quad.bottomRight.x - quad.topRight.x, quad.bottomRight.y - quad.topRight.y);
+  const right = Math.hypot(
+    quad.bottomRight.x - quad.topRight.x,
+    quad.bottomRight.y - quad.topRight.y,
+  );
   const width = (top + bottom) / 2;
   const height = (left + right) / 2;
   if (height <= 0) {
@@ -73,17 +80,8 @@ export function calcAspect(quad: Quad): number {
   return width / height;
 }
 
-export function calcBorderPenalty(quad: Quad, width: number, height: number, margin: number): number {
-  const points = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
-  const touchCount = points.filter(
-    (point) =>
-      point.x <= margin ||
-      point.y <= margin ||
-      point.x >= width - 1 - margin ||
-      point.y >= height - 1 - margin,
-  ).length;
-  return touchCount / 4;
-}
+/** @deprecated Use `borderPenalty` from `@document-autocapture/core-engine` directly. */
+export const calcBorderPenalty = borderPenalty;
 
 export function sampleMlEdgeSupport(
   rgba: Uint8ClampedArray,
@@ -122,7 +120,11 @@ export function sampleMlEdgeSupport(
   return hits / Math.max(1, total);
 }
 
-export function percentileFromHistogram(histogram: Uint32Array, percentile: number, total: number): number {
+export function percentileFromHistogram(
+  histogram: Uint32Array,
+  percentile: number,
+  total: number,
+): number {
   if (total <= 0) {
     return 0;
   }
@@ -176,14 +178,14 @@ export function fuseMlResult({
   const area = quadArea(mlQuad);
   const areaFraction = area / Math.max(1, width * height);
   const aspect = calcAspect(mlQuad);
-  const borderPenalty = calcBorderPenalty(mlQuad, width, height, engineConfig.edgeTouchMarginPx);
+  const borderPenaltyVal = borderPenalty(mlQuad, width, height, engineConfig.edgeTouchMarginPx);
   const edgeSupport = sampleMlEdgeSupport(rgba, width, height, mlQuad);
 
   let rejectionReason: DetectionRejectionReason = 'none';
   const mlConfidenceGate = Math.min(engineConfig.confidenceThreshold, minCvConfidence);
   if (mlConfidence < mlConfidenceGate) {
     rejectionReason = 'low_confidence';
-  } else if (borderPenalty > 0.3) {
+  } else if (borderPenaltyVal > 0.3) {
     rejectionReason = 'edge_touch';
   } else if (aspect < engineConfig.minAspectRatio || aspect > engineConfig.maxAspectRatio) {
     rejectionReason = 'aspect_invalid';
@@ -223,12 +225,19 @@ export function fuseMlResult({
       edgeContrast: edgeSupport,
       interiorHomogeneity: 0.5,
       cornerAngleCloseness: 0.8,
-      borderPenalty,
+      borderPenalty: borderPenaltyVal,
     },
     area,
-    perimeter: Math.hypot(mlQuad.topRight.x - mlQuad.topLeft.x, mlQuad.topRight.y - mlQuad.topLeft.y) +
-      Math.hypot(mlQuad.bottomRight.x - mlQuad.topRight.x, mlQuad.bottomRight.y - mlQuad.topRight.y) +
-      Math.hypot(mlQuad.bottomLeft.x - mlQuad.bottomRight.x, mlQuad.bottomLeft.y - mlQuad.bottomRight.y) +
+    perimeter:
+      Math.hypot(mlQuad.topRight.x - mlQuad.topLeft.x, mlQuad.topRight.y - mlQuad.topLeft.y) +
+      Math.hypot(
+        mlQuad.bottomRight.x - mlQuad.topRight.x,
+        mlQuad.bottomRight.y - mlQuad.topRight.y,
+      ) +
+      Math.hypot(
+        mlQuad.bottomLeft.x - mlQuad.bottomRight.x,
+        mlQuad.bottomLeft.y - mlQuad.bottomRight.y,
+      ) +
       Math.hypot(mlQuad.topLeft.x - mlQuad.bottomLeft.x, mlQuad.topLeft.y - mlQuad.bottomLeft.y),
     convexity: 0.9,
     edgeStrength: edgeSupport,

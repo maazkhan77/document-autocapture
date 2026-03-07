@@ -35,12 +35,9 @@ pnpm add js-document-autocapture
 import { useDocumentAutoCapture } from 'react-document-autocapture';
 
 export function CaptureWidget() {
-  const { videoRef, start, stop, captureManual, guidance, detection } = useDocumentAutoCapture({
-    detectorMode: 'ml',
-    mlPipelineVersion: 'v2-graph',
-    mlModelId: 'doc-corner-v2',
-    warpValidationLevel: 'strict',
-    captureMimeType: 'image/png',
+  const { videoRef, start, stop, captureManual, guidance, lastCapture } = useDocumentAutoCapture({
+    detection: 'auto',
+    quality: 'balanced',
     autoCapture: true,
   });
 
@@ -50,8 +47,8 @@ export function CaptureWidget() {
       <button onClick={() => void start()}>Start</button>
       <button onClick={() => void stop()}>Stop</button>
       <button onClick={() => void captureManual()}>Capture</button>
-      <p>{guidance}</p>
-      <p>{detection?.source}</p>
+      <p>{guidance ?? 'Ready'}</p>
+      {lastCapture && <img src={lastCapture.dataUrl} alt="Captured" />}
     </div>
   );
 }
@@ -66,16 +63,16 @@ const video = document.querySelector('video');
 
 const scanner = createScanner({
   videoElement: video,
-  detectorMode: 'ml',
-  mlPipelineVersion: 'v2-graph',
-  mlModelId: 'doc-corner-v2',
-  warpValidationLevel: 'strict',
-  captureMimeType: 'image/png',
   autoCapture: true,
+  quality: 'balanced',
 });
 
-scanner.on('capture', (capture) => {
-  console.log('captured', capture.width, capture.height, capture.warpTierUsed);
+scanner.on('capture', (result) => {
+  console.log('captured', result.width, result.height, result.warpTierUsed);
+});
+
+scanner.on('guidance', (code) => {
+  document.getElementById('hint').textContent = code;
 });
 
 await scanner.start();
@@ -84,27 +81,35 @@ await scanner.start();
 ## High-Intent Keywords
 
 ### React document autocapture
+
 Use `react-document-autocapture` to add camera preview, guidance, and capture controls in React with minimal code.
 
 ### JavaScript document autocapture
+
 Use `js-document-autocapture` for framework-agnostic browser integrations with direct session and event APIs.
 
 ### Browser document scanner
+
 This SDK is designed for in-browser scanning workflows with perspective correction and quality gates.
 
 ### Web document scanner
+
 Works in modern web apps with worker mode, ML detection, and fallback CV processing.
 
 ### Auto document capture
+
 Supports automatic capture triggers based on detection confidence, stability, and quality checks.
 
 ### ID card scanner SDK
+
 Handles cards and paper-like documents with corner-based capture and correction.
 
 ### Webcam document scanner
+
 Built for live camera feeds from desktop and mobile browsers (secure context required).
 
 ### Document scanner SDK
+
 Production-oriented architecture with test coverage, evaluation harness, and publish workflow.
 
 ## Product Claims (What You Get)

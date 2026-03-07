@@ -1,4 +1,5 @@
 import {
+  borderPenalty,
   clamp,
   orderQuadCorners,
   polygonArea,
@@ -138,7 +139,10 @@ function convexHull(points: Point[]): Point[] {
   const sorted = [...points].sort((a, b) => (a.x === b.x ? a.y - b.y : a.x - b.x));
   const lower: Point[] = [];
   for (const point of sorted) {
-    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], point) <= 0) {
+    while (
+      lower.length >= 2 &&
+      cross(lower[lower.length - 2], lower[lower.length - 1], point) <= 0
+    ) {
       lower.pop();
     }
     lower.push(point);
@@ -146,7 +150,10 @@ function convexHull(points: Point[]): Point[] {
   const upper: Point[] = [];
   for (let i = sorted.length - 1; i >= 0; i -= 1) {
     const point = sorted[i];
-    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], point) <= 0) {
+    while (
+      upper.length >= 2 &&
+      cross(upper[upper.length - 2], upper[upper.length - 1], point) <= 0
+    ) {
       upper.pop();
     }
     upper.push(point);
@@ -316,18 +323,6 @@ function borderTouchRatio(points: Point[], width: number, height: number, margin
   return touches / points.length;
 }
 
-function quadCornerBorderPenalty(quad: Quad, width: number, height: number, margin: number): number {
-  const points = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
-  const touches = points.filter(
-    (point) =>
-      point.x <= margin ||
-      point.y <= margin ||
-      point.x >= width - 1 - margin ||
-      point.y >= height - 1 - margin,
-  ).length;
-  return touches / 4;
-}
-
 function pointToSegmentDistance(point: Point, a: Point, b: Point): number {
   const dx = b.x - a.x;
   const dy = b.y - a.y;
@@ -414,9 +409,17 @@ export function proposeQuadCandidates(
   const frameArea = width * height;
 
   // Diagnostic counters for debugging
-  let rejBox = 0, rejBoundary = 0, rejQuad = 0;
-  let rejArea = 0, rejAreaFrac = 0, rejAspect = 0, rejEdgeTouch = 0, rejCornerBorder = 0;
-  let rejRect = 0, rejAngle = 0, rejCenter = 0;
+  let rejBox = 0,
+    rejBoundary = 0,
+    rejQuad = 0;
+  let rejArea = 0,
+    rejAreaFrac = 0,
+    rejAspect = 0,
+    rejEdgeTouch = 0,
+    rejCornerBorder = 0;
+  let rejRect = 0,
+    rejAngle = 0,
+    rejCenter = 0;
 
   const proposals = components
     .map((component) => {
@@ -459,11 +462,12 @@ export function proposeQuadCandidates(
       const hullArea = polygonArea(hull);
       const rectangularity = area / Math.max(1, hullArea);
       const edgeTouch = borderTouchRatio(boundary, width, height, config.edgeTouchMarginPx);
-      const cornerBorder = quadCornerBorderPenalty(quad, width, height, config.edgeTouchMarginPx);
+      const cornerBorder = borderPenalty(quad, width, height, config.edgeTouchMarginPx);
       const anglePenalty = quadCornerAnglePenalty(quad);
       const centerX = (component.minX + component.maxX) / 2;
       const centerY = (component.minY + component.maxY) / 2;
-      const centerDistanceNorm = Math.hypot(centerX - width / 2, centerY - height / 2) / Math.hypot(width, height);
+      const centerDistanceNorm =
+        Math.hypot(centerX - width / 2, centerY - height / 2) / Math.hypot(width, height);
       const edgeSupport = edgeSupportForQuad(
         boundary,
         quad,
@@ -527,23 +531,45 @@ export function proposeQuadCandidates(
     const total = components.length;
     console.warn(
       `[document-autocapture:detection] 0/${total} components passed | ` +
-      `rej: box=${rejBox} boundary=${rejBoundary} ` +
-      `quad=${rejQuad} area=${rejArea} areaFrac=${rejAreaFrac} aspect=${rejAspect} ` +
-      `edgeTouch=${rejEdgeTouch} cornerBorder=${rejCornerBorder} ` +
-      `rect=${rejRect} angle=${rejAngle} center=${rejCenter}`,
+        `rej: box=${rejBox} boundary=${rejBoundary} ` +
+        `quad=${rejQuad} area=${rejArea} areaFrac=${rejAreaFrac} aspect=${rejAspect} ` +
+        `edgeTouch=${rejEdgeTouch} cornerBorder=${rejCornerBorder} ` +
+        `rect=${rejRect} angle=${rejAngle} center=${rejCenter}`,
     );
   }
 
   const deduped: DetectionCandidate[] = [];
   const sorted = proposals.sort((a, b) => b.area - a.area);
   for (const candidate of sorted) {
-    const centerX = (candidate.quad.topLeft.x + candidate.quad.topRight.x + candidate.quad.bottomLeft.x + candidate.quad.bottomRight.x) / 4;
-    const centerY = (candidate.quad.topLeft.y + candidate.quad.topRight.y + candidate.quad.bottomLeft.y + candidate.quad.bottomRight.y) / 4;
+    const centerX =
+      (candidate.quad.topLeft.x +
+        candidate.quad.topRight.x +
+        candidate.quad.bottomLeft.x +
+        candidate.quad.bottomRight.x) /
+      4;
+    const centerY =
+      (candidate.quad.topLeft.y +
+        candidate.quad.topRight.y +
+        candidate.quad.bottomLeft.y +
+        candidate.quad.bottomRight.y) /
+      4;
     const isDuplicate = deduped.some((existing) => {
-      const ex = (existing.quad.topLeft.x + existing.quad.topRight.x + existing.quad.bottomLeft.x + existing.quad.bottomRight.x) / 4;
-      const ey = (existing.quad.topLeft.y + existing.quad.topRight.y + existing.quad.bottomLeft.y + existing.quad.bottomRight.y) / 4;
-      const closeCenter = Math.abs(centerX - ex) < width * 0.04 && Math.abs(centerY - ey) < height * 0.04;
-      const areaRatio = Math.abs(candidate.area - existing.area) / Math.max(candidate.area, existing.area);
+      const ex =
+        (existing.quad.topLeft.x +
+          existing.quad.topRight.x +
+          existing.quad.bottomLeft.x +
+          existing.quad.bottomRight.x) /
+        4;
+      const ey =
+        (existing.quad.topLeft.y +
+          existing.quad.topRight.y +
+          existing.quad.bottomLeft.y +
+          existing.quad.bottomRight.y) /
+        4;
+      const closeCenter =
+        Math.abs(centerX - ex) < width * 0.04 && Math.abs(centerY - ey) < height * 0.04;
+      const areaRatio =
+        Math.abs(candidate.area - existing.area) / Math.max(candidate.area, existing.area);
       return closeCenter && areaRatio < 0.18;
     });
     if (!isDuplicate) {
@@ -551,7 +577,5 @@ export function proposeQuadCandidates(
     }
   }
 
-  return deduped
-    .sort((a, b) => b.area - a.area)
-    .slice(0, config.candidateTopK);
+  return deduped.sort((a, b) => b.area - a.area).slice(0, config.candidateTopK);
 }

@@ -24,6 +24,8 @@ export interface WorkerDetectorConfig {
   mlWasmBaseUrl?: string;
   mlInputSize?: number;
   mlPipelineVersion?: MlPipelineVersion;
+  graphProviderTimeoutMs?: number;
+  cocoProviderTimeoutMs?: number;
   debug?: boolean;
 }
 

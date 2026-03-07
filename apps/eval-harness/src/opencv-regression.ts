@@ -1,8 +1,19 @@
-import { access, mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { collectJsonFiles } from './fs-utils';
 import { buildOpenCvContourFailureFixtures } from './opencv-fixtures';
-import { defaultThresholdProfile, simulateDataset, type SimulationMetrics, type ThresholdProfile } from './realclip-sim';
-import { normalizeFrame, normalizeManifest, type NormalizedFrame, type RealClipManifest } from './realclip-shared';
+import {
+  defaultThresholdProfile,
+  simulateDataset,
+  type SimulationMetrics,
+  type ThresholdProfile,
+} from './realclip-sim';
+import {
+  normalizeFrame,
+  normalizeManifest,
+  type NormalizedFrame,
+  type RealClipManifest,
+} from './realclip-shared';
 
 interface TunedProfileArtifact {
   tunedProfile?: ThresholdProfile;
@@ -58,30 +69,6 @@ async function hasPath(targetPath: string): Promise<boolean> {
   }
 }
 
-async function collectJsonFiles(inputPath: string): Promise<string[]> {
-  const stats = await stat(inputPath);
-  if (stats.isFile()) {
-    return [path.resolve(inputPath)];
-  }
-  if (!stats.isDirectory()) {
-    throw new Error(`Expected file or directory, got: ${inputPath}`);
-  }
-
-  const entries = await readdir(inputPath, { withFileTypes: true });
-  const files: string[] = [];
-  for (const entry of entries) {
-    const resolved = path.resolve(inputPath, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...(await collectJsonFiles(resolved)));
-      continue;
-    }
-    if (entry.isFile() && entry.name.endsWith('.json')) {
-      files.push(resolved);
-    }
-  }
-  return files.sort();
-}
-
 async function readManifests(files: string[]): Promise<RealClipManifest[]> {
   const manifests: RealClipManifest[] = [];
   for (const file of files) {
@@ -107,7 +94,10 @@ function hasTag(frame: NormalizedFrame, tag: string): boolean {
   return frame.tags.includes(tag);
 }
 
-function safeSimulate(frames: NormalizedFrame[], profile: ThresholdProfile): SimulationMetrics | null {
+function safeSimulate(
+  frames: NormalizedFrame[],
+  profile: ThresholdProfile,
+): SimulationMetrics | null {
   if (frames.length === 0) {
     return null;
   }
@@ -129,7 +119,9 @@ function evaluateGates(metrics: {
     contourLockPass: contour ? contour.detection.lockPassRateAt085 >= 0.82 : false,
     contourFalsePositivePass: contour ? contour.detection.falsePositiveRate <= 0.03 : false,
     contourAutoCapturePass: contour ? contour.capture.autoCaptureSuccessRate >= 0.65 : false,
-    noDocumentFalsePositivePass: noDocument ? noDocument.detection.falsePositiveRate <= 0.01 : false,
+    noDocumentFalsePositivePass: noDocument
+      ? noDocument.detection.falsePositiveRate <= 0.01
+      : false,
     fpsPass: metrics.overall.perf.fpsP10 >= 8,
   };
 
@@ -180,7 +172,9 @@ export function evaluateOpenCvRegression(
   };
 }
 
-async function resolveThresholdProfile(root: string): Promise<{ profile: ThresholdProfile; source: string }> {
+async function resolveThresholdProfile(
+  root: string,
+): Promise<{ profile: ThresholdProfile; source: string }> {
   const tunedPath = path.resolve(root, 'apps/eval-harness/output/realclip/tuned-thresholds.json');
   if (!(await hasPath(tunedPath))) {
     return {
@@ -241,7 +235,9 @@ function toMarkdown(output: OpenCvRegressionOutput): string {
   lines.push('');
   lines.push('## Metrics');
   lines.push('');
-  lines.push('| Segment | Lock (IoU>=0.85) | False Positive | Auto-capture <=2s | Median Stable | P10 FPS |');
+  lines.push(
+    '| Segment | Lock (IoU>=0.85) | False Positive | Auto-capture <=2s | Median Stable | P10 FPS |',
+  );
   lines.push('|---|---:|---:|---:|---:|---:|');
   lines.push(renderMetricRow('Overall', output.metrics.overall));
   lines.push(renderMetricRow('Real clips', output.metrics.realClips));
@@ -251,12 +247,16 @@ function toMarkdown(output: OpenCvRegressionOutput): string {
   lines.push('## Gate Verdict');
   lines.push('');
   lines.push(`- overallLockPass: ${output.gates.overallLockPass ? 'PASS' : 'FAIL'}`);
-  lines.push(`- overallFalsePositivePass: ${output.gates.overallFalsePositivePass ? 'PASS' : 'FAIL'}`);
+  lines.push(
+    `- overallFalsePositivePass: ${output.gates.overallFalsePositivePass ? 'PASS' : 'FAIL'}`,
+  );
   lines.push(
     `- overallAutoCaptureWithin2sPass: ${output.gates.overallAutoCaptureWithin2sPass ? 'PASS' : 'FAIL'}`,
   );
   lines.push(`- contourLockPass: ${output.gates.contourLockPass ? 'PASS' : 'FAIL'}`);
-  lines.push(`- contourFalsePositivePass: ${output.gates.contourFalsePositivePass ? 'PASS' : 'FAIL'}`);
+  lines.push(
+    `- contourFalsePositivePass: ${output.gates.contourFalsePositivePass ? 'PASS' : 'FAIL'}`,
+  );
   lines.push(`- contourAutoCapturePass: ${output.gates.contourAutoCapturePass ? 'PASS' : 'FAIL'}`);
   lines.push(
     `- noDocumentFalsePositivePass: ${output.gates.noDocumentFalsePositivePass ? 'PASS' : 'FAIL'}`,
@@ -303,13 +303,17 @@ async function main() {
   const realClipPath = process.argv[2] ?? path.resolve(root, 'datasets/real-clips');
   const outputPath =
     process.argv[3] ?? path.resolve(process.cwd(), 'output/opencv-regression/latest.json');
-  const externalFixturePathArg = process.argv[4] ?? process.env.DOCUMENT_AUTOCAPTURE_OPENCV_FIXTURE_PATH;
+  const externalFixturePathArg =
+    process.argv[4] ?? process.env.DOCUMENT_AUTOCAPTURE_OPENCV_FIXTURE_PATH;
   const externalFixturePath = externalFixturePathArg
     ? path.resolve(externalFixturePathArg)
     : undefined;
   const reportPath = path.resolve(root, 'docs/opencv-regression-report.md');
 
-  const { manifests, sourceFiles } = await loadRegressionManifests(realClipPath, externalFixturePath);
+  const { manifests, sourceFiles } = await loadRegressionManifests(
+    realClipPath,
+    externalFixturePath,
+  );
   const normalizedFrames: NormalizedFrame[] = [];
   for (const manifest of manifests) {
     const isFixture = (manifest.tags ?? []).includes('contour-failure');

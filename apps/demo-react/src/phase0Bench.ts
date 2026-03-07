@@ -3,11 +3,16 @@ import {
   defaultEngineConfig,
   mergeEngineConfig,
 } from '@document-autocapture/core-engine';
-import { detectCapabilities, selectExecutionMode, type Capabilities } from '@document-autocapture/runtime-web';
+import {
+  detectCapabilities,
+  selectExecutionMode,
+  type Capabilities,
+} from '@document-autocapture/runtime-web';
 import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
 import { warpPerspectiveWebGL } from '@document-autocapture/warp-webgl';
 import { computeStats, type Stats } from './bench/shared/stats';
 import { createBenchmarkWorkerClient } from './bench/shared/worker-client';
+import { drawSyntheticDocument } from './bench/shared/synthetic-scene';
 
 interface IngestionBenchmark {
   mode: 'standard' | 'best';
@@ -72,42 +77,6 @@ interface Phase0BenchResult {
     endToEndPass: boolean;
     overall: boolean;
   };
-}
-
-function drawSyntheticDocument(
-  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-  width: number,
-  height: number,
-  frameIndex: number,
-): void {
-  const t = frameIndex / 12;
-  const jitterX = Math.sin(t) * 6;
-  const jitterY = Math.cos(t) * 4;
-
-  ctx.fillStyle = '#1f2937';
-  ctx.fillRect(0, 0, width, height);
-
-  const left = width * 0.14 + jitterX;
-  const top = height * 0.1 + jitterY;
-  const docWidth = width * 0.72;
-  const docHeight = height * 0.78;
-
-  ctx.fillStyle = '#d7dde6';
-  ctx.fillRect(left, top, docWidth, docHeight);
-
-  ctx.strokeStyle = '#111827';
-  ctx.lineWidth = Math.max(2, Math.round(width * 0.01));
-  ctx.strokeRect(left, top, docWidth, docHeight);
-
-  ctx.strokeStyle = '#94a3b8';
-  ctx.lineWidth = 1;
-  for (let i = 0; i < 12; i += 1) {
-    const y = top + 20 + i * ((docHeight - 40) / 12);
-    ctx.beginPath();
-    ctx.moveTo(left + 24, y);
-    ctx.lineTo(left + docWidth - 24, y);
-    ctx.stroke();
-  }
 }
 
 function createSyntheticImageData(width: number, height: number): ImageData {
@@ -280,7 +249,15 @@ async function benchmarkDetectionLoop(frameCount = 200): Promise<DetectionLoopBe
   };
 }
 
-function benchmarkWarpWebgl(imageData: ImageData, quad: { topLeft: { x: number; y: number }; topRight: { x: number; y: number }; bottomRight: { x: number; y: number }; bottomLeft: { x: number; y: number } }): WarpBenchmarkResult {
+function benchmarkWarpWebgl(
+  imageData: ImageData,
+  quad: {
+    topLeft: { x: number; y: number };
+    topRight: { x: number; y: number };
+    bottomRight: { x: number; y: number };
+    bottomLeft: { x: number; y: number };
+  },
+): WarpBenchmarkResult {
   // Warm shader/program cache before timed run.
   warpPerspectiveWebGL({
     imageData,
@@ -296,7 +273,8 @@ function benchmarkWarpWebgl(imageData: ImageData, quad: { topLeft: { x: number; 
     outputHeight: imageData.height,
     budgetMs: 50,
   });
-  const downgraded = !result.ok && (result.reason ?? '').toLowerCase().includes('context unavailable');
+  const downgraded =
+    !result.ok && (result.reason ?? '').toLowerCase().includes('context unavailable');
   return {
     ok: result.ok,
     elapsedMs: result.elapsedMs,
@@ -307,7 +285,15 @@ function benchmarkWarpWebgl(imageData: ImageData, quad: { topLeft: { x: number; 
   };
 }
 
-function benchmarkWarpCpu(imageData: ImageData, quad: { topLeft: { x: number; y: number }; topRight: { x: number; y: number }; bottomRight: { x: number; y: number }; bottomLeft: { x: number; y: number } }): WarpBenchmarkResult {
+function benchmarkWarpCpu(
+  imageData: ImageData,
+  quad: {
+    topLeft: { x: number; y: number };
+    topRight: { x: number; y: number };
+    bottomRight: { x: number; y: number };
+    bottomLeft: { x: number; y: number };
+  },
+): WarpBenchmarkResult {
   // Warm JIT path before timed run.
   warpPerspectiveCpu({
     imageData,
@@ -358,7 +344,9 @@ function benchmarkEndToEndFlow(): EndToEndBenchmark {
   });
 
   let stableAtMs = 0;
-  let bestCandidate = undefined as ReturnType<typeof engine.processFrame>['detection']['bestCandidate'];
+  let bestCandidate = undefined as ReturnType<
+    typeof engine.processFrame
+  >['detection']['bestCandidate'];
   let guidance = 'DOCUMENT_NOT_FOUND';
 
   for (let frame = 0; frame < 70; frame += 1) {
@@ -395,8 +383,14 @@ function benchmarkEndToEndFlow(): EndToEndBenchmark {
   const scaledQuad = {
     topLeft: { x: bestCandidate.quad.topLeft.x * sx, y: bestCandidate.quad.topLeft.y * sy },
     topRight: { x: bestCandidate.quad.topRight.x * sx, y: bestCandidate.quad.topRight.y * sy },
-    bottomRight: { x: bestCandidate.quad.bottomRight.x * sx, y: bestCandidate.quad.bottomRight.y * sy },
-    bottomLeft: { x: bestCandidate.quad.bottomLeft.x * sx, y: bestCandidate.quad.bottomLeft.y * sy },
+    bottomRight: {
+      x: bestCandidate.quad.bottomRight.x * sx,
+      y: bestCandidate.quad.bottomRight.y * sy,
+    },
+    bottomLeft: {
+      x: bestCandidate.quad.bottomLeft.x * sx,
+      y: bestCandidate.quad.bottomLeft.y * sy,
+    },
   };
 
   const webgl = warpPerspectiveWebGL({

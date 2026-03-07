@@ -2,6 +2,7 @@ import {
   createEngine,
   defaultEngineConfig,
   mergeEngineConfig,
+  nowMs,
   type DetectionResult,
   type EngineConfig,
   type ExecutionMode,
@@ -16,8 +17,19 @@ import {
 import { detectCapabilities, selectExecutionMode } from './capabilities';
 import { TypedEmitter } from './emitter';
 import { captureWithWarp as runCaptureWithWarp } from './session/capture-pipeline';
-import { normalizeDetectorMode, toEngineConfig, toWorkerDetectorConfig } from './session/config-mapper';
+import {
+  toEngineConfig,
+  toWorkerDetectorConfig,
+  normalizeDetectorMode,
+} from './session/config-mapper';
+import { buildScannerConfig } from './session/defaults';
+import { mergeVideoConstraints } from './session/constraint-utils';
 import { evaluateAutoCaptureReadiness, logFrameDebug } from './session/frame-decision';
+import {
+  cleanupVideoStream,
+  ensureVideoFrameReady,
+  ensureVideoPlayback,
+} from './session/video-media';
 import { hasCurrentVideoFrame, waitForVideoLoadedData } from './video-readiness';
 import type {
   Capabilities,
@@ -27,54 +39,6 @@ import type {
   ScannerEventName,
   ScannerSession,
 } from './types';
-
-function now(): number {
-  return typeof performance !== 'undefined' ? performance.now() : Date.now();
-}
-
-function defaultOpenCvScriptUrl(): string {
-  if (typeof window === 'undefined') {
-    return '/opencv.js';
-  }
-  try {
-    return new URL('opencv.js', window.location.href).toString();
-  } catch {
-    return '/opencv.js';
-  }
-}
-
-function isConstraintRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function mergeConstraintValue<T>(base: T | undefined, override: T | undefined): T | undefined {
-  if (override === undefined) {
-    return base;
-  }
-  if (isConstraintRecord(base) && isConstraintRecord(override)) {
-    return { ...base, ...override } as T;
-  }
-  return override;
-}
-
-function mergeVideoConstraints(
-  base: MediaTrackConstraints | undefined,
-  override: MediaTrackConstraints | undefined,
-): MediaTrackConstraints | undefined {
-  if (!base && !override) {
-    return undefined;
-  }
-  const safeBase = base ?? {};
-  const safeOverride = override ?? {};
-  return {
-    ...safeBase,
-    ...safeOverride,
-    width: mergeConstraintValue(safeBase.width, safeOverride.width),
-    height: mergeConstraintValue(safeBase.height, safeOverride.height),
-    frameRate: mergeConstraintValue(safeBase.frameRate, safeOverride.frameRate),
-    aspectRatio: mergeConstraintValue(safeBase.aspectRatio, safeOverride.aspectRatio),
-  };
-}
 
 class StartAbortedError extends Error {
   constructor() {
@@ -170,77 +134,7 @@ class ScannerSessionImpl implements ScannerSession {
   }
 
   constructor(config?: ScannerConfig) {
-    const defaultVideoConstraints: MediaTrackConstraints = {
-      facingMode: 'environment',
-      width: { ideal: 1920 },
-      height: { ideal: 1080 },
-    };
-    const userProvidedModelId = config?.mlModelId !== undefined;
-    this.config = {
-      preferredMode: 'best',
-      autoCapture: true,
-      autoCaptureMinAreaFraction: 0.14,
-      autoCaptureCooldownMs: 1400,
-      captureMimeType: 'image/png',
-      captureQuality: 1,
-      detectorMode: 'ml',
-      debugOverlayLevel: 'full',
-      autoCaptureConsecutiveStableFrames: 3,
-      detectionWidth: 480,
-      fallbackDetectionWidth: 320,
-      fallbackFps: 9,
-      confidenceThreshold: 0.42,
-      minStableConfidence: 0.36,
-      stabilityWindowMs: 320,
-      emaAlpha: 0.25,
-      movementThresholdRatio: 0.015,
-      minAreaFraction: 0.08,
-      maxAreaFraction: 0.96,
-      minAspectRatio: 0.6,
-      maxAspectRatio: 1.9,
-      ambiguityScoreMargin: 0.04,
-      edgeLowThreshold: 50,
-      edgeHighThreshold: 150,
-      blurVarianceMin: 24,
-      brightnessMin: 45,
-      brightnessMax: 215,
-      glareRatioMax: 0.12,
-      houghSecondaryEnabled: true,
-      houghEdgeDensityMin: 0.005,
-      houghEdgeDensityMax: 0.25,
-      houghMinLineLengthDiagRatio: 0.12,
-      houghMaxLineGapDiagRatio: 0.02,
-      houghOrthogonalityMinDeg: 60,
-      houghOrthogonalityMaxDeg: 120,
-      mlFallbackEnabled: true,
-      mlFallbackFrameStride: 5,
-      mlFallbackTriggerConsecutiveMisses: 8,
-      mlFallbackMinCvConfidence: 0.35,
-      mlRescueEnabled: true,
-      mlRescueFrameStride: 2,
-      mlFallbackExitConsecutiveCvRecoveries: 3,
-      mlFallbackReentryCooldownFrames: 10,
-      mlPipelineVersion: 'v1-heuristic',
-      mlModelId: 'doc-corner-v1',
-      mlInputSize: 320,
-      graphMlEnabled: true,
-      cocoBookEnabled: true,
-      cocoMinScore: 0.45,
-      cocoUseAsPrimaryInMlMode: true,
-      cvContourEnabled: false,
-      warpValidationLevel: 'standard',
-      postCaptureRefine: 'off',
-      opencvScriptUrl: defaultOpenCvScriptUrl(),
-      debug: false,
-      ...config,
-      videoConstraints: mergeVideoConstraints(defaultVideoConstraints, config?.videoConstraints),
-    };
-    if (!userProvidedModelId) {
-      this.config.mlModelId =
-        this.config.mlPipelineVersion === 'v2-graph' ? 'doc-corner-v2' : 'doc-corner-v1';
-    }
-    this.config.detectorMode = normalizeDetectorMode(this.config.detectorMode);
-
+    this.config = buildScannerConfig(config);
     this.engineConfig = mergeEngineConfig(toEngineConfig(this.config));
     this.fallbackEngine = createEngine(this.engineConfig);
   }
@@ -249,7 +143,10 @@ class ScannerSessionImpl implements ScannerSession {
     return this.capabilities;
   }
 
-  on<K extends ScannerEventName>(event: K, handler: (payload: ScannerEventMap[K]) => void): () => void {
+  on<K extends ScannerEventName>(
+    event: K,
+    handler: (payload: ScannerEventMap[K]) => void,
+  ): () => void {
     return this.emitter.on(event, handler);
   }
 
@@ -427,7 +324,7 @@ class ScannerSessionImpl implements ScannerSession {
               `cvContour=${this.engineConfig.contourEnabled ? 'on' : 'off'} | ` +
               `hough=${this.engineConfig.houghSecondaryEnabled ? 'on' : 'off'} | ` +
               `warpValidation=${this.config.warpValidationLevel ?? 'standard'} | ` +
-              `postRefine=${this.config.postCaptureRefine ?? 'off'} | ` +
+              `postRefine=${this.config.postCaptureRefineMode ?? 'off'} | ` +
               `captureMime=${this.config.captureMimeType ?? 'image/png'} | ` +
               `mlFallback=${workerDetectorConfig.mlFallbackEnabled ? 'on' : 'off'} ` +
               `(stride=${workerDetectorConfig.mlFallbackFrameStride}, misses=${workerDetectorConfig.mlFallbackTriggerConsecutiveMisses}, minCv=${workerDetectorConfig.mlFallbackMinCvConfidence}) | ` +
@@ -444,7 +341,9 @@ class ScannerSessionImpl implements ScannerSession {
         }
         this.workerReady = false;
         if (!(error instanceof StartAbortedError)) {
-          this.rejectPendingFrames(error instanceof Error ? error : new Error('Scanner start failed'));
+          this.rejectPendingFrames(
+            error instanceof Error ? error : new Error('Scanner start failed'),
+          );
         }
         this.cleanupVideoStream();
         if (!(error instanceof StartAbortedError)) {
@@ -534,7 +433,7 @@ class ScannerSessionImpl implements ScannerSession {
       rgba: new Uint8ClampedArray(width * height * 4),
       width,
       height,
-      nowMs: now(),
+      nowMs: nowMs(),
     });
   }
 
@@ -550,7 +449,7 @@ class ScannerSessionImpl implements ScannerSession {
       rgba: imageData.data,
       width,
       height,
-      nowMs: now(),
+      nowMs: nowMs(),
     });
   }
 
@@ -566,46 +465,16 @@ class ScannerSessionImpl implements ScannerSession {
   }
 
   private async ensureVideoPlayback(video: HTMLVideoElement): Promise<void> {
-    const attemptPlay = async (): Promise<boolean> => {
-      try {
-        await video.play();
-        return true;
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') {
-          return false;
-        }
-        throw error;
-      }
-    };
-
-    if (await attemptPlay()) {
-      return;
-    }
-
-    await waitForVideoLoadedData(video, 1500, 'Video failed to load camera stream');
-
-    await video.play();
+    return ensureVideoPlayback(video);
   }
 
   private async ensureVideoFrameReady(video: HTMLVideoElement): Promise<void> {
-    if (hasCurrentVideoFrame(video)) {
-      return;
-    }
-    await waitForVideoLoadedData(video, 1000, 'Video frame unavailable for capture');
+    return ensureVideoFrameReady(video);
   }
 
   private cleanupVideoStream(): void {
-    if (this.video) {
-      this.video.pause();
-      this.video.srcObject = null;
-    }
-
-    if (this.stream) {
-      for (const track of this.stream.getTracks()) {
-        track.stop();
-      }
-      this.stream = undefined;
-    }
+    cleanupVideoStream(this.video, this.stream);
+    this.stream = undefined;
   }
 
   private scheduleNextFrame(): void {
@@ -624,7 +493,10 @@ class ScannerSessionImpl implements ScannerSession {
       return;
     }
 
-    if (this.capabilities.requestVideoFrameCallbackSupported && this.video.requestVideoFrameCallback) {
+    if (
+      this.capabilities.requestVideoFrameCallbackSupported &&
+      this.video.requestVideoFrameCallback
+    ) {
       this.rvfcHandle = this.video.requestVideoFrameCallback(() => {
         void this.processFrame().finally(() => this.scheduleNextFrame());
       });
@@ -652,8 +524,13 @@ class ScannerSessionImpl implements ScannerSession {
     }
 
     try {
-      const requestedWidth = Number(this.config.detectionWidth ?? defaultEngineConfig.detectionWidth);
-      const targetWidth = Math.max(240, Math.min(960, Number.isFinite(requestedWidth) ? Math.round(requestedWidth) : 480));
+      const requestedWidth = Number(
+        this.config.detectionWidth ?? defaultEngineConfig.detectionWidth,
+      );
+      const targetWidth = Math.max(
+        240,
+        Math.min(960, Number.isFinite(requestedWidth) ? Math.round(requestedWidth) : 480),
+      );
       const targetHeight = Math.max(1, Math.round((sourceHeight / sourceWidth) * targetWidth));
       this.lastDetectionFrameWidth = targetWidth;
       this.lastDetectionFrameHeight = targetHeight;
@@ -669,7 +546,10 @@ class ScannerSessionImpl implements ScannerSession {
     }
   }
 
-  private async processCvFrame(targetWidth: number, targetHeight: number): Promise<FrameProcessResult> {
+  private async processCvFrame(
+    targetWidth: number,
+    targetHeight: number,
+  ): Promise<FrameProcessResult> {
     if (!this.video || !this.ingestionCanvas || !this.ingestionCtx) {
       this.lastWorkerTelemetry = undefined;
       return this.createBlankFrame(targetWidth, targetHeight);
@@ -704,7 +584,10 @@ class ScannerSessionImpl implements ScannerSession {
       this.pendingFrames.set(id, { resolve, reject, timeoutHandle });
     });
 
-    if (this.executionMode === 'best' && this.prepareBestIngestionCanvas(targetWidth, targetHeight)) {
+    if (
+      this.executionMode === 'best' &&
+      this.prepareBestIngestionCanvas(targetWidth, targetHeight)
+    ) {
       this.bestIngestionCtx?.drawImage(this.video, 0, 0, targetWidth, targetHeight);
       const bitmap = this.bestIngestionCanvas?.transferToImageBitmap();
       if (bitmap) {
@@ -713,7 +596,7 @@ class ScannerSessionImpl implements ScannerSession {
             {
               type: 'process-image-bitmap',
               id,
-              nowMs: now(),
+              nowMs: nowMs(),
               bitmap,
             } satisfies WorkerRequest,
             [bitmap],
@@ -751,7 +634,7 @@ class ScannerSessionImpl implements ScannerSession {
             id,
             width: targetWidth,
             height: targetHeight,
-            nowMs: now(),
+            nowMs: nowMs(),
             rgbaBuffer: imageData.data.buffer,
           } satisfies WorkerRequest,
           [imageData.data.buffer],
@@ -791,7 +674,9 @@ class ScannerSessionImpl implements ScannerSession {
 
     if (!this.bestIngestionCanvas) {
       this.bestIngestionCanvas = new OffscreenCanvas(width, height);
-      this.bestIngestionCtx = this.bestIngestionCanvas.getContext('2d', { willReadFrequently: true });
+      this.bestIngestionCtx = this.bestIngestionCanvas.getContext('2d', {
+        willReadFrequently: true,
+      });
     }
 
     if (!this.bestIngestionCanvas || !this.bestIngestionCtx) {
@@ -873,8 +758,8 @@ class ScannerSessionImpl implements ScannerSession {
         const providerUsed =
           (message.telemetry as { providerUsed?: string } | undefined)?.providerUsed ?? 'n/a';
         const providerReject =
-          (message.telemetry as { providerRejectReason?: string } | undefined)?.providerRejectReason ??
-          'none';
+          (message.telemetry as { providerRejectReason?: string } | undefined)
+            ?.providerRejectReason ?? 'none';
         console.warn(
           `[document-autocapture] ML mode fell back to CV (reason=${fallbackReason}) ` +
             `cvAttempted=${message.telemetry?.cvAttempted ?? false} ` +
@@ -989,9 +874,14 @@ class ScannerSessionImpl implements ScannerSession {
       })
       .catch((error) => {
         if (this.config.debug) {
-          console.warn(`[document-autocapture] Capture failed: ${error instanceof Error ? error.message : 'unknown'}`);
+          console.warn(
+            `[document-autocapture] Capture failed: ${error instanceof Error ? error.message : 'unknown'}`,
+          );
         }
-        this.emitter.emit('error', error instanceof Error ? error : new Error('Auto-capture failed'));
+        this.emitter.emit(
+          'error',
+          error instanceof Error ? error : new Error('Auto-capture failed'),
+        );
       });
   }
 
@@ -1013,7 +903,7 @@ class ScannerSessionImpl implements ScannerSession {
       source,
       lastDetectionFrameWidth: this.lastDetectionFrameWidth,
       lastDetectionFrameHeight: this.lastDetectionFrameHeight,
-      nowMs: now,
+      nowMs: nowMs,
       emitWarning: (message) => this.emitter.emit('warning', message),
     });
   }

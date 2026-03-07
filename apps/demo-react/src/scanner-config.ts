@@ -7,13 +7,23 @@ const DEFAULT_VIDEO_CONSTRAINTS: NonNullable<ScannerConfig['videoConstraints']> 
 };
 
 const DEFAULT_SCANNER_CONFIG: ScannerConfig = {
-  preferredMode: 'best',
+  // ── High-level API ──────────────────────────────────────────────────
+  detection: 'ml',
+  quality: 'balanced',
+  cocoSsd: true,
+  mlFallback: true,
+  webglWarp: false,
+  autoCapture: true,
+  postCaptureRefine: true,
+  debug: true,
+  debugOverlay: 'basic',
+
+  // ── Advanced tuning (demo-specific overrides) ───────────────────────
   detectorMode: 'ml',
   mlPipelineVersion: 'v2-graph',
   mlModelId: 'doc-corner-v2',
   mlInputSize: 224,
   graphMlEnabled: true,
-  cocoBookEnabled: true,
   cocoMinScore: 0.45,
   cocoUseAsPrimaryInMlMode: true,
   cvContourEnabled: false,
@@ -21,15 +31,12 @@ const DEFAULT_SCANNER_CONFIG: ScannerConfig = {
   detectionWidth: 480,
   fallbackDetectionWidth: 320,
   fallbackFps: 9,
-  mlFallbackEnabled: true,
   mlFallbackFrameStride: 5,
   mlFallbackTriggerConsecutiveMisses: 3,
   mlFallbackMinCvConfidence: 0.55,
   mlRescueEnabled: true,
   mlRescueFrameStride: 2,
-  postCaptureRefine: 'safe',
   warpValidationLevel: 'strict',
-  autoCapture: true,
   autoCaptureMinAreaFraction: 0.14,
   autoCaptureCooldownMs: 1400,
   autoCaptureConsecutiveStableFrames: 2,
@@ -53,8 +60,6 @@ const DEFAULT_SCANNER_CONFIG: ScannerConfig = {
   houghEdgeDensityMax: 0.25,
   captureMimeType: 'image/png',
   captureQuality: 1,
-  debugOverlayLevel: 'basic',
-  debug: true,
   videoConstraints: DEFAULT_VIDEO_CONSTRAINTS,
 };
 

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { App as StudioApp } from './App';
 import { JsIntegrationPage } from './pages/JsIntegrationPage';
 import { ReactIntegrationPage } from './pages/ReactIntegrationPage';
+import { DocumentScannerDemo } from './pages/DocumentScannerDemo';
 import './styles.css';
 
 declare global {
@@ -19,14 +20,14 @@ function renderApp(): void {
       <ReactIntegrationPage />
     ) : normalizedPath === '/js' ? (
       <JsIntegrationPage />
+    ) : normalizedPath === '/demo' ? (
+      <DocumentScannerDemo onCapture={(r) => console.log('Captured:', r.width, r.height)} />
     ) : (
       <StudioApp />
     );
 
   createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
-      {routeNode}
-    </React.StrictMode>,
+    <React.StrictMode>{routeNode}</React.StrictMode>,
   );
 }
 

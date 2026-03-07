@@ -1,6 +1,7 @@
-import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { clamp, type Quad } from '@document-autocapture/core-engine';
+import { collectJsonFiles } from './fs-utils';
 import { ingestMidv, ingestSmartDoc } from './external-datasets';
 import {
   normalizeFrame,
@@ -99,11 +100,7 @@ function jitterCandidate(
     frame.height,
   );
 
-  const score = clamp(
-    candidate.score * (1 + jitter(0, options.scoreJitter, random)),
-    0,
-    1,
-  );
+  const score = clamp(candidate.score * (1 + jitter(0, options.scoreJitter, random)), 0, 1);
 
   return {
     ...candidate,
@@ -141,40 +138,12 @@ function jitterFrame(
         0,
         255,
       ),
-      blur: Math.max(
-        0,
-        frame.quality.blur * (1 + jitter(0, options.blurJitterRatio, random)),
-      ),
+      blur: Math.max(0, frame.quality.blur * (1 + jitter(0, options.blurJitterRatio, random))),
       glare: clamp(frame.quality.glare + jitter(0, options.glareJitter, random), 0, 1),
     },
     variant: 'randomized',
     randomizedFrom: frame.frameId,
   };
-}
-
-async function collectJsonFiles(inputPath: string): Promise<string[]> {
-  const stats = await stat(inputPath);
-  if (stats.isFile()) {
-    return [path.resolve(inputPath)];
-  }
-
-  if (!stats.isDirectory()) {
-    throw new Error(`Input path is neither file nor directory: ${inputPath}`);
-  }
-
-  const entries = await readdir(inputPath, { withFileTypes: true });
-  const files: string[] = [];
-  for (const entry of entries) {
-    if (entry.isFile() && entry.name.endsWith('.json')) {
-      files.push(path.resolve(inputPath, entry.name));
-      continue;
-    }
-    if (entry.isDirectory()) {
-      const nested = await collectJsonFiles(path.resolve(inputPath, entry.name));
-      files.push(...nested);
-    }
-  }
-  return files.sort();
 }
 
 async function readManifests(files: string[]): Promise<RealClipManifest[]> {
@@ -191,18 +160,21 @@ function buildSummary(frames: NormalizedFrame[]) {
   const baseFrames = frames.filter((frame) => frame.variant === 'base').length;
   const randomizedFrames = frames.length - baseFrames;
   const documentFrames = frames.filter((frame) => frame.hasDocument).length;
-  const byDataset = frames.reduce<Record<string, { clips: Set<string>; frames: number }>>((acc, frame) => {
-    const bucket =
-      acc[frame.datasetName] ??
-      (() => {
-        const initial = { clips: new Set<string>(), frames: 0 };
-        acc[frame.datasetName] = initial;
-        return initial;
-      })();
-    bucket.clips.add(frame.clipId);
-    bucket.frames += 1;
-    return acc;
-  }, {});
+  const byDataset = frames.reduce<Record<string, { clips: Set<string>; frames: number }>>(
+    (acc, frame) => {
+      const bucket =
+        acc[frame.datasetName] ??
+        (() => {
+          const initial = { clips: new Set<string>(), frames: 0 };
+          acc[frame.datasetName] = initial;
+          return initial;
+        })();
+      bucket.clips.add(frame.clipId);
+      bucket.frames += 1;
+      return acc;
+    },
+    {},
+  );
 
   const normalizedByDataset = Object.fromEntries(
     Object.entries(byDataset).map(([dataset, value]) => [
@@ -284,7 +256,8 @@ function toMarkdown(output: IngestOutput): string {
 async function main() {
   const root = path.resolve(process.cwd(), '..', '..');
   const sourcePath = process.argv[2] ?? path.resolve(root, 'datasets/real-clips');
-  const outputPath = process.argv[3] ?? path.resolve(process.cwd(), 'output/realclip/ingested.json');
+  const outputPath =
+    process.argv[3] ?? path.resolve(process.cwd(), 'output/realclip/ingested.json');
   const reportPath = path.resolve(root, 'docs/realclip-ingestion-report.md');
   const smartDocPath = process.env.DOCUMENT_AUTOCAPTURE_SMARTDOC_PATH;
   const midvPath = process.env.DOCUMENT_AUTOCAPTURE_MIDV_PATH;

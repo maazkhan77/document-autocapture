@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { polygonArea, quadToPoints, type Point, type Quad } from '@document-autocapture/core-engine';
+import { quadIoU, type Point, type Quad } from '@document-autocapture/core-engine';
 
 interface FrameRecord {
   id: string;
@@ -18,94 +18,6 @@ interface FrameRecord {
 interface DatasetManifest {
   datasetName: string;
   frames: FrameRecord[];
-}
-
-function quadIoU(a: Quad, b: Quad): number {
-  const polygonA = quadToPoints(a);
-  const polygonB = quadToPoints(b);
-  const intersectionPolygon = intersectConvexPolygons(polygonA, polygonB);
-  const intersectionArea = polygonArea(intersectionPolygon);
-  const areaA = polygonArea(polygonA);
-  const areaB = polygonArea(polygonB);
-  const union = Math.max(1e-6, areaA + areaB - intersectionArea);
-  return intersectionArea / union;
-}
-
-function polygonSignedArea(points: Point[]): number {
-  let area = 0;
-  for (let i = 0; i < points.length; i += 1) {
-    const j = (i + 1) % points.length;
-    area += points[i].x * points[j].y - points[j].x * points[i].y;
-  }
-  return area / 2;
-}
-
-function lineIntersection(p1: Point, p2: Point, p3: Point, p4: Point): Point {
-  const x1 = p1.x;
-  const y1 = p1.y;
-  const x2 = p2.x;
-  const y2 = p2.y;
-  const x3 = p3.x;
-  const y3 = p3.y;
-  const x4 = p4.x;
-  const y4 = p4.y;
-
-  const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-  if (Math.abs(den) < 1e-8) {
-    return { x: p2.x, y: p2.y };
-  }
-
-  const pre = x1 * y2 - y1 * x2;
-  const post = x3 * y4 - y3 * x4;
-  return {
-    x: (pre * (x3 - x4) - (x1 - x2) * post) / den,
-    y: (pre * (y3 - y4) - (y1 - y2) * post) / den,
-  };
-}
-
-function intersectConvexPolygons(subject: Point[], clip: Point[]): Point[] {
-  if (subject.length === 0 || clip.length === 0) {
-    return [];
-  }
-
-  let output = [...subject];
-  const orientation = polygonSignedArea(clip) >= 0 ? 1 : -1;
-
-  for (let i = 0; i < clip.length; i += 1) {
-    const cp1 = clip[i];
-    const cp2 = clip[(i + 1) % clip.length];
-    const input = [...output];
-    output = [];
-
-    if (input.length === 0) {
-      break;
-    }
-
-    let s = input[input.length - 1];
-    for (const e of input) {
-      const eInside = isInside(e, cp1, cp2, orientation);
-      const sInside = isInside(s, cp1, cp2, orientation);
-
-      if (eInside) {
-        if (!sInside) {
-          output.push(lineIntersection(s, e, cp1, cp2));
-        }
-        output.push(e);
-      } else if (sInside) {
-        output.push(lineIntersection(s, e, cp1, cp2));
-      }
-      s = e;
-    }
-  }
-
-  return output;
-}
-
-function isInside(point: Point, edgeStart: Point, edgeEnd: Point, orientation: 1 | -1): boolean {
-  const cross =
-    (edgeEnd.x - edgeStart.x) * (point.y - edgeStart.y) -
-    (edgeEnd.y - edgeStart.y) * (point.x - edgeStart.x);
-  return orientation * cross >= -1e-8;
 }
 
 function median(values: number[]): number {
@@ -132,7 +44,10 @@ function percentile(values: number[], p: number): number {
     return 0;
   }
   const sorted = [...values].sort((a, b) => a - b);
-  const index = Math.min(sorted.length - 1, Math.max(0, Math.round((p / 100) * (sorted.length - 1))));
+  const index = Math.min(
+    sorted.length - 1,
+    Math.max(0, Math.round((p / 100) * (sorted.length - 1))),
+  );
   return sorted[index];
 }
 
@@ -214,7 +129,8 @@ function summarize(records: FrameRecord[]) {
     autoCaptureSuccessRate:
       autoCaptureAttempts.length === 0
         ? 0
-        : autoCaptureAttempts.filter((f) => f.autoCaptureSuccess).length / autoCaptureAttempts.length,
+        : autoCaptureAttempts.filter((f) => f.autoCaptureSuccess).length /
+          autoCaptureAttempts.length,
     rejectionReasons: rejections,
     detectorSourceStats: detectorSources,
     fallbackActivationCount,
@@ -224,12 +140,11 @@ function summarize(records: FrameRecord[]) {
       fpsWorstPass: percentile(fpsSamples, 10) >= 8,
       medianStablePass: median(stableSamples) <= 1500,
       falsePositivePass:
-        nondocumentFrames.length > 0
-          ? falsePositives / nondocumentFrames.length <= 0.05
-          : false,
+        nondocumentFrames.length > 0 ? falsePositives / nondocumentFrames.length <= 0.05 : false,
       autoCapturePass:
         autoCaptureAttempts.length > 0
-          ? autoCaptureAttempts.filter((f) => f.autoCaptureSuccess).length / autoCaptureAttempts.length >=
+          ? autoCaptureAttempts.filter((f) => f.autoCaptureSuccess).length /
+              autoCaptureAttempts.length >=
             0.7
           : false,
     },
@@ -237,7 +152,8 @@ function summarize(records: FrameRecord[]) {
 }
 
 async function main() {
-  const manifestPath = process.argv[2] ?? path.resolve(process.cwd(), '../../datasets/sample-manifest.json');
+  const manifestPath =
+    process.argv[2] ?? path.resolve(process.cwd(), '../../datasets/sample-manifest.json');
   const outputPath = process.argv[3] ?? path.resolve(process.cwd(), 'output/summary.json');
 
   const input = await readFile(manifestPath, 'utf8');

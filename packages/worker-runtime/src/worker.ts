@@ -2,6 +2,7 @@
 
 import {
   createEngine,
+  nowMs,
   type FrameProcessResult,
   setOpenCVReady,
   StabilityTracker,
@@ -13,18 +14,21 @@ import {
 import { createCocoQuadProvider, type CocoQuadProvider } from './coco-provider';
 import { FallbackStateMachine } from './fallback-state';
 import { buildMlRescueRgba } from './ml-rescue';
-import type {
-  CvFallbackReason,
-  WorkerDetectorConfig,
-  WorkerRequest,
-  WorkerResponse,
-} from './protocol';
+import type { WorkerDetectorConfig, WorkerRequest, WorkerResponse } from './protocol';
 import {
   createMlStageTimings,
   fuseMlResult as fuseMlResultHelper,
   isCvDetectionFound,
   patchFallbackState,
 } from './worker-helpers';
+import {
+  createFrameTelemetry,
+  resetFrameTelemetry,
+  type CvFallbackReason,
+  type FrameTelemetry,
+  type MlProviderName,
+  type MlProviderStabilityTrackers,
+} from './worker-state';
 
 let engine = createEngine();
 let ingestCanvas: OffscreenCanvas | undefined;
@@ -36,8 +40,8 @@ let cocoRetryAfterMs = 0;
 let mlRetryAfterMs = 0;
 
 const COCO_INIT_RETRY_COOLDOWN_MS = 5000;
-const GRAPH_PROVIDER_TIMEOUT_MS = 1200;
-const COCO_PROVIDER_TIMEOUT_MS = 2800;
+const DEFAULT_GRAPH_PROVIDER_TIMEOUT_MS = 1200;
+const DEFAULT_COCO_PROVIDER_TIMEOUT_MS = 2800;
 
 interface OpenCvRuntime {
   Mat?: unknown;
@@ -69,6 +73,8 @@ const defaultDetectorConfig: WorkerDetectorConfig = {
   mlWasmBaseUrl: undefined,
   mlInputSize: 320,
   mlPipelineVersion: 'v1-heuristic',
+  graphProviderTimeoutMs: undefined,
+  cocoProviderTimeoutMs: undefined,
   debug: false,
 };
 
@@ -85,12 +91,6 @@ let mlWarned = false;
 let mlHeuristicWarned = false;
 let cocoWarned = false;
 let openCvWarned = false;
-type MlProviderName = 'graph_v2' | 'graph_v1' | 'coco_book';
-
-interface MlProviderStabilityTrackers {
-  graph: StabilityTracker;
-  coco: StabilityTracker;
-}
 
 function createMlStabilityTrackers(): MlProviderStabilityTrackers {
   return {
@@ -106,15 +106,8 @@ function resetMlStabilityTrackers(trackers: MlProviderStabilityTrackers): void {
 
 let mlStabilityByProvider = createMlStabilityTrackers();
 let mlGrayBufferByProvider: Partial<Record<'graph' | 'coco', Uint8ClampedArray>> = {};
-let mlInferenceUsed = false;
-let mlRescueUsed = false;
-let graphAttempted = false;
-let cocoAttempted = false;
-let cocoUsed = false;
-let providerUsed: MlProviderName | 'cv_hough' | 'cv_contour' | undefined;
-let providerRejectReason: string | undefined;
-let cvAttempted = false;
-let cvFallbackReason: CvFallbackReason = 'none';
+/** Per-frame telemetry — reset at the start of each processFrame call. */
+const frameTelemetry: FrameTelemetry = createFrameTelemetry();
 let mlRescueBuffer: Uint8ClampedArray | undefined;
 let mlRescueCounter = 0;
 let mlRescueDisabledWarned = false;
@@ -154,10 +147,6 @@ function warn(message: string): void {
     type: 'warning',
     message,
   });
-}
-
-function now(): number {
-  return typeof performance !== 'undefined' ? performance.now() : Date.now();
 }
 
 function isFrameTokenActive(frameToken: number): boolean {
@@ -247,10 +236,28 @@ async function loadOpenCvScript(scriptUrl: string): Promise<void> {
   }
 
   try {
-    // Evaluate OpenCV as a classic script so it can attach `self.cv`.
-    // eslint-disable-next-line no-new-func
-    const evaluateScript = new Function(`${source}\n//# sourceURL=${scriptUrl}`) as () => void;
-    evaluateScript.call(workerSelf);
+    // CSP-safe approach: evaluate via Blob URL + importScripts to avoid `unsafe-eval`.
+    // This works in classic workers and is compatible with strict CSP policies.
+    if (typeof workerSelf.importScripts === 'function') {
+      const blob = new Blob([source], { type: 'application/javascript' });
+      const blobUrl = URL.createObjectURL(blob);
+      try {
+        workerSelf.importScripts(blobUrl);
+        return;
+      } catch {
+        // Blob URL importScripts may be blocked in some environments; fall through.
+      } finally {
+        URL.revokeObjectURL(blobUrl);
+      }
+    }
+
+    // All CSP-safe evaluation paths exhausted. Throw a clear error so integrators
+    // know they need to serve OpenCV from the same origin or adjust their CSP policy.
+    throw new Error(
+      `OpenCV script loaded from ${scriptUrl} but could not be executed. ` +
+        'Blob-URL importScripts was blocked. Ensure the script is served from the same ' +
+        'origin or add the appropriate Content-Security-Policy directives.',
+    );
   } finally {
     if (typeof previousImportScripts === 'function' || hadOwnImportScripts) {
       workerSelf.importScripts = previousImportScripts;
@@ -260,9 +267,7 @@ async function loadOpenCvScript(scriptUrl: string): Promise<void> {
   }
 }
 
-function mergeDetectorConfig(
-  partial?: Partial<WorkerDetectorConfig>,
-): WorkerDetectorConfig {
+function mergeDetectorConfig(partial?: Partial<WorkerDetectorConfig>): WorkerDetectorConfig {
   if (!partial) {
     return detectorConfig;
   }
@@ -283,10 +288,14 @@ function mergeDetectorConfig(
     cocoMinScore: Math.max(0, Math.min(1, partial.cocoMinScore ?? detectorConfig.cocoMinScore)),
     cocoUseAsPrimaryInMlMode:
       partial.cocoUseAsPrimaryInMlMode ?? detectorConfig.cocoUseAsPrimaryInMlMode,
-    mlFallbackFrameStride: Math.max(1, partial.mlFallbackFrameStride ?? detectorConfig.mlFallbackFrameStride),
+    mlFallbackFrameStride: Math.max(
+      1,
+      partial.mlFallbackFrameStride ?? detectorConfig.mlFallbackFrameStride,
+    ),
     mlFallbackTriggerConsecutiveMisses: Math.max(
       1,
-      partial.mlFallbackTriggerConsecutiveMisses ?? detectorConfig.mlFallbackTriggerConsecutiveMisses,
+      partial.mlFallbackTriggerConsecutiveMisses ??
+        detectorConfig.mlFallbackTriggerConsecutiveMisses,
     ),
     mlFallbackMinCvConfidence: Math.max(
       0,
@@ -299,13 +308,17 @@ function mergeDetectorConfig(
     ),
     mlFallbackExitConsecutiveCvRecoveries: Math.max(
       1,
-      partial.mlFallbackExitConsecutiveCvRecoveries ?? detectorConfig.mlFallbackExitConsecutiveCvRecoveries,
+      partial.mlFallbackExitConsecutiveCvRecoveries ??
+        detectorConfig.mlFallbackExitConsecutiveCvRecoveries,
     ),
     mlFallbackReentryCooldownFrames: Math.max(
       0,
       partial.mlFallbackReentryCooldownFrames ?? detectorConfig.mlFallbackReentryCooldownFrames,
     ),
-    mlInputSize: Math.max(128, Math.min(640, partial.mlInputSize ?? detectorConfig.mlInputSize ?? 320)),
+    mlInputSize: Math.max(
+      128,
+      Math.min(640, partial.mlInputSize ?? detectorConfig.mlInputSize ?? 320),
+    ),
     mlPipelineVersion: requestedPipelineVersion,
     mlModelId: inferredModelId,
   };
@@ -317,15 +330,7 @@ function resetFallbackState(): void {
   resetMlStabilityTrackers(mlStabilityByProvider);
   mlGrayBufferByProvider = {};
   fallbackTelemetryState = 'inactive';
-  cvAttempted = false;
-  cvFallbackReason = 'none';
-  mlInferenceUsed = false;
-  mlRescueUsed = false;
-  graphAttempted = false;
-  cocoAttempted = false;
-  cocoUsed = false;
-  providerUsed = undefined;
-  providerRejectReason = undefined;
+  resetFrameTelemetry(frameTelemetry);
   mlRescueCounter = 0;
 }
 
@@ -355,7 +360,7 @@ async function waitForOpenCvRuntime(cvRuntime: OpenCvRuntime, timeoutMs: number)
 }
 
 async function ensureOpenCv(scriptUrl: string, debug: boolean): Promise<boolean> {
-  const currentTime = now();
+  const currentTime = nowMs();
   if (openCvRetryAfterMs > currentTime) {
     return false;
   }
@@ -403,7 +408,7 @@ async function ensureOpenCv(scriptUrl: string, debug: boolean): Promise<boolean>
       );
     }
     // Avoid hammering load/fetch paths on every ML->CV fallback frame after a failure.
-    openCvRetryAfterMs = now() + 5000;
+    openCvRetryAfterMs = nowMs() + 5000;
     return false;
   }
 }
@@ -419,7 +424,7 @@ async function ensureMlProvider(): Promise<void> {
   if (mlDisabled || mlReady) {
     return;
   }
-  if (mlRetryAfterMs > now()) {
+  if (mlRetryAfterMs > nowMs()) {
     return;
   }
 
@@ -458,11 +463,15 @@ async function ensureMlProvider(): Promise<void> {
             `[document-autocapture] ML v2 graph model unavailable, running heuristic fallback until graph model is loadable.${reason}`,
           );
         } else {
-          warn('[document-autocapture] ML running in heuristic mode (no graph model loaded). Provide a graphModelUrl artifact for best accuracy.');
+          warn(
+            '[document-autocapture] ML running in heuristic mode (no graph model loaded). Provide a graphModelUrl artifact for best accuracy.',
+          );
         }
       }
       if (detectorConfig.debug) {
-        console.warn(`[document-autocapture:worker] TFJS fallback ready | ${summarizeMlDiagnostics(diagnostics)}`);
+        console.warn(
+          `[document-autocapture:worker] TFJS fallback ready | ${summarizeMlDiagnostics(diagnostics)}`,
+        );
       }
       mlRetryAfterMs = 0;
     })();
@@ -475,7 +484,7 @@ async function ensureMlProvider(): Promise<void> {
     mlDisabled = false;
     mlModelLoaded = false;
     mlInitTask = undefined;
-    mlRetryAfterMs = now() + 5000;
+    mlRetryAfterMs = nowMs() + 5000;
     if (!mlWarned) {
       mlWarned = true;
       warn(
@@ -500,7 +509,7 @@ async function ensureCocoProvider(): Promise<void> {
   if (cocoReady || !detectorConfig.cocoBookEnabled) {
     return;
   }
-  if (cocoRetryAfterMs > now()) {
+  if (cocoRetryAfterMs > nowMs()) {
     return;
   }
   if (!cocoProvider) {
@@ -526,7 +535,7 @@ async function ensureCocoProvider(): Promise<void> {
         }
       } catch (error) {
         cocoReady = false;
-        cocoRetryAfterMs = now() + COCO_INIT_RETRY_COOLDOWN_MS;
+        cocoRetryAfterMs = nowMs() + COCO_INIT_RETRY_COOLDOWN_MS;
         if (!cocoWarned) {
           cocoWarned = true;
           warn(
@@ -603,7 +612,7 @@ async function tryMlRescueInference(
     return undefined;
   }
   if (rescue) {
-    mlRescueUsed = true;
+    frameTelemetry.mlRescueUsed = true;
     mlRescueCounter = 0;
     if (detectorConfig.debug) {
       console.warn(
@@ -622,7 +631,7 @@ function fuseMlResult(
   rgba: Uint8ClampedArray,
   width: number,
   height: number,
-  nowMs: number,
+  frameNowMs: number,
   elapsedMs: number,
   stabilityTracker: StabilityTracker,
   providerKey: 'graph' | 'coco',
@@ -636,7 +645,7 @@ function fuseMlResult(
     rgba,
     width,
     height,
-    nowMs,
+    nowMs: frameNowMs,
     elapsedMs,
     engineConfig: engine.config,
     minCvConfidence: detectorConfig.mlFallbackMinCvConfidence,
@@ -669,7 +678,7 @@ async function runGraphProvider(
   rgba: Uint8ClampedArray,
   width: number,
   height: number,
-  nowMs: number,
+  frameNowMs: number,
   frameToken: number,
 ): Promise<MlProviderAttemptResult> {
   if (!isFrameTokenActive(frameToken)) {
@@ -708,9 +717,9 @@ async function runGraphProvider(
     };
   }
 
-  graphAttempted = true;
-  mlInferenceUsed = true;
-  const startedAt = now();
+  frameTelemetry.graphAttempted = true;
+  frameTelemetry.mlInferenceUsed = true;
+  const startedAt = nowMs();
   const prediction = await mlProvider.infer({
     rgba,
     width,
@@ -724,7 +733,7 @@ async function runGraphProvider(
       status: 'unavailable',
     };
   }
-  const elapsedMs = now() - startedAt;
+  const elapsedMs = nowMs() - startedAt;
 
   if (!prediction) {
     const rescuePrediction = await tryMlRescueInference(rgba, width, height, 'miss', frameToken);
@@ -743,7 +752,7 @@ async function runGraphProvider(
       rgba,
       width,
       height,
-      nowMs,
+      frameNowMs,
       elapsedMs,
       mlStabilityByProvider.graph,
       'graph',
@@ -776,7 +785,7 @@ async function runGraphProvider(
     rgba,
     width,
     height,
-    nowMs,
+    frameNowMs,
     elapsedMs,
     mlStabilityByProvider.graph,
     'graph',
@@ -812,7 +821,7 @@ async function runGraphProvider(
     rgba,
     width,
     height,
-    nowMs,
+    frameNowMs,
     elapsedMs,
     mlStabilityByProvider.graph,
     'graph',
@@ -833,7 +842,7 @@ async function runCocoProvider(
   rgba: Uint8ClampedArray,
   width: number,
   height: number,
-  nowMs: number,
+  frameNowMs: number,
   frameToken: number,
 ): Promise<MlProviderAttemptResult> {
   if (!isFrameTokenActive(frameToken)) {
@@ -871,9 +880,9 @@ async function runCocoProvider(
     };
   }
 
-  cocoAttempted = true;
-  mlInferenceUsed = true;
-  const startedAt = now();
+  frameTelemetry.cocoAttempted = true;
+  frameTelemetry.mlInferenceUsed = true;
+  const startedAt = nowMs();
   const prediction = await cocoProvider.infer({
     rgba,
     width,
@@ -893,7 +902,7 @@ async function runCocoProvider(
       status: 'unavailable',
     };
   }
-  const elapsedMs = now() - startedAt;
+  const elapsedMs = nowMs() - startedAt;
   if (!prediction) {
     return {
       name: 'coco_book',
@@ -910,7 +919,7 @@ async function runCocoProvider(
     rgba,
     width,
     height,
-    nowMs,
+    frameNowMs,
     elapsedMs,
     mlStabilityByProvider.coco,
     'coco',
@@ -930,9 +939,7 @@ async function runCocoProvider(
 function pickWinningMlProvider(
   candidates: MlProviderAttemptResult[],
 ): MlProviderAttemptResult | undefined {
-  const found = candidates.filter(
-    (candidate) => candidate.status === 'found' && candidate.result,
-  );
+  const found = candidates.filter((candidate) => candidate.status === 'found' && candidate.result);
   if (!found.length) {
     return undefined;
   }
@@ -973,7 +980,7 @@ async function applyDetectorMode(
   rgba: Uint8ClampedArray,
   width: number,
   height: number,
-  nowMs: number,
+  frameNowMs: number,
 ): Promise<FrameProcessResult> {
   if (detectorConfig.detectorMode === 'cv') {
     fallbackStateMachine.reset();
@@ -1019,39 +1026,39 @@ async function applyDetectorMode(
 
   if (!currentState.active) {
     if (isCvDetectionFound(cvResult)) {
-      providerUsed =
+      frameTelemetry.providerUsed =
         cvResult.detection.bestCandidate?.source === 'hough'
           ? 'cv_hough'
           : cvResult.detection.bestCandidate?.source === 'contour'
             ? 'cv_contour'
-            : providerUsed;
+            : frameTelemetry.providerUsed;
     }
     return patchFallbackState(cvResult, currentState.state);
   }
 
   if (!detectorConfig.graphMlEnabled) {
-    cvFallbackReason = 'ml_unavailable';
+    frameTelemetry.cvFallbackReason = 'ml_unavailable';
     if (isCvDetectionFound(cvResult)) {
-      providerUsed =
+      frameTelemetry.providerUsed =
         cvResult.detection.bestCandidate?.source === 'hough'
           ? 'cv_hough'
           : cvResult.detection.bestCandidate?.source === 'contour'
             ? 'cv_contour'
-            : providerUsed;
+            : frameTelemetry.providerUsed;
     }
     return patchFallbackState(cvResult, currentState.state);
   }
 
   await ensureMlProvider();
   if (!mlReady || !mlProvider) {
-    cvFallbackReason = 'ml_unavailable';
+    frameTelemetry.cvFallbackReason = 'ml_unavailable';
     if (isCvDetectionFound(cvResult)) {
-      providerUsed =
+      frameTelemetry.providerUsed =
         cvResult.detection.bestCandidate?.source === 'hough'
           ? 'cv_hough'
           : cvResult.detection.bestCandidate?.source === 'contour'
             ? 'cv_contour'
-            : providerUsed;
+            : frameTelemetry.providerUsed;
     }
     return patchFallbackState(cvResult, currentState.state);
   }
@@ -1061,25 +1068,25 @@ async function applyDetectorMode(
     return patchFallbackState(cvResult, 'active');
   }
 
-  const mlStart = now();
-  mlInferenceUsed = true;
-  graphAttempted = true;
+  const mlStart = nowMs();
+  frameTelemetry.mlInferenceUsed = true;
+  frameTelemetry.graphAttempted = true;
   const mlPrediction = await mlProvider.infer({
     rgba,
     width,
     height,
   });
-  const mlElapsedMs = now() - mlStart;
+  const mlElapsedMs = nowMs() - mlStart;
 
   if (!mlPrediction) {
-    cvFallbackReason = 'ml_miss';
+    frameTelemetry.cvFallbackReason = 'ml_miss';
     if (isCvDetectionFound(cvResult)) {
-      providerUsed =
+      frameTelemetry.providerUsed =
         cvResult.detection.bestCandidate?.source === 'hough'
           ? 'cv_hough'
           : cvResult.detection.bestCandidate?.source === 'contour'
             ? 'cv_contour'
-            : providerUsed;
+            : frameTelemetry.providerUsed;
     }
     return patchFallbackState(cvResult, 'active');
   }
@@ -1090,7 +1097,7 @@ async function applyDetectorMode(
     rgba,
     width,
     height,
-    nowMs,
+    frameNowMs,
     mlElapsedMs,
     mlStabilityByProvider.graph,
     'graph',
@@ -1099,20 +1106,20 @@ async function applyDetectorMode(
 
   if (!isCvDetectionFound(cvResult) || mlResult.detection.status === 'found') {
     if (mlResult.detection.status === 'found') {
-      providerUsed = providerForGraphModelLoaded(mlModelLoaded);
+      frameTelemetry.providerUsed = providerForGraphModelLoaded(mlModelLoaded);
       lastMlProviderUsed = providerForGraphModelLoaded(mlModelLoaded);
     }
     return mlResult;
   }
-  cvFallbackReason = 'ml_reject';
-  providerRejectReason = mlResult.detection.rejectionReason ?? 'ml_reject';
+  frameTelemetry.cvFallbackReason = 'ml_reject';
+  frameTelemetry.providerRejectReason = mlResult.detection.rejectionReason ?? 'ml_reject';
   if (isCvDetectionFound(cvResult)) {
-    providerUsed =
+    frameTelemetry.providerUsed =
       cvResult.detection.bestCandidate?.source === 'hough'
         ? 'cv_hough'
         : cvResult.detection.bestCandidate?.source === 'contour'
           ? 'cv_contour'
-          : providerUsed;
+          : frameTelemetry.providerUsed;
   }
   return patchFallbackState(cvResult, 'active');
 }
@@ -1122,18 +1129,10 @@ async function processFrame(
   rgba: Uint8ClampedArray,
   width: number,
   height: number,
-  nowMs: number,
+  frameNowMs: number,
 ): Promise<void> {
   const frameToken = ++activeFrameToken;
-  mlInferenceUsed = false;
-  mlRescueUsed = false;
-  graphAttempted = false;
-  cocoAttempted = false;
-  cocoUsed = false;
-  providerUsed = undefined;
-  providerRejectReason = undefined;
-  cvAttempted = false;
-  cvFallbackReason = 'none';
+  resetFrameTelemetry(frameTelemetry);
   if (!detectorConfig.cocoBookEnabled) {
     cocoReady = false;
     cocoRetryAfterMs = 0;
@@ -1147,8 +1146,8 @@ async function processFrame(
       providerTasks.push(
         withProviderTimeout(
           'graph',
-          runGraphProvider(rgba, width, height, nowMs, frameToken),
-          GRAPH_PROVIDER_TIMEOUT_MS,
+          runGraphProvider(rgba, width, height, frameNowMs, frameToken),
+          detectorConfig.graphProviderTimeoutMs ?? DEFAULT_GRAPH_PROVIDER_TIMEOUT_MS,
         ),
       );
     }
@@ -1156,8 +1155,8 @@ async function processFrame(
       providerTasks.push(
         withProviderTimeout(
           'coco',
-          runCocoProvider(rgba, width, height, nowMs, frameToken),
-          COCO_PROVIDER_TIMEOUT_MS,
+          runCocoProvider(rgba, width, height, frameNowMs, frameToken),
+          detectorConfig.cocoProviderTimeoutMs ?? DEFAULT_COCO_PROVIDER_TIMEOUT_MS,
         ),
       );
     }
@@ -1187,8 +1186,8 @@ async function processFrame(
     const winningProvider = pickWinningMlProvider(attempts);
     if (winningProvider?.result) {
       finalResult = winningProvider.result;
-      providerUsed = winningProvider.name;
-      cocoUsed = winningProvider.name === 'coco_book';
+      frameTelemetry.providerUsed = winningProvider.name;
+      frameTelemetry.cocoUsed = winningProvider.name === 'coco_book';
       if (winningProvider.name === 'graph_v1' || winningProvider.name === 'graph_v2') {
         mlRescueCounter = 0;
       }
@@ -1201,31 +1200,29 @@ async function processFrame(
       const hadMiss = attempts.some((attempt) => attempt.status === 'miss');
       const firstReject = attempts.find((attempt) => attempt.status === 'reject');
       const firstError = attempts.find((attempt) => attempt.status === 'error');
-      providerRejectReason =
-        firstReject?.result?.detection.rejectionReason ??
-        firstError?.errorMessage ??
-        'none';
+      frameTelemetry.providerRejectReason =
+        firstReject?.result?.detection.rejectionReason ?? firstError?.errorMessage ?? 'none';
 
       if (!hadAvailableProvider && !hadAttempt) {
-        cvFallbackReason = 'ml_unavailable';
+        frameTelemetry.cvFallbackReason = 'ml_unavailable';
       } else if (hadReject) {
-        cvFallbackReason = 'ml_reject';
+        frameTelemetry.cvFallbackReason = 'ml_reject';
       } else if (hadError && !hadMiss) {
-        cvFallbackReason = 'ml_unavailable';
+        frameTelemetry.cvFallbackReason = 'ml_unavailable';
       } else {
-        cvFallbackReason = 'ml_miss';
+        frameTelemetry.cvFallbackReason = 'ml_miss';
       }
 
       await ensureOpenCvForMlFallback();
-      cvAttempted = true;
+      frameTelemetry.cvAttempted = true;
       const cvResult = engine.processFrame({
         rgba,
         width,
         height,
-        nowMs,
+        nowMs: frameNowMs,
       });
       if (isCvDetectionFound(cvResult)) {
-        providerUsed =
+        frameTelemetry.providerUsed =
           cvResult.detection.bestCandidate?.source === 'hough'
             ? 'cv_hough'
             : cvResult.detection.bestCandidate?.source === 'contour'
@@ -1236,23 +1233,23 @@ async function processFrame(
     }
   } else {
     if (detectorConfig.detectorMode === 'ml') {
-      cvFallbackReason = 'ml_unavailable';
+      frameTelemetry.cvFallbackReason = 'ml_unavailable';
       fallbackTelemetryState = 'inactive';
       await ensureOpenCvForMlFallback();
     }
-    cvAttempted = true;
+    frameTelemetry.cvAttempted = true;
     const cvResult = engine.processFrame({
       rgba,
       width,
       height,
-      nowMs,
+      nowMs: frameNowMs,
     });
     finalResult =
       detectorConfig.detectorMode === 'ml'
         ? patchFallbackState(cvResult, 'inactive')
-        : await applyDetectorMode(cvResult, rgba, width, height, nowMs);
+        : await applyDetectorMode(cvResult, rgba, width, height, frameNowMs);
     if (detectorConfig.detectorMode !== 'ml' && isCvDetectionFound(finalResult)) {
-      providerUsed =
+      frameTelemetry.providerUsed =
         finalResult.detection.bestCandidate?.source === 'hough'
           ? 'cv_hough'
           : finalResult.detection.bestCandidate?.source === 'contour'
@@ -1261,8 +1258,12 @@ async function processFrame(
     }
   }
 
-  if (!providerUsed && finalResult.detection.source === 'cv' && isCvDetectionFound(finalResult)) {
-    providerUsed =
+  if (
+    !frameTelemetry.providerUsed &&
+    finalResult.detection.source === 'cv' &&
+    isCvDetectionFound(finalResult)
+  ) {
+    frameTelemetry.providerUsed =
       finalResult.detection.bestCandidate?.source === 'hough'
         ? 'cv_hough'
         : finalResult.detection.bestCandidate?.source === 'contour'
@@ -1280,16 +1281,16 @@ async function processFrame(
       mlReady,
       mlDisabled,
       mlModelLoaded,
-      mlInferenceUsed,
-      mlRescueUsed,
-      graphAttempted,
-      cocoAttempted,
+      mlInferenceUsed: frameTelemetry.mlInferenceUsed,
+      mlRescueUsed: frameTelemetry.mlRescueUsed,
+      graphAttempted: frameTelemetry.graphAttempted,
+      cocoAttempted: frameTelemetry.cocoAttempted,
       cocoReady,
-      cocoUsed,
-      providerUsed,
-      providerRejectReason,
-      cvAttempted,
-      cvFallbackReason,
+      cocoUsed: frameTelemetry.cocoUsed,
+      providerUsed: frameTelemetry.providerUsed,
+      providerRejectReason: frameTelemetry.providerRejectReason,
+      cvAttempted: frameTelemetry.cvAttempted,
+      cvFallbackReason: frameTelemetry.cvFallbackReason,
     },
   });
 }
@@ -1303,7 +1304,9 @@ async function handleMessage(msg: WorkerRequest): Promise<void> {
         mergeDetectorConfig({ ...defaultDetectorConfig, ...msg.detectorConfig });
         if (detectorConfig.detectorMode === 'ml') {
           if (debug) {
-            console.warn('[document-autocapture:worker] OpenCV lazy-load enabled for ML mode (loads on first CV fallback)');
+            console.warn(
+              '[document-autocapture:worker] OpenCV lazy-load enabled for ML mode (loads on first CV fallback)',
+            );
           }
         } else {
           await ensureOpenCv(configuredOpenCvScriptUrl, debug);
@@ -1342,6 +1345,16 @@ async function handleMessage(msg: WorkerRequest): Promise<void> {
         openCvRetryAfterMs = 0;
         cocoRetryAfterMs = 0;
         mlRetryAfterMs = 0;
+
+        if (
+          detectorConfig.detectorMode === 'ml' &&
+          detectorConfig.mlPipelineVersion === 'v1-heuristic'
+        ) {
+          warn(
+            '[document-autocapture] ML mode is using v1-heuristic pipeline (no graph model). ' +
+              'Set mlPipelineVersion to "v2-graph" for best accuracy.',
+          );
+        }
 
         post({ type: 'ready' });
         return;
@@ -1456,10 +1469,7 @@ self.onmessage = (event: MessageEvent<WorkerRequest>) => {
       post({
         type: 'error',
         id: 'id' in request ? request.id : undefined,
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Worker message queue failed',
+        message: error instanceof Error ? error.message : 'Worker message queue failed',
       });
     });
 };

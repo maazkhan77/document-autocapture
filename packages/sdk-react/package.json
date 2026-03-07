@@ -1,15 +1,60 @@
 {
   "name": "react-document-autocapture",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "React components and hooks for browser-native document auto-capture. ML detection, perspective correction, quality gates — free and fully client-side.",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "MIT",
+  "author": "Maaz Khan (https://github.com/maazkhan77)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maazkhan77/document-autocapture",
+    "directory": "packages/sdk-react"
+  },
+  "homepage": "https://github.com/maazkhan77/document-autocapture#readme",
+  "bugs": {
+    "url": "https://github.com/maazkhan77/document-autocapture/issues"
+  },
+  "keywords": [
+    "react",
+    "react-hook",
+    "react-component",
+    "document-scanner",
+    "document-capture",
+    "document-autocapture",
+    "document-detection",
+    "browser-scanner",
+    "camera-capture",
+    "id-scanner",
+    "passport-scanner",
+    "perspective-correction",
+    "opencv",
+    "webgl",
+    "ml-detection",
+    "client-side",
+    "no-watermark",
+    "privacy-first",
+    "auto-capture",
+    "typescript",
+    "react18",
+    "react19"
+  ],
   "publishConfig": {
     "access": "public"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
@@ -18,8 +63,10 @@
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
-    "js-document-autocapture": "workspace:*",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "js-document-autocapture": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   }
 }

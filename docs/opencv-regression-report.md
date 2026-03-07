@@ -1,6 +1,6 @@
 # OpenCV Regression Report
 
-Generated: 2026-03-04T10:35:55.329Z
+Generated: 2026-03-06T09:10:59.854Z
 
 ## Inputs
 

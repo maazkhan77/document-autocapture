@@ -1,18 +1,22 @@
 import {
   defaultEngineConfig,
   mergeEngineConfig,
-  polygonArea,
-  quadToPoints,
+  quadIoU,
   type EngineConfig,
   type FrameProcessResult,
   type Point,
   type Quad,
 } from '@document-autocapture/core-engine';
-import { detectCapabilities, selectExecutionMode, type Capabilities } from '@document-autocapture/runtime-web';
+import {
+  detectCapabilities,
+  selectExecutionMode,
+  type Capabilities,
+} from '@document-autocapture/runtime-web';
 import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
 import { warpPerspectiveWebGL } from '@document-autocapture/warp-webgl';
 import type { WorkerDetectorConfig } from '@document-autocapture/worker-runtime';
 import { computeStats, type Stats } from './bench/shared/stats';
+import { drawSyntheticDocument } from './bench/shared/synthetic-scene';
 import {
   createBenchmarkWorkerClient,
   type WorkerFrameProcessResult,
@@ -217,7 +221,10 @@ function createDetectorTelemetry(): DetectorTelemetry {
   };
 }
 
-function mergeDetectorTelemetry(base: DetectorTelemetry, next: DetectorTelemetry): DetectorTelemetry {
+function mergeDetectorTelemetry(
+  base: DetectorTelemetry,
+  next: DetectorTelemetry,
+): DetectorTelemetry {
   const firstMlInferenceMs =
     base.firstMlInferenceMs === null
       ? next.firstMlInferenceMs
@@ -252,10 +259,12 @@ function collectDetectorTelemetry(
   for (let index = 0; index < results.length; index += 1) {
     const frameResult = results[index];
     const result = frameResult.result;
-    const detectionSource = frameResult.telemetry?.detectorSource ?? (result.detection.source === 'ml' ? 'ml' : 'cv');
+    const detectionSource =
+      frameResult.telemetry?.detectorSource ?? (result.detection.source === 'ml' ? 'ml' : 'cv');
     telemetry.sourceFrames[detectionSource] += 1;
 
-    const fallbackState = frameResult.telemetry?.fallbackState ?? result.detection.debug?.fallbackState ?? 'inactive';
+    const fallbackState =
+      frameResult.telemetry?.fallbackState ?? result.detection.debug?.fallbackState ?? 'inactive';
     telemetry.fallbackFrames[fallbackState] += 1;
     if (prevFallback !== undefined) {
       if (prevFallback !== 'active' && fallbackState === 'active') {
@@ -274,49 +283,6 @@ function collectDetectorTelemetry(
   return telemetry;
 }
 
-function drawSyntheticDocument(
-  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-  width: number,
-  height: number,
-  frameIndex: number,
-): Quad {
-  const t = frameIndex / 12;
-  const jitterX = Math.sin(t) * 6;
-  const jitterY = Math.cos(t) * 4;
-
-  ctx.fillStyle = '#1f2937';
-  ctx.fillRect(0, 0, width, height);
-
-  const left = width * 0.14 + jitterX;
-  const top = height * 0.1 + jitterY;
-  const docWidth = width * 0.72;
-  const docHeight = height * 0.78;
-
-  ctx.fillStyle = '#d7dde6';
-  ctx.fillRect(left, top, docWidth, docHeight);
-
-  ctx.strokeStyle = '#111827';
-  ctx.lineWidth = Math.max(2, Math.round(width * 0.01));
-  ctx.strokeRect(left, top, docWidth, docHeight);
-
-  ctx.strokeStyle = '#94a3b8';
-  ctx.lineWidth = 1;
-  for (let i = 0; i < 12; i += 1) {
-    const y = top + 20 + i * ((docHeight - 40) / 12);
-    ctx.beginPath();
-    ctx.moveTo(left + 24, y);
-    ctx.lineTo(left + docWidth - 24, y);
-    ctx.stroke();
-  }
-
-  return {
-    topLeft: { x: left, y: top },
-    topRight: { x: left + docWidth, y: top },
-    bottomRight: { x: left + docWidth, y: top + docHeight },
-    bottomLeft: { x: left, y: top + docHeight },
-  };
-}
-
 function drawNonDocumentScene(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
@@ -332,7 +298,7 @@ function drawNonDocumentScene(
     const y = (seed * 31) % height;
     const w = 20 + ((seed * 7) % 80);
     const h = 20 + ((seed * 11) % 90);
-    const alpha = 0.15 + ((seed % 40) / 100);
+    const alpha = 0.15 + (seed % 40) / 100;
     ctx.fillStyle = `rgba(115, 157, 206, ${alpha.toFixed(3)})`;
     ctx.fillRect(x, y, Math.min(w, width - x), Math.min(h, height - y));
   }
@@ -361,90 +327,6 @@ function createSyntheticImageData(width: number, height: number): ImageData {
   }
   drawSyntheticDocument(ctx, width, height, 3);
   return ctx.getImageData(0, 0, width, height);
-}
-
-function polygonSignedArea(points: Point[]): number {
-  let area = 0;
-  for (let i = 0; i < points.length; i += 1) {
-    const j = (i + 1) % points.length;
-    area += points[i].x * points[j].y - points[j].x * points[i].y;
-  }
-  return area / 2;
-}
-
-function lineIntersection(p1: Point, p2: Point, p3: Point, p4: Point): Point {
-  const x1 = p1.x;
-  const y1 = p1.y;
-  const x2 = p2.x;
-  const y2 = p2.y;
-  const x3 = p3.x;
-  const y3 = p3.y;
-  const x4 = p4.x;
-  const y4 = p4.y;
-  const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-  if (Math.abs(den) < 1e-8) {
-    return { x: p2.x, y: p2.y };
-  }
-
-  const pre = x1 * y2 - y1 * x2;
-  const post = x3 * y4 - y3 * x4;
-  return {
-    x: (pre * (x3 - x4) - (x1 - x2) * post) / den,
-    y: (pre * (y3 - y4) - (y1 - y2) * post) / den,
-  };
-}
-
-function isInside(point: Point, edgeStart: Point, edgeEnd: Point, orientation: 1 | -1): boolean {
-  const cross =
-    (edgeEnd.x - edgeStart.x) * (point.y - edgeStart.y) -
-    (edgeEnd.y - edgeStart.y) * (point.x - edgeStart.x);
-  return orientation * cross >= -1e-8;
-}
-
-function intersectConvexPolygons(subject: Point[], clip: Point[]): Point[] {
-  if (subject.length === 0 || clip.length === 0) {
-    return [];
-  }
-
-  let output = [...subject];
-  const orientation = polygonSignedArea(clip) >= 0 ? 1 : -1;
-  for (let i = 0; i < clip.length; i += 1) {
-    const cp1 = clip[i];
-    const cp2 = clip[(i + 1) % clip.length];
-    const input = [...output];
-    output = [];
-    if (input.length === 0) {
-      break;
-    }
-
-    let s = input[input.length - 1];
-    for (const e of input) {
-      const eInside = isInside(e, cp1, cp2, orientation);
-      const sInside = isInside(s, cp1, cp2, orientation);
-      if (eInside) {
-        if (!sInside) {
-          output.push(lineIntersection(s, e, cp1, cp2));
-        }
-        output.push(e);
-      } else if (sInside) {
-        output.push(lineIntersection(s, e, cp1, cp2));
-      }
-      s = e;
-    }
-  }
-
-  return output;
-}
-
-function quadIoU(a: Quad, b: Quad): number {
-  const polygonA = quadToPoints(a);
-  const polygonB = quadToPoints(b);
-  const intersectionPolygon = intersectConvexPolygons(polygonA, polygonB);
-  const intersectionArea = polygonArea(intersectionPolygon);
-  const areaA = polygonArea(polygonA);
-  const areaB = polygonArea(polygonB);
-  const union = Math.max(1e-6, areaA + areaB - intersectionArea);
-  return intersectionArea / union;
 }
 
 async function benchmarkStandardIngestion(
@@ -765,7 +647,11 @@ async function benchmarkEndToEndFlow(
     for (let frame = 0; frame < 80; frame += 1) {
       drawSyntheticDocument(detectCtx, detectWidth, detectHeight, frame);
       const imageData = detectCtx.getImageData(0, 0, detectWidth, detectHeight);
-      const frameResult = await client.processRgba(detectWidth, detectHeight, imageData.data.buffer);
+      const frameResult = await client.processRgba(
+        detectWidth,
+        detectHeight,
+        imageData.data.buffer,
+      );
       frameResults.push(frameResult);
       frameTimestampsMs.push(performance.now());
       const result = frameResult.result;
@@ -799,8 +685,14 @@ async function benchmarkEndToEndFlow(
   const scaledQuad: Quad = {
     topLeft: { x: bestCandidate.quad.topLeft.x * sx, y: bestCandidate.quad.topLeft.y * sy },
     topRight: { x: bestCandidate.quad.topRight.x * sx, y: bestCandidate.quad.topRight.y * sy },
-    bottomRight: { x: bestCandidate.quad.bottomRight.x * sx, y: bestCandidate.quad.bottomRight.y * sy },
-    bottomLeft: { x: bestCandidate.quad.bottomLeft.x * sx, y: bestCandidate.quad.bottomLeft.y * sy },
+    bottomRight: {
+      x: bestCandidate.quad.bottomRight.x * sx,
+      y: bestCandidate.quad.bottomRight.y * sy,
+    },
+    bottomLeft: {
+      x: bestCandidate.quad.bottomLeft.x * sx,
+      y: bestCandidate.quad.bottomLeft.y * sy,
+    },
   };
 
   const webgl = warpPerspectiveWebGL({
@@ -968,12 +860,7 @@ export async function runBakeoffBench(candidateParam?: string | null): Promise<B
       cpuPass,
       endToEndPass,
       overall:
-        ingestionPass &&
-        detectionPass &&
-        qualityPass &&
-        webglPass &&
-        cpuPass &&
-        endToEndPass,
+        ingestionPass && detectionPass && qualityPass && webglPass && cpuPass && endToEndPass,
     },
   };
 }

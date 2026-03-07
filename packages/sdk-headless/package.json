@@ -1,10 +1,46 @@
 {
   "name": "js-document-autocapture",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Free browser-native document auto-capture SDK with ML detection, perspective correction, and quality gates. No watermarks, no server uploads.",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "MIT",
+  "author": "Maaz Khan (https://github.com/maazkhan77)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maazkhan77/document-autocapture",
+    "directory": "packages/sdk-headless"
+  },
+  "homepage": "https://github.com/maazkhan77/document-autocapture#readme",
+  "bugs": {
+    "url": "https://github.com/maazkhan77/document-autocapture/issues"
+  },
+  "keywords": [
+    "document-scanner",
+    "document-capture",
+    "document-autocapture",
+    "document-detection",
+    "browser-scanner",
+    "camera-capture",
+    "id-scanner",
+    "passport-scanner",
+    "perspective-correction",
+    "image-warp",
+    "opencv",
+    "webgl",
+    "ml-detection",
+    "client-side",
+    "no-watermark",
+    "privacy-first",
+    "edge-detection",
+    "quad-detection",
+    "auto-capture",
+    "javascript-sdk",
+    "typescript",
+    "esm"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -12,37 +48,15 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./core": {
-      "types": "./dist/core.d.ts",
-      "import": "./dist/core.js"
-    },
-    "./webgl-warp": {
-      "types": "./dist/webgl-warp.d.ts",
-      "import": "./dist/webgl-warp.js"
-    },
-    "./enhance": {
-      "types": "./dist/enhance.d.ts",
-      "import": "./dist/enhance.js"
-    },
-    "./hybrid-corner": {
-      "types": "./dist/hybrid-corner.d.ts",
-      "import": "./dist/hybrid-corner.js"
-    },
-    "./ml-fallback": {
-      "types": "./dist/ml-fallback.d.ts",
-      "import": "./dist/ml-fallback.js"
-    },
-    "./ml-primary-v2-beta": {
-      "types": "./dist/ml-primary-v2-beta.d.ts",
-      "import": "./dist/ml-primary-v2-beta.js"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "build": "tsup src/index.ts src/core.ts src/webgl-warp.ts src/enhance.ts src/hybrid-corner.ts src/ml-fallback.ts src/ml-primary-v2-beta.ts src/flavors.ts --format esm --dts --dts-resolve --clean && tsup build/worker.entry.ts --format esm --splitting false --clean=false --out-dir dist && node scripts/postbuild.mjs",
+    "build": "tsup src/index.ts --format esm --dts --dts-resolve --clean && tsup build/worker.entry.ts --format esm --splitting false --clean=false --out-dir dist && node scripts/postbuild.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests",
     "lint": "eslint src --ext .ts"

@@ -1,189 +1,28 @@
 import type { GuidanceCode } from '@document-autocapture/core-engine';
 import { useDocumentAutoCapture } from 'react-document-autocapture';
-import type { ScannerConfig } from 'js-document-autocapture';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  buildShareUrl,
-  getPresetConfig,
-  type DebugOverlayLevel,
-  type DetectorMode,
-  type PresetId,
-} from './app-logic';
-import { createDemoScannerConfig, defaultOpenCvScriptUrl } from './scanner-config';
-import {
-  parseBooleanParam,
-  parseDebugOverlayLevel,
-  parseDetectorMode,
-  parseIntParam,
-  parseNumberParam,
-  parsePostCaptureRefine,
-} from './studio/helpers';
+import { useCallback, useEffect, useRef } from 'react';
 import { renderDetectionOverlay } from './studio/renderOverlay';
 import { useCaptureGallery } from './studio/useCaptureGallery';
+import { useDetectionDerivedState } from './studio/useDetectionDerivedState';
 import { useEventLog } from './studio/useEventLog';
+import { useScannerConfigState } from './studio/useScannerConfigState';
+import { useStudioActions } from './studio/useStudioActions';
 import { useStudioTelemetry } from './studio/useStudioTelemetry';
 
 export function useStudioController() {
-  const search = useMemo(() => new URLSearchParams(window.location.search), []);
-  const defaultPreset = useMemo(() => getPresetConfig('recommended'), []);
-  const [detectorMode, setDetectorMode] = useState<DetectorMode>(
-    parseDetectorMode(search.get('detectorMode'), defaultPreset.detectorMode),
-  );
-  const [debugOverlayLevel, setDebugOverlayLevel] = useState<DebugOverlayLevel>(
-    parseDebugOverlayLevel(search.get('debugOverlayLevel')),
-  );
-  const [autoCapture, setAutoCapture] = useState(parseBooleanParam(search, 'autoCapture', true));
-  const [detectionWidth, setDetectionWidth] = useState(
-    parseIntParam(search, 'detectionWidth', defaultPreset.detectionWidth, 320, 640),
-  );
-  const [graphMlEnabled, setGraphMlEnabled] = useState(
-    parseBooleanParam(search, 'graphMlEnabled', defaultPreset.graphMlEnabled),
-  );
-  const [cocoBookEnabled, setCocoBookEnabled] = useState(
-    parseBooleanParam(search, 'cocoBookEnabled', defaultPreset.cocoBookEnabled),
-  );
-  const [cocoMinScore, setCocoMinScore] = useState(
-    parseNumberParam(search, 'cocoMinScore', defaultPreset.cocoMinScore, 0.05, 0.95),
-  );
-  const [cocoUseAsPrimaryInMlMode, setCocoUseAsPrimaryInMlMode] = useState(
-    parseBooleanParam(
-      search,
-      'cocoUseAsPrimaryInMlMode',
-      defaultPreset.cocoUseAsPrimaryInMlMode,
-    ),
-  );
-  const [cvContourEnabled, setCvContourEnabled] = useState(
-    parseBooleanParam(search, 'cvContourEnabled', defaultPreset.cvContourEnabled),
-  );
-  const [houghSecondaryEnabled, setHoughSecondaryEnabled] = useState(
-    parseBooleanParam(search, 'houghSecondaryEnabled', defaultPreset.houghSecondaryEnabled),
-  );
-  const [confidenceThreshold, setConfidenceThreshold] = useState(
-    parseNumberParam(search, 'confidenceThreshold', defaultPreset.confidenceThreshold, 0.2, 0.85),
-  );
-  const [minStableConfidence, setMinStableConfidence] = useState(
-    parseNumberParam(search, 'minStableConfidence', defaultPreset.minStableConfidence, 0.2, 0.85),
-  );
-  const [stabilityWindowMs, setStabilityWindowMs] = useState(
-    parseIntParam(search, 'stabilityWindowMs', defaultPreset.stabilityWindowMs, 250, 1500),
-  );
-  const [autoStableFrames, setAutoStableFrames] = useState(
-    parseIntParam(search, 'autoCaptureConsecutiveStableFrames', defaultPreset.autoStableFrames, 1, 6),
-  );
-  const [mlFallbackEnabled, setMlFallbackEnabled] = useState(
-    parseBooleanParam(search, 'mlFallbackEnabled', defaultPreset.mlFallbackEnabled),
-  );
-  const [mlFallbackFrameStride, setMlFallbackFrameStride] = useState(
-    parseIntParam(search, 'mlFallbackFrameStride', defaultPreset.mlFallbackFrameStride, 1, 10),
-  );
-  const [mlFallbackTriggerConsecutiveMisses, setMlFallbackTriggerConsecutiveMisses] = useState(
-    parseIntParam(
-      search,
-      'mlFallbackTriggerConsecutiveMisses',
-      defaultPreset.mlFallbackTriggerConsecutiveMisses,
-      1,
-      20,
-    ),
-  );
-  const [mlFallbackMinCvConfidence, setMlFallbackMinCvConfidence] = useState(
-    parseNumberParam(
-      search,
-      'mlFallbackMinCvConfidence',
-      defaultPreset.mlFallbackMinCvConfidence,
-      0.05,
-      0.95,
-    ),
-  );
-  const [mlRescueEnabled, setMlRescueEnabled] = useState(
-    parseBooleanParam(search, 'mlRescueEnabled', defaultPreset.mlRescueEnabled),
-  );
-  const [mlRescueFrameStride, setMlRescueFrameStride] = useState(
-    parseIntParam(search, 'mlRescueFrameStride', defaultPreset.mlRescueFrameStride, 1, 6),
-  );
-  const [postCaptureRefine, setPostCaptureRefine] = useState<'off' | 'safe'>(
-    parsePostCaptureRefine(search, defaultPreset.postCaptureRefine),
-  );
-  const mlPipelineVersion = search.get('mlPipelineVersion') === 'v1-heuristic' ? 'v1-heuristic' : 'v2-graph';
-  const warpValidationLevel = search.get('warpValidationLevel') === 'standard' ? 'standard' : 'strict';
-  const mlModelId =
-    search.get('mlModelId') ??
-    (mlPipelineVersion === 'v2-graph' ? 'doc-corner-v2' : 'doc-corner-v1');
-  const mlInputSize = parseIntParam(
-    search,
-    'mlInputSize',
-    mlPipelineVersion === 'v2-graph' ? 224 : 320,
-    128,
-    640,
-  );
-  const debugEnabled = search.get('debug') !== '0';
-  const [copyStatus, setCopyStatus] = useState('');
+  // ── Scanner config state (20 parameters + presets) ─────────────────────────
+  const configState = useScannerConfigState();
+  const { scannerConfig, debugOverlayLevel, detectionWidth } = configState;
+
+  // ── Event log ──────────────────────────────────────────────────────────────
   const { events, setEvents, logEvent } = useEventLog();
 
+  // ── Refs ───────────────────────────────────────────────────────────────────
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
   const videoRefObject = useRef<HTMLVideoElement | null>(null);
   const prevGuidanceRef = useRef<GuidanceCode | undefined>(undefined);
 
-  const scannerConfig = useMemo<ScannerConfig>(
-    () =>
-      createDemoScannerConfig({
-        detectionWidth,
-        detectorMode,
-        graphMlEnabled,
-        cocoBookEnabled,
-        cocoMinScore,
-        cocoUseAsPrimaryInMlMode,
-        cvContourEnabled,
-        houghSecondaryEnabled,
-        mlFallbackEnabled,
-        mlFallbackFrameStride,
-        mlFallbackTriggerConsecutiveMisses,
-        mlFallbackMinCvConfidence,
-        mlRescueEnabled,
-        mlRescueFrameStride,
-        postCaptureRefine,
-        mlPipelineVersion,
-        mlModelId,
-        mlInputSize,
-        warpValidationLevel,
-        debugOverlayLevel,
-        autoCapture,
-        autoCaptureConsecutiveStableFrames: autoStableFrames,
-        confidenceThreshold,
-        minStableConfidence,
-        stabilityWindowMs,
-        opencvScriptUrl: defaultOpenCvScriptUrl(),
-        debug: debugEnabled,
-      }),
-    [
-      detectionWidth,
-      detectorMode,
-      graphMlEnabled,
-      cocoBookEnabled,
-      cocoMinScore,
-      cocoUseAsPrimaryInMlMode,
-      cvContourEnabled,
-      houghSecondaryEnabled,
-      mlFallbackEnabled,
-      mlFallbackFrameStride,
-      mlFallbackTriggerConsecutiveMisses,
-      mlFallbackMinCvConfidence,
-      mlRescueEnabled,
-      mlRescueFrameStride,
-      postCaptureRefine,
-      mlPipelineVersion,
-      mlModelId,
-      mlInputSize,
-      warpValidationLevel,
-      debugOverlayLevel,
-      autoCapture,
-      autoStableFrames,
-      confidenceThreshold,
-      minStableConfidence,
-      stabilityWindowMs,
-      debugEnabled,
-    ],
-  );
-
+  // ── SDK hook ───────────────────────────────────────────────────────────────
   const {
     videoRef,
     start,
@@ -200,6 +39,7 @@ export function useStudioController() {
     error,
   } = useDocumentAutoCapture(scannerConfig);
 
+  // ── Telemetry & gallery ────────────────────────────────────────────────────
   const { telemetry, telemetrySummary } = useStudioTelemetry(detection, quality);
   const {
     captures,
@@ -219,6 +59,45 @@ export function useStudioController() {
     logEvent,
   });
 
+  // ── Derived detection state ────────────────────────────────────────────────
+  const { statusLabel, qualityScore, detectionScore, detectionFps, autoCaptureGateReason } =
+    useDetectionDerivedState(
+      detection,
+      quality,
+      stability,
+      guidance,
+      error,
+      isRunning,
+      configState.autoCapture,
+    );
+
+  // ── Actions (capture, clipboard, export, keyboard) ─────────────────────────
+  const {
+    copyStatus,
+    handleManualCapture,
+    handleCopyConfig,
+    handleCopyShareUrl,
+    handleExportSession,
+  } = useStudioActions({
+    scannerConfig,
+    configState,
+    captureManual,
+    start,
+    stop,
+    isRunning,
+    capabilities,
+    detection,
+    stability,
+    quality,
+    guidance,
+    error,
+    captures,
+    telemetry,
+    events,
+    logEvent,
+  });
+
+  // ── Logging side-effects ───────────────────────────────────────────────────
   useEffect(() => {
     const previous = prevGuidanceRef.current;
     if (guidance && guidance !== previous) {
@@ -241,15 +120,20 @@ export function useStudioController() {
     logEvent('warn', warning);
   }, [warning, logEvent]);
 
+  // ── Auto-start ─────────────────────────────────────────────────────────────
   useEffect(() => {
     void start().catch((startError) => {
-      logEvent('error', startError instanceof Error ? startError.message : 'Failed to start scanner');
+      logEvent(
+        'error',
+        startError instanceof Error ? startError.message : 'Failed to start scanner',
+      );
     });
     return () => {
       void stop();
     };
   }, [logEvent, start, stop]);
 
+  // ── Video ref wiring ───────────────────────────────────────────────────────
   const setVideoNode = useCallback(
     (node: HTMLVideoElement | null) => {
       videoRefObject.current = node;
@@ -258,6 +142,7 @@ export function useStudioController() {
     [videoRef],
   );
 
+  // ── Overlay rendering ──────────────────────────────────────────────────────
   useEffect(() => {
     const canvas = overlayRef.current;
     if (!canvas) {
@@ -274,288 +159,52 @@ export function useStudioController() {
     });
   }, [detectionWidth, debugOverlayLevel, detection, stability]);
 
-  const statusLabel = useMemo(() => {
-    if (error) {
-      return `Error: ${error.message}`;
-    }
-    if (!isRunning) {
-      return 'Idle';
-    }
-    return guidance ?? 'Initializing...';
-  }, [error, guidance, isRunning]);
-
-  const handleManualCapture = useCallback(async () => {
-    try {
-      await captureManual();
-    } catch (captureError) {
-      logEvent('error', captureError instanceof Error ? captureError.message : 'Manual capture failed');
-    }
-  }, [captureManual, logEvent]);
-
-  const handleCopyConfig = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(scannerConfig, null, 2));
-      setCopyStatus('Copied config');
-      window.setTimeout(() => setCopyStatus(''), 1200);
-    } catch {
-      setCopyStatus('Copy failed');
-      window.setTimeout(() => setCopyStatus(''), 1200);
-    }
-  }, [scannerConfig]);
-
-  const handleCopyShareUrl = useCallback(async () => {
-    const url = buildShareUrl({
-      currentSearch: window.location.search,
-      origin: window.location.origin,
-      path: window.location.pathname,
-      detectorMode,
-      autoCapture,
-      debugOverlayLevel,
-      detectionWidth,
-      graphMlEnabled,
-      cocoBookEnabled,
-      cocoMinScore,
-      cocoUseAsPrimaryInMlMode,
-      cvContourEnabled,
-      houghSecondaryEnabled,
-      mlFallbackEnabled,
-      mlFallbackFrameStride,
-      mlFallbackTriggerConsecutiveMisses,
-      mlFallbackMinCvConfidence,
-      mlRescueEnabled,
-      mlRescueFrameStride,
-      postCaptureRefine,
-      mlPipelineVersion,
-      mlModelId,
-      mlInputSize,
-      warpValidationLevel,
-    });
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopyStatus('Copied share URL');
-      window.setTimeout(() => setCopyStatus(''), 1200);
-    } catch {
-      setCopyStatus('Share copy failed');
-      window.setTimeout(() => setCopyStatus(''), 1200);
-    }
-  }, [
-    detectorMode,
-    autoCapture,
-    debugOverlayLevel,
-    detectionWidth,
-    graphMlEnabled,
-    cocoBookEnabled,
-    cocoMinScore,
-    cocoUseAsPrimaryInMlMode,
-    cvContourEnabled,
-    houghSecondaryEnabled,
-    mlFallbackEnabled,
-    mlFallbackFrameStride,
-    mlFallbackTriggerConsecutiveMisses,
-    mlFallbackMinCvConfidence,
-    mlRescueEnabled,
-    mlRescueFrameStride,
-    postCaptureRefine,
-    mlPipelineVersion,
-    mlModelId,
-    mlInputSize,
-    warpValidationLevel,
-  ]);
-
-  const handleExportSession = useCallback(() => {
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      scannerConfig,
-      capabilities,
-      status: {
-        isRunning,
-        guidance,
-        error: error?.message,
-      },
-      latest: {
-        detection,
-        stability,
-        quality,
-      },
-      captures: captures.map((entry) => ({
-        id: entry.id,
-        captureDecisionSource: entry.capture.captureDecisionSource,
-        detectorSourceAtCapture: entry.capture.detectorSourceAtCapture,
-        warpTierUsed: entry.capture.warpTierUsed,
-        elapsedMs: entry.capture.elapsedMs,
-        hasAdjusted: Boolean(entry.adjustedUrl),
-      })),
-      telemetry,
-      events,
-    };
-
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = `document-autocapture-session-${Date.now()}.json`;
-    document.body.append(anchor);
-    anchor.click();
-    anchor.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 0);
-    logEvent('info', 'Session diagnostics exported');
-  }, [scannerConfig, capabilities, isRunning, guidance, error, detection, stability, quality, captures, telemetry, events, logEvent]);
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (
-        target instanceof HTMLInputElement ||
-        target instanceof HTMLTextAreaElement ||
-        target instanceof HTMLSelectElement ||
-        target?.isContentEditable
-      ) {
-        return;
-      }
-
-      if (event.code === 'Space') {
-        event.preventDefault();
-        if (isRunning) {
-          void handleManualCapture();
-        }
-        return;
-      }
-
-      if (event.key.toLowerCase() === 's') {
-        event.preventDefault();
-        if (isRunning) {
-          void stop();
-        } else {
-          void start();
-        }
-        return;
-      }
-
-      if (event.key.toLowerCase() === 'c') {
-        event.preventDefault();
-        void handleCopyConfig();
-      }
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-    };
-  }, [isRunning, handleManualCapture, handleCopyConfig, start, stop]);
-
-  const applyPreset = useCallback((preset: PresetId) => {
-    const next = getPresetConfig(preset);
-    setDetectorMode(next.detectorMode);
-    setConfidenceThreshold(next.confidenceThreshold);
-    setMinStableConfidence(next.minStableConfidence);
-    setStabilityWindowMs(next.stabilityWindowMs);
-    setAutoStableFrames(next.autoStableFrames);
-    setDetectionWidth(next.detectionWidth);
-    setGraphMlEnabled(next.graphMlEnabled);
-    setCocoBookEnabled(next.cocoBookEnabled);
-    setCocoMinScore(next.cocoMinScore);
-    setCocoUseAsPrimaryInMlMode(next.cocoUseAsPrimaryInMlMode);
-    setCvContourEnabled(next.cvContourEnabled);
-    setHoughSecondaryEnabled(next.houghSecondaryEnabled);
-    setMlFallbackEnabled(next.mlFallbackEnabled);
-    setMlFallbackFrameStride(next.mlFallbackFrameStride);
-    setMlFallbackTriggerConsecutiveMisses(next.mlFallbackTriggerConsecutiveMisses);
-    setMlFallbackMinCvConfidence(next.mlFallbackMinCvConfidence);
-    setMlRescueEnabled(next.mlRescueEnabled);
-    setMlRescueFrameStride(next.mlRescueFrameStride);
-    setPostCaptureRefine(next.postCaptureRefine);
-  }, []);
-
-  const qualityScore = useMemo(() => {
-    if (!quality) {
-      return 0;
-    }
-    const brightnessBand = quality.brightness.ok ? 1 : 0.55;
-    const blurBand = quality.blur.ok ? 1 : 0.55;
-    const glareBand = quality.glare.ok ? 1 : 0.6;
-    return Math.round(100 * brightnessBand * blurBand * glareBand);
-  }, [quality]);
-
-  const detectionScore = Math.round((detection?.bestCandidate?.score ?? 0) * 100);
-  const detectionFps = detection?.timings?.totalMs ? Math.round(1000 / detection.timings.totalMs) : 0;
-  const autoCaptureGateReason = useMemo(() => {
-    if (!autoCapture) {
-      return 'disabled';
-    }
-    if (detection?.status !== 'found') {
-      return 'document_not_found';
-    }
-    if (!quality) {
-      return 'quality_pending';
-    }
-    if (!quality.ok) {
-      if (!quality.brightness.ok) {
-        return 'quality_brightness';
-      }
-      if (!quality.glare.ok) {
-        return 'quality_glare';
-      }
-      if (!quality.blur.ok) {
-        return 'quality_blur';
-      }
-      if (!quality.area.ok) {
-        return 'quality_area';
-      }
-      return 'quality_blocked';
-    }
-    if (!stability?.stable) {
-      return 'hold_steady';
-    }
-    return 'ready';
-  }, [autoCapture, detection?.status, quality, stability?.stable]);
-
-
   return {
     overlayRef,
     setVideoNode,
     scannerConfig,
-    detectorMode,
-    setDetectorMode,
-    debugOverlayLevel,
-    setDebugOverlayLevel,
-    autoCapture,
-    setAutoCapture,
-    graphMlEnabled,
-    setGraphMlEnabled,
-    cocoBookEnabled,
-    setCocoBookEnabled,
-    cocoMinScore,
-    setCocoMinScore,
-    cocoUseAsPrimaryInMlMode,
-    setCocoUseAsPrimaryInMlMode,
-    cvContourEnabled,
-    setCvContourEnabled,
-    houghSecondaryEnabled,
-    setHoughSecondaryEnabled,
-    mlFallbackEnabled,
-    setMlFallbackEnabled,
-    mlFallbackFrameStride,
-    setMlFallbackFrameStride,
-    mlFallbackTriggerConsecutiveMisses,
-    setMlFallbackTriggerConsecutiveMisses,
-    mlFallbackMinCvConfidence,
-    setMlFallbackMinCvConfidence,
-    mlRescueEnabled,
-    setMlRescueEnabled,
-    mlRescueFrameStride,
-    setMlRescueFrameStride,
-    postCaptureRefine,
-    setPostCaptureRefine,
-    detectionWidth,
-    setDetectionWidth,
-    confidenceThreshold,
-    setConfidenceThreshold,
-    minStableConfidence,
-    setMinStableConfidence,
-    stabilityWindowMs,
-    setStabilityWindowMs,
-    autoStableFrames,
-    setAutoStableFrames,
+    detectorMode: configState.detectorMode,
+    setDetectorMode: configState.setDetectorMode,
+    debugOverlayLevel: configState.debugOverlayLevel,
+    setDebugOverlayLevel: configState.setDebugOverlayLevel,
+    autoCapture: configState.autoCapture,
+    setAutoCapture: configState.setAutoCapture,
+    graphMlEnabled: configState.graphMlEnabled,
+    setGraphMlEnabled: configState.setGraphMlEnabled,
+    cocoBookEnabled: configState.cocoBookEnabled,
+    setCocoBookEnabled: configState.setCocoBookEnabled,
+    cocoMinScore: configState.cocoMinScore,
+    setCocoMinScore: configState.setCocoMinScore,
+    cocoUseAsPrimaryInMlMode: configState.cocoUseAsPrimaryInMlMode,
+    setCocoUseAsPrimaryInMlMode: configState.setCocoUseAsPrimaryInMlMode,
+    cvContourEnabled: configState.cvContourEnabled,
+    setCvContourEnabled: configState.setCvContourEnabled,
+    houghSecondaryEnabled: configState.houghSecondaryEnabled,
+    setHoughSecondaryEnabled: configState.setHoughSecondaryEnabled,
+    mlFallbackEnabled: configState.mlFallbackEnabled,
+    setMlFallbackEnabled: configState.setMlFallbackEnabled,
+    mlFallbackFrameStride: configState.mlFallbackFrameStride,
+    setMlFallbackFrameStride: configState.setMlFallbackFrameStride,
+    mlFallbackTriggerConsecutiveMisses: configState.mlFallbackTriggerConsecutiveMisses,
+    setMlFallbackTriggerConsecutiveMisses: configState.setMlFallbackTriggerConsecutiveMisses,
+    mlFallbackMinCvConfidence: configState.mlFallbackMinCvConfidence,
+    setMlFallbackMinCvConfidence: configState.setMlFallbackMinCvConfidence,
+    mlRescueEnabled: configState.mlRescueEnabled,
+    setMlRescueEnabled: configState.setMlRescueEnabled,
+    mlRescueFrameStride: configState.mlRescueFrameStride,
+    setMlRescueFrameStride: configState.setMlRescueFrameStride,
+    postCaptureRefine: configState.postCaptureRefine,
+    setPostCaptureRefine: configState.setPostCaptureRefine,
+    detectionWidth: configState.detectionWidth,
+    setDetectionWidth: configState.setDetectionWidth,
+    confidenceThreshold: configState.confidenceThreshold,
+    setConfidenceThreshold: configState.setConfidenceThreshold,
+    minStableConfidence: configState.minStableConfidence,
+    setMinStableConfidence: configState.setMinStableConfidence,
+    stabilityWindowMs: configState.stabilityWindowMs,
+    setStabilityWindowMs: configState.setStabilityWindowMs,
+    autoStableFrames: configState.autoStableFrames,
+    setAutoStableFrames: configState.setAutoStableFrames,
     copyStatus,
     adjustOpen,
     setAdjustOpen,
@@ -581,7 +230,7 @@ export function useStudioController() {
     handleManualCapture,
     handleCopyConfig,
     handleCopyShareUrl,
-    applyPreset,
+    applyPreset: configState.applyPreset,
     handleCornerConfirm,
     handleExportSession,
     clearGallery,

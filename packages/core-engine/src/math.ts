@@ -31,9 +31,7 @@ function orientation(a: Point, b: Point, c: Point): number {
  * Orders corners in image-space order (topLeft, topRight, bottomRight, bottomLeft)
  * even when input points are shuffled or heavily skewed.
  */
-export function orderQuadCorners(
-  points: Array<Point> | Quad,
-): Quad {
+export function orderQuadCorners(points: Array<Point> | Quad): Quad {
   const pts = (Array.isArray(points) ? points : quadToPoints(points))
     .slice(0, 4)
     .map((point) => ({ x: point.x, y: point.y }));
@@ -42,10 +40,10 @@ export function orderQuadCorners(
     throw new Error('orderQuadCorners requires 4 points');
   }
 
-  const center = pts.reduce(
-    (acc, point) => ({ x: acc.x + point.x / 4, y: acc.y + point.y / 4 }),
-    { x: 0, y: 0 },
-  );
+  const center = pts.reduce((acc, point) => ({ x: acc.x + point.x / 4, y: acc.y + point.y / 4 }), {
+    x: 0,
+    y: 0,
+  });
 
   // Angular sort creates a consistent cycle around centroid.
   const cycle = [...pts].sort(
@@ -55,8 +53,7 @@ export function orderQuadCorners(
 
   // Start from visual top-left corner in image coordinates.
   const startIndex = cycle.reduce(
-    (best, point, index, arr) =>
-      point.x + point.y < arr[best].x + arr[best].y ? index : best,
+    (best, point, index, arr) => (point.x + point.y < arr[best].x + arr[best].y ? index : best),
     0,
   );
   let ordered = rotatePoints(cycle, startIndex);
@@ -151,7 +148,12 @@ export function scaleQuad(quad: Quad, sx: number, sy: number): Quad {
   };
 }
 
-export function boundingRect(quad: Quad): { minX: number; maxX: number; minY: number; maxY: number } {
+export function boundingRect(quad: Quad): {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+} {
   const pts = quadToPoints(quad);
   return {
     minX: Math.min(...pts.map((p) => p.x)),
@@ -232,4 +234,123 @@ export function applyHomography(h: number[], p: Point): Point {
     x: (h[0] * p.x + h[1] * p.y + h[2]) / w,
     y: (h[3] * p.x + h[4] * p.y + h[5]) / w,
   };
+}
+
+// ── Shared timing utility ────────────────────────────────────────────────
+
+/**
+ * High-resolution timer that falls back to `Date.now()` in environments
+ * where `performance` is unavailable (e.g. some test runners).
+ */
+export function nowMs(): number {
+  return typeof performance !== 'undefined' ? performance.now() : Date.now();
+}
+
+// ── Border penalty ───────────────────────────────────────────────────────
+
+/**
+ * Fraction of quad corners that touch the frame border (within `margin` px).
+ * Returns a value in [0, 1] (0 = no corners near border, 1 = all four).
+ */
+export function borderPenalty(quad: Quad, width: number, height: number, margin = 8): number {
+  const points = quadToPoints(quad);
+  const touches = points.filter(
+    (p) =>
+      p.x <= margin || p.y <= margin || p.x >= width - 1 - margin || p.y >= height - 1 - margin,
+  ).length;
+  return clamp(touches / 4, 0, 1);
+}
+
+// ── Polygon clipping (Sutherland-Hodgman) ────────────────────────────────
+
+function polygonSignedArea(points: Point[]): number {
+  let area = 0;
+  for (let i = 0; i < points.length; i += 1) {
+    const j = (i + 1) % points.length;
+    area += points[i].x * points[j].y - points[j].x * points[i].y;
+  }
+  return area / 2;
+}
+
+function clipIsInside(
+  point: Point,
+  edgeStart: Point,
+  edgeEnd: Point,
+  orientation: 1 | -1,
+): boolean {
+  const cross =
+    (edgeEnd.x - edgeStart.x) * (point.y - edgeStart.y) -
+    (edgeEnd.y - edgeStart.y) * (point.x - edgeStart.x);
+  return orientation * cross >= -1e-8;
+}
+
+function clipLineIntersection(p1: Point, p2: Point, p3: Point, p4: Point): Point {
+  const x1 = p1.x;
+  const y1 = p1.y;
+  const x2 = p2.x;
+  const y2 = p2.y;
+  const x3 = p3.x;
+  const y3 = p3.y;
+  const x4 = p4.x;
+  const y4 = p4.y;
+  const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+  if (Math.abs(den) < 1e-8) {
+    return { x: p2.x, y: p2.y };
+  }
+  const pre = x1 * y2 - y1 * x2;
+  const post = x3 * y4 - y3 * x4;
+  return {
+    x: (pre * (x3 - x4) - (x1 - x2) * post) / den,
+    y: (pre * (y3 - y4) - (y1 - y2) * post) / den,
+  };
+}
+
+/**
+ * Compute the intersection of two convex polygons using
+ * the Sutherland-Hodgman clipping algorithm.
+ */
+export function intersectConvexPolygons(subject: Point[], clip: Point[]): Point[] {
+  if (subject.length === 0 || clip.length === 0) {
+    return [];
+  }
+  let output = [...subject];
+  const orientation = polygonSignedArea(clip) >= 0 ? 1 : -1;
+  for (let i = 0; i < clip.length; i += 1) {
+    const cp1 = clip[i];
+    const cp2 = clip[(i + 1) % clip.length];
+    const input = [...output];
+    output = [];
+    if (input.length === 0) {
+      break;
+    }
+    let s = input[input.length - 1];
+    for (const e of input) {
+      const eInside = clipIsInside(e, cp1, cp2, orientation);
+      const sInside = clipIsInside(s, cp1, cp2, orientation);
+      if (eInside) {
+        if (!sInside) {
+          output.push(clipLineIntersection(s, e, cp1, cp2));
+        }
+        output.push(e);
+      } else if (sInside) {
+        output.push(clipLineIntersection(s, e, cp1, cp2));
+      }
+      s = e;
+    }
+  }
+  return output;
+}
+
+/**
+ * Intersection-over-Union for two quads, using Sutherland-Hodgman clipping.
+ */
+export function quadIoU(a: Quad, b: Quad): number {
+  const polygonA = quadToPoints(a);
+  const polygonB = quadToPoints(b);
+  const intersectionPolygon = intersectConvexPolygons(polygonA, polygonB);
+  const intersectionArea = polygonArea(intersectionPolygon);
+  const areaA = polygonArea(polygonA);
+  const areaB = polygonArea(polygonB);
+  const union = Math.max(1e-6, areaA + areaB - intersectionArea);
+  return intersectionArea / union;
 }

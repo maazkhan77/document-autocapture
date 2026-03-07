@@ -7,6 +7,7 @@
 
 import type { DetectionCandidate, EngineConfig, Point, ProposalSource, Quad } from '../types';
 import {
+  borderPenalty,
   maxCornerDisplacement,
   orderQuadCorners,
   quadArea,
@@ -73,10 +74,7 @@ function clamp01(value: number): number {
 
 function quadEdgeLengths(quad: Quad): [number, number, number, number] {
   const a = Math.hypot(quad.topRight.x - quad.topLeft.x, quad.topRight.y - quad.topLeft.y);
-  const b = Math.hypot(
-    quad.bottomRight.x - quad.topRight.x,
-    quad.bottomRight.y - quad.topRight.y,
-  );
+  const b = Math.hypot(quad.bottomRight.x - quad.topRight.x, quad.bottomRight.y - quad.topRight.y);
   const c = Math.hypot(
     quad.bottomLeft.x - quad.bottomRight.x,
     quad.bottomLeft.y - quad.bottomRight.y,
@@ -256,8 +254,11 @@ function dedupeCandidates(
           existing.quad.bottomRight.y +
           existing.quad.bottomLeft.y) /
         4;
-      const closeCenter = Math.abs(centerX - ex) < width * 0.065 && Math.abs(centerY - ey) < height * 0.065;
-      const areaRatio = Math.abs(candidate.area - existing.area) / Math.max(1, Math.max(candidate.area, existing.area));
+      const closeCenter =
+        Math.abs(centerX - ex) < width * 0.065 && Math.abs(centerY - ey) < height * 0.065;
+      const areaRatio =
+        Math.abs(candidate.area - existing.area) /
+        Math.max(1, Math.max(candidate.area, existing.area));
       const cornerDelta = maxCornerDisplacement(candidate.quad, existing.quad);
       const cornerNear = cornerDelta < Math.hypot(width, height) * 0.09;
       return (closeCenter && areaRatio < 0.3) || (cornerNear && areaRatio < 0.35);
@@ -271,25 +272,18 @@ function dedupeCandidates(
   return deduped;
 }
 
-function borderPenalty(quad: Quad, width: number, height: number, margin: number): number {
-  const borderTouches = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft].filter(
-    (point) =>
-      point.x <= margin ||
-      point.y <= margin ||
-      point.x >= width - 1 - margin ||
-      point.y >= height - 1 - margin,
-  ).length;
-  return borderTouches / 4;
-}
-
 function quadIsSelfIntersecting(quad: Quad): boolean {
   const points = quadToPoints(quad);
 
-  const ccw = (a: Point, b: Point, c: Point) => (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
+  const ccw = (a: Point, b: Point, c: Point) =>
+    (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
   const intersects = (a: Point, b: Point, c: Point, d: Point) =>
     ccw(a, c, d) !== ccw(b, c, d) && ccw(a, b, c) !== ccw(a, b, d);
 
-  return intersects(points[0], points[1], points[2], points[3]) || intersects(points[1], points[2], points[3], points[0]);
+  return (
+    intersects(points[0], points[1], points[2], points[3]) ||
+    intersects(points[1], points[2], points[3], points[0])
+  );
 }
 
 function angleAt(a: Point, b: Point, c: Point): number {
@@ -453,7 +447,13 @@ function collectHoughCandidates(
           if (quadIsSelfIntersecting(quad)) {
             continue;
           }
-          if (!hasOrthogonalShape(quad, config.houghOrthogonalityMinDeg, config.houghOrthogonalityMaxDeg)) {
+          if (
+            !hasOrthogonalShape(
+              quad,
+              config.houghOrthogonalityMinDeg,
+              config.houghOrthogonalityMaxDeg,
+            )
+          ) {
             continue;
           }
 
@@ -712,7 +712,13 @@ export function detectWithOpenCV(
       mats.push(contourMatVector);
       const hierarchy = new cv.Mat();
       mats.push(hierarchy);
-      cv.findContours(dilated, contourMatVector, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+      cv.findContours(
+        dilated,
+        contourMatVector,
+        hierarchy,
+        cv.RETR_EXTERNAL,
+        cv.CHAIN_APPROX_SIMPLE,
+      );
       contours = contourMatVector;
     }
 
@@ -812,7 +818,12 @@ export function detectWithOpenCV(
     }
 
     const proposalSources = Array.from(
-      new Set(merged.map((candidate) => candidate.source ?? (config.contourEnabled === false ? 'hough' : 'contour'))),
+      new Set(
+        merged.map(
+          (candidate) =>
+            candidate.source ?? (config.contourEnabled === false ? 'hough' : 'contour'),
+        ),
+      ),
     );
 
     if (config.debug) {

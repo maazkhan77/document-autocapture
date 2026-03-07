@@ -1,4 +1,4 @@
-import { computeHomography, type Point, type Quad } from '@document-autocapture/core-engine';
+import { computeHomography, nowMs, type Point, type Quad } from '@document-autocapture/core-engine';
 
 export interface CpuWarpRequest {
   imageData: ImageData;
@@ -15,10 +15,6 @@ export interface CpuWarpResult {
   reason?: string;
 }
 
-function now(): number {
-  return typeof performance !== 'undefined' ? performance.now() : Date.now();
-}
-
 function shouldUseNearestNeighbor(
   outputWidth: number,
   outputHeight: number,
@@ -30,7 +26,7 @@ function shouldUseNearestNeighbor(
 }
 
 export function warpPerspectiveCpu(request: CpuWarpRequest): CpuWarpResult {
-  const t0 = now();
+  const t0 = nowMs();
   const { imageData, quad, outputWidth, outputHeight } = request;
   const budgetMs = request.budgetMs ?? 200;
   const budgetGraceMs = 5;
@@ -57,7 +53,7 @@ export function warpPerspectiveCpu(request: CpuWarpRequest): CpuWarpResult {
   } catch (error) {
     return {
       ok: false,
-      elapsedMs: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0,
+      elapsedMs: nowMs() - t0,
       reason: error instanceof Error ? error.message : 'Failed to solve homography',
     };
   }
@@ -86,7 +82,7 @@ export function warpPerspectiveCpu(request: CpuWarpRequest): CpuWarpResult {
 
     for (let x = 0; x < outputWidth; x += 1) {
       if ((x & 1023) === 0) {
-        const elapsed = now() - t0;
+        const elapsed = nowMs() - t0;
         if (elapsed > budgetMs + budgetGraceMs) {
           return {
             ok: false,
@@ -174,7 +170,7 @@ export function warpPerspectiveCpu(request: CpuWarpRequest): CpuWarpResult {
     }
   }
 
-  const elapsedMs = now() - t0;
+  const elapsedMs = nowMs() - t0;
   return {
     ok: true,
     imageData: new ImageData(out, outputWidth, outputHeight),

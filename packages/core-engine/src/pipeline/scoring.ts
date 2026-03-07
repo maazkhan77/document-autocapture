@@ -1,4 +1,5 @@
 import {
+  borderPenalty,
   boundingRect,
   clamp,
   quadArea,
@@ -62,14 +63,6 @@ function homogeneityScore(
     Math.round(rect.maxY),
   );
   return 1 - normalizeRange(stddev, 10, 85);
-}
-
-function borderPenalty(quad: Quad, width: number, height: number, margin = 8): number {
-  const points = quadToPoints(quad);
-  const closeToBorder = points.filter(
-    (p) => p.x <= margin || p.y <= margin || p.x >= width - margin || p.y >= height - margin,
-  ).length;
-  return clamp(closeToBorder / 4, 0, 1);
 }
 
 function aspectPlausibility(aspectRatio: number, min: number, max: number): number {
@@ -250,13 +243,15 @@ export function scoreCandidates(
     .sort((a, b) => b.score - a.score);
 
   if (config.debug && scored.length > 0) {
-    const top = scored.slice(0, 3).map(
-      (c) =>
-        `score=${c.score.toFixed(3)} area=${c.metrics.areaFraction.toFixed(3)} ` +
-        `aspect=${c.metrics.aspectPlausibility.toFixed(2)} edge=${c.metrics.edgeContrast.toFixed(2)} ` +
-        `homo=${c.metrics.interiorHomogeneity.toFixed(2)} corner=${c.metrics.cornerAngleCloseness.toFixed(2)} ` +
-        `border=${c.metrics.borderPenalty.toFixed(2)} convex=${c.convexity.toFixed(2)} edgeStr=${c.edgeStrength.toFixed(2)} src=${c.source ?? 'contour'}`,
-    );
+    const top = scored
+      .slice(0, 3)
+      .map(
+        (c) =>
+          `score=${c.score.toFixed(3)} area=${c.metrics.areaFraction.toFixed(3)} ` +
+          `aspect=${c.metrics.aspectPlausibility.toFixed(2)} edge=${c.metrics.edgeContrast.toFixed(2)} ` +
+          `homo=${c.metrics.interiorHomogeneity.toFixed(2)} corner=${c.metrics.cornerAngleCloseness.toFixed(2)} ` +
+          `border=${c.metrics.borderPenalty.toFixed(2)} convex=${c.convexity.toFixed(2)} edgeStr=${c.edgeStrength.toFixed(2)} src=${c.source ?? 'contour'}`,
+      );
     console.warn(`[document-autocapture:scoring] ${scored.length} candidates | ${top.join(' | ')}`);
   }
 

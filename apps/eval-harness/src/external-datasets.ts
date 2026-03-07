@@ -1,10 +1,7 @@
-import { readdir, readFile, stat } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import type {
-  ClipCandidateInput,
-  RealClipFrameInput,
-  RealClipManifest,
-} from './realclip-shared';
+import { collectJsonFiles } from './fs-utils';
+import type { ClipCandidateInput, RealClipFrameInput, RealClipManifest } from './realclip-shared';
 
 interface BasicFrameLike {
   id?: unknown;
@@ -119,9 +116,7 @@ function normalizeQuad(value: unknown) {
 
 function toFrameCandidate(frame: BasicFrameLike): ClipCandidateInput[] {
   const quad =
-    normalizeQuad(frame.quad) ??
-    normalizeQuad(frame.corners) ??
-    normalizeQuad(frame.points);
+    normalizeQuad(frame.quad) ?? normalizeQuad(frame.corners) ?? normalizeQuad(frame.points);
   if (!quad) {
     return [];
   }
@@ -134,10 +129,7 @@ function toFrameCandidate(frame: BasicFrameLike): ClipCandidateInput[] {
   ];
 }
 
-function normalizeFrame(
-  frame: BasicFrameLike,
-  index: number,
-): RealClipFrameInput {
+function normalizeFrame(frame: BasicFrameLike, index: number): RealClipFrameInput {
   const frameId =
     asString(frame.id) ??
     asString(frame.frameId) ??
@@ -152,9 +144,7 @@ function normalizeFrame(
     normalizeQuad(frame.points);
 
   const hasDocument =
-    asBool(frame.hasDocument) ??
-    asBool(frame.document_present) ??
-    Boolean(groundTruth);
+    asBool(frame.hasDocument) ?? asBool(frame.document_present) ?? Boolean(groundTruth);
 
   const detectionMs = asNumber(frame.detectionMs);
   const brightness = asNumber(frame.brightness);
@@ -178,31 +168,6 @@ function normalizeFrame(
         : undefined,
     detectionMs: detectionMs ?? 16.7,
   };
-}
-
-async function collectJsonFiles(inputPath: string): Promise<string[]> {
-  const stats = await stat(inputPath);
-  if (stats.isFile()) {
-    return [path.resolve(inputPath)];
-  }
-  if (!stats.isDirectory()) {
-    throw new Error(`Input path is neither file nor directory: ${inputPath}`);
-  }
-
-  const entries = await readdir(inputPath, { withFileTypes: true });
-  const files: string[] = [];
-  for (const entry of entries) {
-    const full = path.resolve(inputPath, entry.name);
-    if (entry.isDirectory()) {
-      const nested = await collectJsonFiles(full);
-      files.push(...nested);
-      continue;
-    }
-    if (entry.isFile() && entry.name.toLowerCase().endsWith('.json')) {
-      files.push(full);
-    }
-  }
-  return files.sort();
 }
 
 function parseClipLike(

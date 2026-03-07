@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeConfig, shallowRecordEqual } from './config-utils';
+import { normalizeConfig, deepRecordEqual } from './config-utils';
 
 describe('config-utils', () => {
   it('compares shallow records recursively for nested objects', () => {
@@ -15,7 +15,7 @@ describe('config-utils', () => {
         areaFraction: 0.2,
       },
     };
-    expect(shallowRecordEqual(left, right)).toBe(true);
+    expect(deepRecordEqual(left, right)).toBe(true);
   });
 
   it('detects changes in nested values', () => {
@@ -31,7 +31,7 @@ describe('config-utils', () => {
         areaFraction: 0.21,
       },
     };
-    expect(shallowRecordEqual(left, right)).toBe(false);
+    expect(deepRecordEqual(left, right)).toBe(false);
   });
 
   it('normalizes undefined config to empty object', () => {

@@ -1,4 +1,4 @@
-import { computeHomography, type Point, type Quad } from '@document-autocapture/core-engine';
+import { computeHomography, nowMs, type Point, type Quad } from '@document-autocapture/core-engine';
 
 export interface WebglWarpRequest {
   imageData: ImageData;
@@ -30,10 +30,6 @@ interface WebglPipeline {
 
 let pipelineCache: WebglPipeline | undefined;
 
-function now(): number {
-  return typeof performance !== 'undefined' ? performance.now() : Date.now();
-}
-
 function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader {
   const shader = gl.createShader(type);
   if (!shader) {
@@ -49,7 +45,11 @@ function createShader(gl: WebGLRenderingContext, type: number, source: string): 
   return shader;
 }
 
-function createProgram(gl: WebGLRenderingContext, vertexSource: string, fragmentSource: string): WebGLProgram {
+function createProgram(
+  gl: WebGLRenderingContext,
+  vertexSource: string,
+  fragmentSource: string,
+): WebGLProgram {
   const vertex = createShader(gl, gl.VERTEX_SHADER, vertexSource);
   const fragment = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
   const program = gl.createProgram();
@@ -116,7 +116,7 @@ void main() {
   if (srcUv.x < 0.0 || srcUv.x > 1.0 || srcUv.y < 0.0 || srcUv.y > 1.0) {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
   } else {
-    gl_FragColor = texture2D(u_texture, vec2(srcUv.x, 1.0 - srcUv.y));
+    gl_FragColor = texture2D(u_texture, vec2(srcUv.x, srcUv.y));
   }
 }
 `;
@@ -183,8 +183,34 @@ function getPipeline(width: number, height: number): WebglPipeline {
   return pipelineCache;
 }
 
+/**
+ * Release cached WebGL resources (program, buffers, texture, context).
+ * Call this when the warp pipeline is no longer needed to avoid GPU memory leaks.
+ */
+export function destroyWebglPipeline(): void {
+  if (!pipelineCache) {
+    return;
+  }
+  const { gl, program, positionBuffer, texture, canvas } = pipelineCache;
+  gl.deleteTexture(texture);
+  gl.deleteBuffer(positionBuffer);
+  gl.deleteProgram(program);
+
+  // Attempt to lose the WebGL context explicitly to free GPU memory.
+  const loseCtx = gl.getExtension('WEBGL_lose_context');
+  if (loseCtx) {
+    loseCtx.loseContext();
+  }
+
+  // Shrink the canvas to release the backing store.
+  canvas.width = 0;
+  canvas.height = 0;
+
+  pipelineCache = undefined;
+}
+
 export function warpPerspectiveWebGL(request: WebglWarpRequest): WebglWarpResult {
-  const t0 = now();
+  const t0 = nowMs();
   const budgetMs = request.budgetMs ?? 50;
 
   if (typeof document === 'undefined') {
@@ -222,7 +248,7 @@ export function warpPerspectiveWebGL(request: WebglWarpRequest): WebglWarpResult
   } catch (error) {
     return {
       ok: false,
-      elapsedMs: now() - t0,
+      elapsedMs: nowMs() - t0,
       reason: error instanceof Error ? error.message : 'Failed to compute homography',
     };
   }
@@ -233,7 +259,7 @@ export function warpPerspectiveWebGL(request: WebglWarpRequest): WebglWarpResult
   } catch (error) {
     return {
       ok: false,
-      elapsedMs: now() - t0,
+      elapsedMs: nowMs() - t0,
       reason: error instanceof Error ? error.message : 'WebGL pipeline initialization failed',
     };
   }
@@ -261,7 +287,10 @@ export function warpPerspectiveWebGL(request: WebglWarpRequest): WebglWarpResult
   gl.bindBuffer(gl.ARRAY_BUFFER, pipeline.positionBuffer);
   gl.enableVertexAttribArray(pipeline.aPosition);
   gl.vertexAttribPointer(pipeline.aPosition, 2, gl.FLOAT, false, 0, 0);
-  gl.uniformMatrix3fv(pipeline.uH, false, new Float32Array(homography));
+  // GLSL mat3 is column-major; our homography array is row-major – transpose.
+  const h = homography;
+  const colMajor = new Float32Array([h[0], h[3], h[6], h[1], h[4], h[7], h[2], h[5], h[8]]);
+  gl.uniformMatrix3fv(pipeline.uH, false, colMajor);
   gl.uniform2f(pipeline.uSrc, request.imageData.width, request.imageData.height);
   gl.uniform2f(pipeline.uOut, request.outputWidth, request.outputHeight);
 
@@ -271,7 +300,7 @@ export function warpPerspectiveWebGL(request: WebglWarpRequest): WebglWarpResult
   // Ensure the draw is complete before consumers read/encode this canvas.
   gl.finish();
 
-  const elapsedMs = now() - t0;
+  const elapsedMs = nowMs() - t0;
   if (elapsedMs > budgetMs) {
     return {
       ok: false,

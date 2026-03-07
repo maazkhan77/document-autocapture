@@ -22,6 +22,7 @@ pnpm release:verify
 ```
 
 Includes:
+
 - brand check
 - no-onnx policy
 - lint/typecheck/tests/build
@@ -44,11 +45,9 @@ pnpm publish:dry-run
 ```
 
 Verify output includes expected exports, especially:
-- `js-document-autocapture`
-- `js-document-autocapture/core`
-- `js-document-autocapture/enhance`
-- `js-document-autocapture/hybrid-corner`
-- `js-document-autocapture/ml-primary-v2-beta`
+
+- `js-document-autocapture` (single entry point)
+- `react-document-autocapture` (ESM + CJS)
 
 ## 5. Publish
 
@@ -66,10 +65,9 @@ npm view react-document-autocapture version
 
 mkdir -p /tmp/document-autocapture-publish-check && cd /tmp/document-autocapture-publish-check
 npm init -y
-npm i js-document-autocapture react-document-autocapture
+npm i js-document-autocapture react-document-autocapture react react-dom
 node -e "import('js-document-autocapture').then(() => console.log('headless ok'))"
 node -e "import('react-document-autocapture').then(() => console.log('react ok'))"
-node -e "import('js-document-autocapture/core').then(() => console.log('core ok'))"
 ```
 
 ## 7. Rollback
