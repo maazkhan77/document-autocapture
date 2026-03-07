@@ -84,7 +84,7 @@ function CaptureWidget() {
       <button onClick={() => void captureManual()}>Capture</button>
       <p>{guidance ?? 'Ready'}</p>
       {lastCapture && (
-        <img src={lastCapture.dataUrl} alt="Captured document" style={{ maxWidth: 320 }} />
+        <img src={URL.createObjectURL(lastCapture.blob)} alt="Captured document" style={{ maxWidth: 320 }} />
       )}
     </div>
   );
@@ -162,7 +162,7 @@ Modal for manually adjusting detected document corners after capture.
 | Prop          | Type                   | Description                                          |
 | ------------- | ---------------------- | ---------------------------------------------------- |
 | `open`        | `boolean`              | Show/hide the modal                                  |
-| `imageUrl`    | `string`               | Image to display (typically `captureResult.dataUrl`) |
+| `imageUrl`    | `string`               | Image to display (use `URL.createObjectURL(captureResult.blob)`) |
 | `initialQuad` | `Quad`                 | Initial corner positions from capture                |
 | `autoRefined` | `boolean`              | Whether corners were auto-refined                    |
 | `onClose`     | `() => void`           | Called when user dismisses                           |
@@ -181,7 +181,7 @@ useDocumentAutoCapture({
   autoCapture: true, // auto-capture on stable detection
   webglWarp: true, // prefer GPU warp
   mlFallback: true, // ML fallback when OpenCV misses
-  cocoSsd: false, // COCO-SSD object detection pre-filter
+  cocoSsd: true, // COCO-SSD "book" detector for faster document finding
   postCaptureRefine: true, // post-capture corner refinement
   debug: false, // debug logging
   debugOverlay: 'basic', // 'off' | 'basic' | 'full'
@@ -202,8 +202,7 @@ useDocumentAutoCapture({
 
 ```ts
 interface CaptureResult {
-  imageData: ImageData;
-  dataUrl: string;
+  blob: Blob;
   width: number;
   height: number;
   quad: {
@@ -213,7 +212,8 @@ interface CaptureResult {
     bottomLeft: { x: number; y: number };
   };
   warpTierUsed: 'webgl' | 'cpu' | 'raw';
-  mimeType: string;
+  captureDecisionSource: 'auto' | 'manual';
+  elapsedMs: number;
 }
 ```
 
@@ -244,7 +244,7 @@ Your users' data stays with your users. Period.
 
 - **100% client-side processing** — no images, frames, or metadata are ever transmitted to any server
 - **No telemetry, no analytics, no tracking** — the SDK phones home to absolutely nobody
-- **No external network requests** — all ML models and OpenCV modules are bundled or loaded from your own origin
+- **Minimal external requests** — COCO-SSD (`cocoSsd: true` by default) fetches a ~5 MB model from the TensorFlow CDN once and caches it. All other ML models and OpenCV modules are bundled. Set `cocoSsd: false` for zero network requests
 - **Open source & auditable** — every line of code is available for inspection under the MIT license
 - **Zero transitive dependencies** — no supply-chain risk from hidden third-party packages
 

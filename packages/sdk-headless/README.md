@@ -77,9 +77,11 @@ const scanner = createScanner({
 
 scanner.on('capture', (result) => {
   console.log(result.width, result.height, result.warpTierUsed);
-  // result.imageData  — raw ImageData
-  // result.dataUrl    — base64 data URL
+  // result.blob       — captured image as a Blob
   // result.quad       — detected corner coordinates
+  // result.elapsedMs  — total capture time
+  const url = URL.createObjectURL(result.blob);
+  document.querySelector('img').src = url;
 });
 
 scanner.on('guidance', (code) => {
@@ -209,13 +211,13 @@ scanner.on('detection', (detection) => {
 });
 
 scanner.on('capture', (result) => {
-  // result.imageData    — ImageData pixels
-  // result.dataUrl      — base64 string
-  // result.width        — output width
-  // result.height       — output height
-  // result.quad         — corner coordinates (topLeft, topRight, bottomRight, bottomLeft)
-  // result.warpTierUsed — 'webgl' | 'cpu' | 'raw'
-  // result.mimeType     — 'image/png' or 'image/jpeg'
+  // result.blob                 — captured image Blob (PNG or JPEG per quality preset)
+  // result.width                — output width
+  // result.height               — output height
+  // result.quad                 — corner coordinates (topLeft, topRight, bottomRight, bottomLeft)
+  // result.warpTierUsed         — 'webgl' | 'cpu' | 'raw'
+  // result.captureDecisionSource — 'auto' | 'manual'
+  // result.elapsedMs            — capture latency
 });
 
 scanner.on('guidance', (code) => {
@@ -240,7 +242,7 @@ scanner.on('capabilities', (caps) => {
 await scanner.start(); // start camera + detection loop
 await scanner.stop(); // stop detection, release camera
 await scanner.destroy(); // full teardown, release all resources
-const result = await scanner.capture(); // trigger manual capture
+const result = await scanner.captureManual(); // trigger manual capture
 scanner.updateConfig({ quality: 'high' }); // update config at runtime
 const caps = scanner.getCapabilities(); // { webgl, offscreen, worker, ... }
 ```
