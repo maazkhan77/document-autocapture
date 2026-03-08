@@ -185,7 +185,7 @@ export function fuseMlResult({
   const mlConfidenceGate = Math.min(engineConfig.confidenceThreshold, minCvConfidence);
   if (mlConfidence < mlConfidenceGate) {
     rejectionReason = 'low_confidence';
-  } else if (aspect < engineConfig.minAspectRatio || aspect > engineConfig.maxAspectRatio) {
+  } else if (aspect < 0.3 || aspect > 3.5) {
     rejectionReason = 'aspect_invalid';
   }
 

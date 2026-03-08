@@ -42,6 +42,8 @@ let mlRetryAfterMs = 0;
 const COCO_INIT_RETRY_COOLDOWN_MS = 5000;
 const DEFAULT_GRAPH_PROVIDER_TIMEOUT_MS = 1200;
 const DEFAULT_COCO_PROVIDER_TIMEOUT_MS = 2800;
+const GRAPH_WARMUP_TIMEOUT_MS = 8000;
+let graphProviderWarmedUp = false;
 
 interface OpenCvRuntime {
   Mat?: unknown;
@@ -1134,8 +1136,13 @@ async function processFrame(
       providerTasks.push(
         withProviderTimeout(
           'graph',
-          runGraphProvider(rgba, width, height, frameNowMs, frameToken),
-          detectorConfig.graphProviderTimeoutMs ?? DEFAULT_GRAPH_PROVIDER_TIMEOUT_MS,
+          runGraphProvider(rgba, width, height, frameNowMs, frameToken).then((r) => {
+            graphProviderWarmedUp = true;
+            return r;
+          }),
+          graphProviderWarmedUp
+            ? (detectorConfig.graphProviderTimeoutMs ?? DEFAULT_GRAPH_PROVIDER_TIMEOUT_MS)
+            : GRAPH_WARMUP_TIMEOUT_MS,
         ),
       );
     }
