@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "packageManager": "pnpm@10.21.0",
   "scripts": {
+    "vercel-build": "npm install -g pnpm@10.21.0 && pnpm install && pnpm -r build",
     "build": "pnpm -r build",
     "dev": "pnpm -r --filter './packages/**' build && pnpm --filter @document-autocapture/demo-react dev --host",
     "test": "pnpm -r test",
