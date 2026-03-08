@@ -1,6 +1,7 @@
 import {
   createScanner,
   type Capabilities,
+  type CaptureCompleteResult,
   type CaptureResult,
   type ScannerConfig,
   type ScannerEventMap,
@@ -21,6 +22,12 @@ export interface UseDocumentAutoCaptureState {
   stop: () => Promise<void>;
   captureManual: () => Promise<CaptureResult>;
   isRunning: boolean;
+  /** Number of captures performed in the current session. Resets on `start()`. */
+  captureCount: number;
+  /** `true` after `maxCaptures` is reached and the `'complete'` event has fired. */
+  isComplete: boolean;
+  /** The complete result payload when `maxCaptures` is reached. */
+  completeResult?: CaptureCompleteResult;
   capabilities?: Capabilities;
   detection?: DetectionResult;
   stability?: StabilityResult;
@@ -34,6 +41,9 @@ export interface UseDocumentAutoCaptureState {
 
 interface HookState {
   isRunning: boolean;
+  captureCount: number;
+  isComplete: boolean;
+  completeResult?: CaptureCompleteResult;
   capabilities?: Capabilities;
   frame?: FrameProcessResult;
   lastCapture?: CaptureResult;
@@ -45,6 +55,7 @@ type HookAction =
   | { type: 'set-capabilities'; value?: Capabilities }
   | { type: 'set-frame'; value: FrameProcessResult }
   | { type: 'set-last-capture'; value: CaptureResult }
+  | { type: 'set-complete'; value: CaptureCompleteResult }
   | { type: 'set-warning'; value: string }
   | { type: 'set-error'; value?: Error }
   | { type: 'set-running'; value: boolean };
@@ -56,20 +67,29 @@ function reducer(state: HookState, action: HookAction): HookState {
     case 'set-frame':
       return { ...state, frame: action.value };
     case 'set-last-capture':
-      return { ...state, lastCapture: action.value };
+      return {
+        ...state,
+        lastCapture: action.value,
+        captureCount: state.captureCount + 1,
+      };
+    case 'set-complete':
+      return { ...state, isComplete: true, completeResult: action.value };
     case 'set-warning':
       return { ...state, warning: action.value };
     case 'set-error':
       return { ...state, error: action.value };
     case 'set-running':
-      return { ...state, isRunning: action.value };
+      if (action.value) {
+        return { ...state, isRunning: true, captureCount: 0, isComplete: false, completeResult: undefined };
+      }
+      return { ...state, isRunning: false };
     default:
       return state;
   }
 }
 
 export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoCaptureState {
-  const [state, dispatch] = useReducer(reducer, { isRunning: false });
+  const [state, dispatch] = useReducer(reducer, { isRunning: false, captureCount: 0, isComplete: false });
 
   const videoRefObject = useRef<HTMLVideoElement | null>(null);
   const sessionRef = useRef<ScannerSession | undefined>(undefined);
@@ -87,6 +107,7 @@ export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoC
       // Frame payload already includes detection, stability, quality, and guidance.
       session.on('frame', (value) => dispatch({ type: 'set-frame', value })),
       session.on('capture', (value) => dispatch({ type: 'set-last-capture', value })),
+      session.on('complete', (value) => dispatch({ type: 'set-complete', value })),
       session.on('warning', (value) => dispatch({ type: 'set-warning', value })),
       session.on('error', (value) => dispatch({ type: 'set-error', value })),
     ];
@@ -178,6 +199,9 @@ export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoC
     stop,
     captureManual,
     isRunning: state.isRunning,
+    captureCount: state.captureCount,
+    isComplete: state.isComplete,
+    completeResult: state.completeResult,
     capabilities: state.capabilities,
     detection,
     stability,

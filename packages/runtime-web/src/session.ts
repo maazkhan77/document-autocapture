@@ -34,6 +34,7 @@ import {
 import { hasCurrentVideoFrame, waitForVideoLoadedData } from './video-readiness';
 import type {
   Capabilities,
+  CaptureCompleteResult,
   CaptureResult,
   ScannerConfig,
   ScannerEventMap,
@@ -105,6 +106,12 @@ class ScannerSessionImpl implements ScannerSession {
 
   private autoCaptureStableStreak = 0;
 
+  private captureCountInternal = 0;
+
+  private capturedResults: CaptureResult[] = [];
+
+  private captureComplete = false;
+
   private debugFrameCount = 0;
 
   private lastWorkerTelemetry?: Extract<WorkerResponse, { type: 'frame-result' }>['telemetry'];
@@ -140,6 +147,10 @@ class ScannerSessionImpl implements ScannerSession {
     this.config = buildScannerConfig(config);
     this.engineConfig = mergeEngineConfig(toEngineConfig(this.config));
     this.fallbackEngine = createEngine(this.engineConfig);
+  }
+
+  get captureCount(): number {
+    return this.captureCountInternal;
   }
 
   getCapabilities(): Capabilities {
@@ -329,6 +340,9 @@ class ScannerSessionImpl implements ScannerSession {
         this.assertLifecycleToken(startToken);
         this.running = true;
         this.debugFrameCount = 0;
+        this.captureCountInternal = 0;
+        this.capturedResults = [];
+        this.captureComplete = false;
         this.mlGraphUnavailableWarned = false;
         if (this.config.debug) {
           const workerDetectorConfig = toWorkerDetectorConfig(this.config);
@@ -430,8 +444,12 @@ class ScannerSessionImpl implements ScannerSession {
     if (!this.video) {
       throw new Error('Scanner is not started');
     }
+    if (this.captureComplete) {
+      throw new Error('Capture limit reached. Call start() to begin a new session.');
+    }
     const capture = await this.captureWithWarp('manual');
     this.emitter.emit('capture', capture);
+    this.recordCapture(capture);
     return capture;
   }
 
@@ -851,7 +869,7 @@ class ScannerSessionImpl implements ScannerSession {
     this.emitter.emit('guidance', result.guidance as GuidanceCode);
 
     const readiness = evaluateAutoCaptureReadiness(this.config, this.engineConfig, result);
-    const readyForCapture = readiness.readyForCapture;
+    const readyForCapture = readiness.readyForCapture && !this.captureComplete;
 
     if (readyForCapture) {
       this.autoCaptureStableStreak += 1;
@@ -909,6 +927,7 @@ class ScannerSessionImpl implements ScannerSession {
           );
         }
         this.emitter.emit('capture', capture);
+        this.recordCapture(capture);
       })
       .catch((error) => {
         if (this.config.debug) {
@@ -921,6 +940,25 @@ class ScannerSessionImpl implements ScannerSession {
           error instanceof Error ? error : new Error('Auto-capture failed'),
         );
       });
+  }
+
+  private recordCapture(capture: CaptureResult): void {
+    this.captureCountInternal += 1;
+    this.capturedResults.push(capture);
+    const max = this.config.maxCaptures;
+    if (max && max > 0 && this.captureCountInternal >= max) {
+      this.captureComplete = true;
+      const completeResult: CaptureCompleteResult = {
+        totalCaptures: this.captureCountInternal,
+        captures: [...this.capturedResults],
+      };
+      if (this.config.debug) {
+        console.warn(
+          `[document-autocapture] Capture limit reached (${this.captureCountInternal}/${max})`,
+        );
+      }
+      this.emitter.emit('complete', completeResult);
+    }
   }
 
   private async captureWithWarp(source: 'manual' | 'auto'): Promise<CaptureResult> {

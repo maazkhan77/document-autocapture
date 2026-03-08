@@ -48,6 +48,7 @@ export {
 
 export type {
   Capabilities,
+  CaptureCompleteResult,
   CaptureResult,
   Detection,
   GuidanceMessages,

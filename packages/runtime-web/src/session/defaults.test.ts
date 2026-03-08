@@ -83,4 +83,14 @@ describe('buildScannerConfig', () => {
     const config = buildScannerConfig({ webglWarp: false });
     expect(config.preferredMode).toBe('best');
   });
+
+  it('preserves maxCaptures in built config', () => {
+    const config = buildScannerConfig({ maxCaptures: 3 });
+    expect(config.maxCaptures).toBe(3);
+  });
+
+  it('defaults maxCaptures to undefined (unlimited)', () => {
+    const config = buildScannerConfig();
+    expect(config.maxCaptures).toBeUndefined();
+  });
 });

@@ -1,4 +1,4 @@
-import type { CaptureResult, ScannerConfig } from 'js-document-autocapture';
+import type { CaptureCompleteResult, CaptureResult, ScannerConfig } from 'js-document-autocapture';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useDocumentAutoCapture } from './useDocumentAutoCapture';
 
@@ -8,6 +8,8 @@ export interface DocumentAutoCaptureCameraProps extends ScannerConfig {
   className?: string;
   autoStart?: boolean;
   onCapture?: (capture: CaptureResult) => void;
+  /** Fired when `maxCaptures` is reached with all collected captures. */
+  onComplete?: (result: CaptureCompleteResult) => void;
 }
 
 function drawQuad(
@@ -29,11 +31,12 @@ function drawQuad(
 }
 
 export function DocumentAutoCaptureCamera(props: DocumentAutoCaptureCameraProps) {
-  const { className, autoStart = true, onCapture, ...config } = props;
+  const { className, autoStart = true, onCapture, onComplete, ...config } = props;
   const debugOverlayLevel = config.debugOverlay ?? config.debugOverlayLevel ?? 'basic';
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
   const videoNodeRef = useRef<HTMLVideoElement | null>(null);
   const emittedCaptureRef = useRef<CaptureResult | undefined>(undefined);
+  const emittedCompleteRef = useRef<CaptureCompleteResult | undefined>(undefined);
   const {
     videoRef,
     start,
@@ -45,6 +48,7 @@ export function DocumentAutoCaptureCamera(props: DocumentAutoCaptureCameraProps)
     lastCapture,
     error,
     stability,
+    completeResult,
   } = useDocumentAutoCapture(config);
 
   const status = useMemo(() => {
@@ -85,6 +89,17 @@ export function DocumentAutoCaptureCamera(props: DocumentAutoCaptureCameraProps)
     emittedCaptureRef.current = lastCapture;
     onCapture(lastCapture);
   }, [lastCapture, onCapture]);
+
+  useEffect(() => {
+    if (!completeResult || !onComplete) {
+      return;
+    }
+    if (emittedCompleteRef.current === completeResult) {
+      return;
+    }
+    emittedCompleteRef.current = completeResult;
+    onComplete(completeResult);
+  }, [completeResult, onComplete]);
 
   useEffect(() => {
     const canvas = overlayRef.current;

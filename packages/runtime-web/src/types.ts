@@ -143,6 +143,19 @@ export interface ScannerConfig extends Partial<EngineConfig> {
   /** Cooldown in ms between auto-captures. */
   autoCaptureCooldownMs?: number;
 
+  /**
+   * Maximum number of captures per session (both auto and manual).
+   * When the limit is reached, a `'complete'` event fires and further
+   * auto-captures are disabled. The scanner keeps running — call
+   * `stop()` or `destroy()` in your `'complete'` handler if you want
+   * to stop the camera.
+   *
+   * - `undefined` or `0` — unlimited (default, backward-compatible).
+   * - `1` — single-capture mode (capture once, then emit complete).
+   * - `n` — multi-page mode (capture n documents, then emit complete).
+   */
+  maxCaptures?: number;
+
   // ── Advanced / ML tuning ───────────────────────────────────────────
 
   /** Preferred execution mode. Normally auto-detected. */
@@ -221,11 +234,20 @@ export interface ScannerConfig extends Partial<EngineConfig> {
   postCaptureRefineMode?: PostCaptureRefine;
 }
 
+export interface CaptureCompleteResult {
+  /** Total captures performed in this session. */
+  totalCaptures: number;
+  /** All capture results collected during the session. */
+  captures: CaptureResult[];
+}
+
 export interface ScannerEventMap {
   detection: DetectionResult;
   stability: StabilityResult;
   guidance: GuidanceCode;
   capture: CaptureResult;
+  /** Fired when `maxCaptures` is reached. Auto-capture is disabled after this event. */
+  complete: CaptureCompleteResult;
   error: Error;
   warning: string;
   capabilities: Capabilities;
@@ -236,6 +258,8 @@ export type ScannerEventName = keyof ScannerEventMap;
 
 export interface ScannerSession {
   getCapabilities(): Capabilities;
+  /** Number of captures performed in the current session. Resets on `start()`. */
+  readonly captureCount: number;
   start(): Promise<void>;
   stop(): Promise<void>;
   captureManual(): Promise<CaptureResult>;
