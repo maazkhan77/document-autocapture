@@ -39,6 +39,7 @@ Most document-capture solutions require expensive licenses, cloud processing, or
 - **`useDocumentAutoCapture` hook** — full scanner lifecycle in one hook
 - **`<DocumentAutoCaptureCamera />`** — drop-in component with camera preview, guidance overlay, and controls
 - **`<CornerAdjustModal />`** — drag-to-adjust corner editor for captured documents
+- **Capture limits** — set `maxCaptures` to stop after N captures, with `onComplete` callback and `isComplete` state
 - **ML-first detection** with OpenCV fallback, GPU warp, and quality gates
 - **React 18 & 19** compatible
 - **Fully typed** — complete TypeScript definitions included
@@ -70,10 +71,14 @@ The hook gives you full control over the scanner lifecycle with reactive state:
 import { useDocumentAutoCapture } from 'react-document-autocapture';
 
 function CaptureWidget() {
-  const { videoRef, start, stop, captureManual, isRunning, detection, guidance, lastCapture } =
-    useDocumentAutoCapture({
+  const {
+    videoRef, start, stop, captureManual,
+    isRunning, detection, guidance, lastCapture,
+    captureCount, isComplete, completeResult,
+  } = useDocumentAutoCapture({
       autoCapture: true,
       quality: 'balanced',
+      maxCaptures: 1, // capture one document and stop
     });
 
   return (
@@ -83,6 +88,8 @@ function CaptureWidget() {
       <button onClick={() => void stop()}>Stop</button>
       <button onClick={() => void captureManual()}>Capture</button>
       <p>{guidance ?? 'Ready'}</p>
+      <p>Captures: {captureCount}</p>
+      {isComplete && <p>All documents captured!</p>}
       {lastCapture && (
         <img
           src={URL.createObjectURL(lastCapture.blob)}
@@ -107,9 +114,14 @@ function App() {
     <DocumentAutoCaptureCamera
       autoCapture={true}
       quality="balanced"
+      maxCaptures={2}
       debugOverlay="basic"
       onCapture={(result) => {
         console.log('Captured!', result.width, result.height, result.warpTierUsed);
+      }}
+      onComplete={(result) => {
+        console.log(`Done! ${result.totalCaptures} documents captured`);
+        // navigate to review page, submit form, etc.
       }}
     />
   );
@@ -138,6 +150,9 @@ Main hook. Accepts all [`ScannerConfig`](#configuration) fields.
 | `quality`         | `QualityResult \| undefined`               | Quality gate results for current frame                       |
 | `guidance`        | `string \| undefined`                      | Guidance code: `'DOCUMENT_NOT_FOUND'`, `'HOLD_STEADY'`, etc. |
 | `lastCapture`     | `CaptureResult \| undefined`               | Most recent capture result                                   |
+| `captureCount`    | `number`                                   | Number of captures completed in this session                 |
+| `isComplete`      | `boolean`                                  | `true` when `maxCaptures` limit has been reached             |
+| `completeResult`  | `CaptureCompleteResult \| undefined`       | Completion payload with all captures (set when `isComplete`)  |
 | `capabilities`    | `Capabilities \| undefined`                | Browser capability report                                    |
 | `frame`           | `FrameProcessResult \| undefined`          | Full frame payload (includes all above)                      |
 | `warning`         | `string \| undefined`                      | Latest non-fatal warning                                     |
@@ -152,8 +167,9 @@ Pre-built component with video preview, debug overlay, action buttons, and statu
 | Prop                          | Type                              | Default   | Description                       |
 | ----------------------------- | --------------------------------- | --------- | --------------------------------- |
 | `autoStart`                   | `boolean`                         | `true`    | Start scanning on mount           |
-| `onCapture`                   | `(result: CaptureResult) => void` | —         | Called on each successful capture |
-| `className`                   | `string`                          | —         | CSS class for the container       |
+| `onCapture`                   | `(result: CaptureResult) => void` | —         | Called on each successful capture  |
+| `onComplete`                  | `(result: CaptureCompleteResult) => void` | — | Called when `maxCaptures` limit reached |
+| `className`                   | `string`                          | —         | CSS class for the container        |
 | `debugOverlay`                | `'off' \| 'basic' \| 'full'`      | `'basic'` | Corner overlay on video           |
 | _...all ScannerConfig fields_ |                                   |           | Passed to the underlying scanner  |
 
@@ -183,6 +199,7 @@ useDocumentAutoCapture({
   detection: 'auto', // 'auto' | 'opencv' | 'ml' | 'hybrid'
   quality: 'balanced', // 'fast' | 'balanced' | 'high'
   autoCapture: true, // auto-capture on stable detection
+  maxCaptures: 1, // stop after N captures (undefined = unlimited)
   webglWarp: true, // prefer GPU warp
   mlFallback: true, // ML fallback when OpenCV misses
   cocoSsd: true, // COCO-SSD "book" detector for faster document finding
@@ -229,6 +246,7 @@ interface CaptureResult {
 import type {
   ScannerConfig,
   CaptureResult,
+  CaptureCompleteResult, // { totalCaptures, captures }
   Detection,
   Quality,
   Capabilities,

@@ -40,7 +40,8 @@ Most document-capture SDKs lock you into expensive licenses, server-side process
 - **Automatic capture** when the document is stable, well-framed, and passes quality gates
 - **Perspective correction** via GPU (WebGL) or CPU warp with strict validation
 - **Manual corner adjustment** support via quad coordinates in the capture result
-- **Event-driven API** — subscribe to `frame`, `detection`, `guidance`, `capture`, `warning`, `error`
+- **Capture limits** — set `maxCaptures` to stop after N captures, with a `complete` event when done
+- **Event-driven API** — subscribe to `frame`, `detection`, `guidance`, `capture`, `complete`, `warning`, `error`
 - **Quality presets** — `fast`, `balanced`, or `high` to control resolution, format, and stability
 - **Zero runtime dependencies** — all internals are bundled into a single ESM entry
 - **Fully typed** — complete TypeScript definitions included
@@ -96,6 +97,40 @@ That's it — three steps: create, listen, start.
 
 ---
 
+## Capture Limits (`maxCaptures`)
+
+Set `maxCaptures` to automatically stop capturing after a fixed number of documents. Both auto-captures and manual captures count toward the limit.
+
+```ts
+const scanner = createScanner({
+  videoElement: video,
+  autoCapture: true,
+  maxCaptures: 2, // capture exactly 2 documents
+});
+
+scanner.on('capture', (result) => {
+  console.log(`Capture ${scanner.captureCount}`);
+});
+
+scanner.on('complete', (result) => {
+  console.log(`All done! ${result.totalCaptures} documents captured`);
+  console.log(result.captures); // array of all CaptureResult objects
+  scanner.stop();
+});
+
+await scanner.start();
+```
+
+| Value                 | Behavior                                                                 |
+| --------------------- | ------------------------------------------------------------------------ |
+| `undefined` (default) | Unlimited captures — scanner never emits `complete`                      |
+| `0`                   | Unlimited (same as `undefined`)                                          |
+| `1`, `2`, `3`, …      | Captures up to N documents, then emits `complete` and blocks further captures |
+
+After reaching the limit, calling `captureManual()` will throw. Call `start()` again to reset the counter and begin a new session.
+
+---
+
 ## Configuration
 
 ```ts
@@ -104,6 +139,7 @@ const scanner = createScanner({
   detection: 'auto', // 'auto' | 'opencv' | 'ml' | 'hybrid'
   quality: 'balanced', // 'fast' | 'balanced' | 'high'
   autoCapture: true, // enable automatic capture on stable detection
+  maxCaptures: 1, // stop after N captures (undefined = unlimited)
   webglWarp: true, // use GPU warp when available (CPU fallback automatic)
   mlFallback: true, // allow ML fallback when OpenCV misses
   cocoSsd: true, // COCO-SSD "book" detector for faster document finding
@@ -220,6 +256,12 @@ scanner.on('capture', (result) => {
   // result.elapsedMs            — capture latency
 });
 
+scanner.on('complete', (result) => {
+  // Fires when maxCaptures limit is reached
+  // result.totalCaptures — number of captures completed
+  // result.captures      — array of all CaptureResult objects from this session
+});
+
 scanner.on('guidance', (code) => {
   /* guidance code string */
 });
@@ -272,6 +314,7 @@ import type {
   ScannerConfig,
   ScannerSession,
   CaptureResult,
+  CaptureCompleteResult, // { totalCaptures, captures }
   Detection, // 'auto' | 'opencv' | 'ml' | 'hybrid'
   Quality, // 'fast' | 'balanced' | 'high'
   Capabilities,
