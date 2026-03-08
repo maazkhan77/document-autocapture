@@ -213,10 +213,12 @@ export function isValidQuadShape(
   if (!Number.isFinite(perimeter) || perimeter < 40) {
     return false;
   }
+  // Only reject if ALL 4 corners touch the border — ML coordinate clamping
+  // often places legitimate document corners at the frame edge.
   const borderTouches = quadToPoints(quad).filter(
     (point) => point.x <= 1 || point.y <= 1 || point.x >= width - 2 || point.y >= height - 2,
   ).length;
-  if (borderTouches > 2) {
+  if (borderTouches >= 4) {
     return false;
   }
   return true;

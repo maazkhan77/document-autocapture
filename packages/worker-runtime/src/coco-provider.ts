@@ -118,13 +118,16 @@ function passesGeometryGuards(input: GeometryGuardInput): boolean {
   if (aspect < input.minAspectRatio || aspect > input.maxAspectRatio) {
     return false;
   }
+  // COCO-SSD bounding boxes often extend to frame edges for legitimate detections.
+  // Use a tighter margin (2px) and require 3+ corner touches to reject.
+  const cocoEdgeMargin = Math.min(input.edgeTouchMarginPx, 2);
   const borderPenaltyVal = borderPenalty(
     input.quad,
     input.frameWidth,
     input.frameHeight,
-    input.edgeTouchMarginPx,
+    cocoEdgeMargin,
   );
-  if (borderPenaltyVal > 0.3) {
+  if (borderPenaltyVal > 0.6) {
     return false;
   }
   return isCenterPlausible(input.quad, input.frameWidth, input.frameHeight);
