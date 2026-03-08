@@ -220,51 +220,38 @@ async function loadOpenCvScript(scriptUrl: string): Promise<void> {
     throw error instanceof Error ? error : new Error('OpenCV script fetch failed');
   }
 
-  const hadOwnImportScripts = Object.prototype.hasOwnProperty.call(workerSelf, 'importScripts');
-  const previousImportScripts = workerSelf.importScripts;
+  const hasRealImportScripts = typeof workerSelf.importScripts === 'function';
 
-  if (typeof previousImportScripts !== 'function') {
-    Object.defineProperty(workerSelf, 'importScripts', {
-      configurable: true,
-      writable: true,
-      value: (...nestedUrls: (string | URL)[]) => {
-        throw new Error(
-          `importScripts unavailable in module worker while loading OpenCV (${nestedUrls.map((url) => String(url)).join(', ')})`,
-        );
-      },
-    });
+  // Path A: Blob URL + real importScripts (classic workers, CSP-safe).
+  if (hasRealImportScripts && workerSelf.importScripts) {
+    const blob = new Blob([source], { type: 'application/javascript' });
+    const blobUrl = URL.createObjectURL(blob);
+    try {
+      workerSelf.importScripts(blobUrl);
+      return;
+    } catch {
+      // Blob URL importScripts may be blocked; fall through to Function() path.
+    } finally {
+      URL.revokeObjectURL(blobUrl);
+    }
   }
 
+  // Path B: Function() constructor — works in module workers and environments
+  // where importScripts is unavailable. Requires no `unsafe-eval` in worker CSP
+  // by default (workers inherit the page CSP which typically doesn't restrict this).
   try {
-    // CSP-safe approach: evaluate via Blob URL + importScripts to avoid `unsafe-eval`.
-    // This works in classic workers and is compatible with strict CSP policies.
-    if (typeof workerSelf.importScripts === 'function') {
-      const blob = new Blob([source], { type: 'application/javascript' });
-      const blobUrl = URL.createObjectURL(blob);
-      try {
-        workerSelf.importScripts(blobUrl);
-        return;
-      } catch {
-        // Blob URL importScripts may be blocked in some environments; fall through.
-      } finally {
-        URL.revokeObjectURL(blobUrl);
-      }
-    }
-
-    // All CSP-safe evaluation paths exhausted. Throw a clear error so integrators
-    // know they need to serve OpenCV from the same origin or adjust their CSP policy.
-    throw new Error(
-      `OpenCV script loaded from ${scriptUrl} but could not be executed. ` +
-        'Blob-URL importScripts was blocked. Ensure the script is served from the same ' +
-        'origin or add the appropriate Content-Security-Policy directives.',
-    );
-  } finally {
-    if (typeof previousImportScripts === 'function' || hadOwnImportScripts) {
-      workerSelf.importScripts = previousImportScripts;
-    } else {
-      delete workerSelf.importScripts;
-    }
+    const fn = new Function(source);
+    fn.call(self);
+    return;
+  } catch {
+    // Function() may be blocked by a strict CSP; fall through to final error.
   }
+
+  throw new Error(
+    `OpenCV script loaded from ${scriptUrl} but could not be executed. ` +
+      'Neither importScripts (module worker) nor Function() evaluation succeeded. ' +
+      'Ensure the script is served from the same origin or relax Content-Security-Policy.',
+  );
 }
 
 function mergeDetectorConfig(partial?: Partial<WorkerDetectorConfig>): WorkerDetectorConfig {
