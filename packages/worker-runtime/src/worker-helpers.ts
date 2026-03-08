@@ -187,6 +187,8 @@ export function fuseMlResult({
     rejectionReason = 'low_confidence';
   } else if (aspect < engineConfig.minAspectRatio || aspect > engineConfig.maxAspectRatio) {
     rejectionReason = 'aspect_invalid';
+  } else if (borderPenaltyVal >= 0.9) {
+    rejectionReason = 'edge_touch';
   }
 
   const nextGrayBuffer = rgbaToGrayscale(rgba, width, height, grayBuffer);
