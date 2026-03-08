@@ -1,7 +1,4 @@
 {
-  "buildCommand": "pnpm --filter @document-autocapture/demo-react build",
-  "outputDirectory": "apps/demo-react/dist",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "devCommand": "pnpm --filter @document-autocapture/demo-react dev",
-  "framework": null
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "apps/demo-react/dist"
 }
