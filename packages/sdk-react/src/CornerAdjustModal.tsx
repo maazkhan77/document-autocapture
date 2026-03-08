@@ -78,6 +78,8 @@ export function CornerAdjustModal(props: CornerAdjustModalProps) {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const dragState = useRef(defaultDragState());
+  const quadRef = useRef(quad);
+  quadRef.current = quad;
 
   useEffect(() => {
     setQuad(initialQuad);
@@ -94,7 +96,7 @@ export function CornerAdjustModal(props: CornerAdjustModalProps) {
       if (cancelled) return;
       imageRef.current = image;
       if (canvasRef.current) {
-        drawCanvas(canvasRef.current, image, quad);
+        drawCanvas(canvasRef.current, image, quadRef.current);
       }
     };
     image.onerror = () => {

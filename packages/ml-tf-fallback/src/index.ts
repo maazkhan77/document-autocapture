@@ -292,19 +292,22 @@ class TfjsCornerProvider implements MlQuadProvider {
       });
 
       let output: unknown;
-      if (typeof this.model.execute === 'function') {
-        try {
-          output = this.model.execute(tensor);
-          if (output instanceof Promise) {
-            output = await output;
+      try {
+        if (typeof this.model.execute === 'function') {
+          try {
+            output = this.model.execute(tensor);
+            if (output instanceof Promise) {
+              output = await output;
+            }
+          } catch {
+            output = await this.model.executeAsync(tensor);
           }
-        } catch {
+        } else {
           output = await this.model.executeAsync(tensor);
         }
-      } else {
-        output = await this.model.executeAsync(tensor);
+      } finally {
+        this.tf.dispose(tensor);
       }
-      this.tf.dispose(tensor);
 
       const outputTensors: TfjsTensorLike[] = Array.isArray(output)
         ? (output as TfjsTensorLike[])
@@ -317,15 +320,19 @@ class TfjsCornerProvider implements MlQuadProvider {
         return undefined;
       }
 
-      const valuesByTensor = await Promise.all(
-        outputTensors.map(async (tensorValue) => {
-          const raw = Array.from((await tensorValue.data()) as ArrayLike<number>, (value) =>
-            Number(value),
-          );
-          return raw;
-        }),
-      );
-      this.tf.dispose(outputTensors);
+      let valuesByTensor: number[][];
+      try {
+        valuesByTensor = await Promise.all(
+          outputTensors.map(async (tensorValue) => {
+            const raw = Array.from((await tensorValue.data()) as ArrayLike<number>, (value) =>
+              Number(value),
+            );
+            return raw;
+          }),
+        );
+      } finally {
+        this.tf.dispose(outputTensors);
+      }
 
       let decoded = pickCoordsAndScoreFromValues(valuesByTensor, this.artifact.outputFormat);
       if (!decoded && valuesByTensor[0]?.length >= 8) {
@@ -483,10 +490,16 @@ class TfjsCornerProvider implements MlQuadProvider {
       return { xProfile, yProfile, edgeMean };
     });
 
-    const xVals = Array.from(packed.xProfile.dataSync() as Float32Array);
-    const yVals = Array.from(packed.yProfile.dataSync() as Float32Array);
-    const edgeMean = Number((packed.edgeMean.dataSync() as Float32Array)[0] ?? 0);
-    this.tf.dispose([packed.xProfile, packed.yProfile, packed.edgeMean]);
+    let xVals: number[];
+    let yVals: number[];
+    let edgeMean: number;
+    try {
+      xVals = Array.from(packed.xProfile.dataSync() as Float32Array);
+      yVals = Array.from(packed.yProfile.dataSync() as Float32Array);
+      edgeMean = Number((packed.edgeMean.dataSync() as Float32Array)[0] ?? 0);
+    } finally {
+      this.tf.dispose([packed.xProfile, packed.yProfile, packed.edgeMean]);
+    }
 
     const xThreshold = percentile(xVals, this.artifact.edgePercentile);
     const yThreshold = percentile(yVals, this.artifact.edgePercentile);

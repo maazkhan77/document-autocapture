@@ -212,7 +212,7 @@ export function refineQuadPostCapture(params: PostCaptureRefineParams): PostCapt
         for (let dx = -searchRadiusPx; dx <= searchRadiusPx; dx += searchStepPx) {
           if (nowMs() - start > budgetMs) {
             return {
-              quad: cloneQuad(initialQuad),
+              quad: cloneQuad(current),
               applied: false,
               reason: 'timeout',
               elapsedMs: nowMs() - start,

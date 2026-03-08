@@ -194,6 +194,13 @@ export function DocumentScannerDemo({ config, onCapture }: DocumentScannerDemoPr
     dataUrlRef.current = URL.createObjectURL(blob);
   }, []);
 
+  // Revoke blob URL on unmount to prevent memory leak
+  useEffect(() => {
+    return () => {
+      if (dataUrlRef.current) URL.revokeObjectURL(dataUrlRef.current);
+    };
+  }, []);
+
   const scannerConfig: ScannerConfig = {
     autoCapture: true,
     quality: 'balanced',
@@ -234,12 +241,13 @@ export function DocumentScannerDemo({ config, onCapture }: DocumentScannerDemoPr
       setPhase('scanning');
       await start();
     } catch (err) {
-      if (err instanceof Error && err.message.toLowerCase().includes('permission')) {
-        setPhase('permission-denied');
-      } else if (err instanceof Error && err.name === 'NotAllowedError') {
+      if (
+        err instanceof Error &&
+        (err.message.toLowerCase().includes('permission') || err.name === 'NotAllowedError')
+      ) {
         setPhase('permission-denied');
       } else {
-        setPhase('permission-denied');
+        setPhase('onboarding');
       }
     }
   }, [start]);
