@@ -88,16 +88,23 @@ export function CornerAdjustModal(props: CornerAdjustModalProps) {
       return;
     }
 
+    let cancelled = false;
     const image = new Image();
     image.onload = () => {
+      if (cancelled) return;
       imageRef.current = image;
       if (canvasRef.current) {
         drawCanvas(canvasRef.current, image, quad);
       }
     };
+    image.onerror = () => {
+      if (cancelled) return;
+      imageRef.current = null;
+    };
     image.src = imageUrl;
 
     return () => {
+      cancelled = true;
       imageRef.current = null;
     };
   }, [open, imageUrl]);

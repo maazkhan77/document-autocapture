@@ -1,6 +1,6 @@
 {
   "name": "react-document-autocapture",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "React components and hooks for browser-native document auto-capture. ML detection, perspective correction, quality gates — free and fully client-side.",
   "type": "module",
   "main": "dist/index.cjs",

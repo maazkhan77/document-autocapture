@@ -83,28 +83,4 @@ describe('warp validation', () => {
     expect(result.rejected).toBe(true);
     expect(result.reason).toBe('hough_auto_risky');
   });
-
-  it('flags risky WebGL warp outputs even outside hough-auto path', () => {
-    const source = makeImageData(64, 64, (x, y) => {
-      const v = (x * 9 + y * 5) % 255;
-      return [v, (v * 2) % 255, (v * 3) % 255];
-    });
-    const warped = makeImageData(64, 64, (x, y) => {
-      const blockX = Math.floor(x / 8);
-      const blockY = Math.floor(y / 8);
-      const v = (blockX + blockY) % 2 === 0 ? 24 : 188;
-      return [v, v, v];
-    });
-
-    const result = assessWarpOutput({
-      warpedImageData: warped,
-      sourceImageData: source,
-      isHoughAutoCapture: false,
-      level: 'strict',
-      warpTier: 'webgl',
-    });
-
-    expect(result.rejected).toBe(true);
-    expect(result.reason).toBe('webgl_risky');
-  });
 });

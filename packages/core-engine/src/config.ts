@@ -57,7 +57,7 @@ function normalizeScoreWeights(
     weights.interiorHomogeneity +
     weights.cornerAngleCloseness +
     weights.borderPenalty;
-  if (sum <= 0) {
+  if (!Number.isFinite(sum) || sum <= 0) {
     return defaultEngineConfig.scoreWeights;
   }
   if (Math.abs(sum - 1.0) < 0.001) {

@@ -26,7 +26,7 @@ import { defaultMlModelBaseUrl } from './model-base-url';
  * ```
  */
 export function createScanner(config: Partial<ScannerConfig> = {}): ScannerSession {
-  if (config.mlModelBaseUrl) {
+  if (config.mlModelBaseUrl !== undefined) {
     return createScannerSession(config);
   }
   return createScannerSession({

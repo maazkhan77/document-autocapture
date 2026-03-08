@@ -132,7 +132,7 @@ export function useStudioActions(input: StudioActionsInput) {
     document.body.append(anchor);
     anchor.click();
     anchor.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     input.logEvent('info', 'Session diagnostics exported');
   }, [
     input.scannerConfig,

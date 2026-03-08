@@ -175,8 +175,8 @@ function perpendicularDistance(p: Point, a: Point, b: Point): number {
   return Math.hypot(p.x - px, p.y - py);
 }
 
-function simplifyRdp(points: Point[], epsilon: number): Point[] {
-  if (points.length < 3) {
+function simplifyRdp(points: Point[], epsilon: number, depth = 0): Point[] {
+  if (points.length < 3 || depth > 64) {
     return [...points];
   }
 
@@ -196,8 +196,8 @@ function simplifyRdp(points: Point[], epsilon: number): Point[] {
     return [first, last];
   }
 
-  const left = simplifyRdp(points.slice(0, split + 1), epsilon);
-  const right = simplifyRdp(points.slice(split), epsilon);
+  const left = simplifyRdp(points.slice(0, split + 1), epsilon, depth + 1);
+  const right = simplifyRdp(points.slice(split), epsilon, depth + 1);
   return [...left.slice(0, -1), ...right];
 }
 

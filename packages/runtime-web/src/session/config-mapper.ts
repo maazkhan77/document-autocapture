@@ -29,11 +29,11 @@ export function normalizeDetectorMode(value: unknown): DetectorMode {
 export function toWorkerDetectorConfig(config: ScannerConfig): WorkerDetectorConfig {
   const pipelineVersion = config.mlPipelineVersion ?? 'v2-graph';
   const resolvedModelId =
-    pipelineVersion === 'v2-graph'
-      ? config.mlModelId && config.mlModelId !== 'doc-corner-v1'
-        ? config.mlModelId
-        : 'doc-corner-v2'
-      : (config.mlModelId ?? 'doc-corner-v1');
+    config.mlModelId !== undefined
+      ? config.mlModelId
+      : pipelineVersion === 'v2-graph'
+        ? 'doc-corner-v2'
+        : 'doc-corner-v1';
 
   // Resolve from high-level fields first, fall through to internal fields
   const mlFallbackEnabled = config.mlFallback ?? config.mlFallbackEnabled ?? true;

@@ -171,6 +171,10 @@ void main() {
 }
 
 function getPipeline(width: number, height: number): WebglPipeline {
+  if (pipelineCache && pipelineCache.gl.isContextLost()) {
+    // Context was lost (tab suspend, GPU reset, canvas resize) — rebuild.
+    pipelineCache = undefined;
+  }
   if (!pipelineCache) {
     pipelineCache = buildPipeline(width, height);
   }
@@ -179,6 +183,11 @@ function getPipeline(width: number, height: number): WebglPipeline {
   }
   if (pipelineCache.canvas.height !== height) {
     pipelineCache.canvas.height = height;
+  }
+  // Re-check after resize as it can trigger context loss.
+  if (pipelineCache.gl.isContextLost()) {
+    pipelineCache = undefined;
+    return getPipeline(width, height);
   }
   return pipelineCache;
 }
@@ -226,6 +235,14 @@ export function warpPerspectiveWebGL(request: WebglWarpRequest): WebglWarpResult
       ok: false,
       elapsedMs: 0,
       reason: 'Invalid output dimensions',
+    };
+  }
+
+  if (!request.imageData?.data || !request.quad?.topLeft) {
+    return {
+      ok: false,
+      elapsedMs: 0,
+      reason: 'Missing imageData or quad',
     };
   }
 

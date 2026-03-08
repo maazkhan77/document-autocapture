@@ -123,7 +123,7 @@ export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoC
         sessionRef.current.updateConfig({ videoElement: node ?? undefined });
       }
     },
-    [sessionRef],
+    [],
   );
 
   const start = useCallback(async () => {

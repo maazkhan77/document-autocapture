@@ -39,6 +39,14 @@ export function warpPerspectiveCpu(request: CpuWarpRequest): CpuWarpResult {
     };
   }
 
+  if (!imageData?.data || !quad?.topLeft) {
+    return {
+      ok: false,
+      elapsedMs: 0,
+      reason: 'Missing imageData or quad',
+    };
+  }
+
   const srcPoints: Point[] = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
   const dstPoints: Point[] = [
     { x: 0, y: 0 },

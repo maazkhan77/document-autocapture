@@ -102,3 +102,18 @@ export function announceGuidance(
     }
   }, 300);
 }
+
+/**
+ * Remove the ARIA live region from the DOM and clear any pending announcement.
+ * Called internally by `destroy()`.
+ */
+export function cleanupGuidance(): void {
+  if (_ariaTimer) {
+    clearTimeout(_ariaTimer);
+    _ariaTimer = undefined;
+  }
+  if (_ariaRegion) {
+    _ariaRegion.remove();
+    _ariaRegion = null;
+  }
+}

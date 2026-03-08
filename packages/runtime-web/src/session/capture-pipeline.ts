@@ -5,7 +5,6 @@ import {
   quadAspectRatio,
 } from '@document-autocapture/core-engine';
 import { warpPerspectiveCpu } from '@document-autocapture/warp-cpu';
-import { warpPerspectiveWebGL } from '@document-autocapture/warp-webgl';
 import { sanitizeQuadForCapture, scaleQuadToCapture } from '../capture-quad';
 import { refineQuadPostCapture } from '../post-refine';
 import type { CaptureResult, ScannerConfig, WarpTierUsed } from '../types';
@@ -185,13 +184,12 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
     tier: WarpTierUsed;
     outputCanvas: HTMLCanvasElement;
     rejectionReason?: string;
-    rejectionStage?: 'webgl' | 'cpu';
-    webglRecoveredOnCpu: boolean;
+    rejectionStage?: 'cpu';
   }
 
   const validateWarpCanvas = (
     candidateCanvas: HTMLCanvasElement,
-    candidateTier: 'webgl' | 'cpu',
+    candidateTier: 'cpu',
   ): { accepted: boolean; validation?: ReturnType<typeof assessWarpOutput> } => {
     const candidateCtx = candidateCanvas.getContext('2d', { willReadFrequently: true });
     if (!candidateCtx) {
@@ -217,103 +215,41 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
     let tier: WarpTierUsed = 'raw';
     let outputCanvas: HTMLCanvasElement = canvas;
     let rejectionReason: string | undefined;
-    let rejectionStage: 'webgl' | 'cpu' | undefined;
-    let webglRecoveredOnCpu = false;
+    let rejectionStage: 'cpu' | undefined;
 
     if (hasReliableDetection) {
-      // Auto-capture prioritizes determinism over speed to avoid intermittent WebGL corruption artifacts.
-      const preferCpuWarp = source === 'auto';
-      if (preferCpuWarp && config.debug) {
-        console.warn(
-          '[document-autocapture] Auto-capture warp policy active: CPU-first (WebGL bypassed for stability).',
-        );
-      }
-      if (!preferCpuWarp) {
-        const webglResult = warpPerspectiveWebGL({
-          imageData,
-          quad: candidateQuad,
-          outputWidth: outWidth,
-          outputHeight: outHeight,
-          budgetMs: 50,
-        });
-        if (webglResult.ok && webglResult.canvas && webglResult.elapsedMs <= 50) {
-          const webglSnapshot = document.createElement('canvas');
-          webglSnapshot.width = outWidth;
-          webglSnapshot.height = outHeight;
-          const webglSnapshotCtx = webglSnapshot.getContext('2d', { willReadFrequently: true });
-          if (webglSnapshotCtx) {
-            webglSnapshotCtx.drawImage(
-              webglResult.canvas,
-              0,
-              0,
-              outWidth,
-              outHeight,
-              0,
-              0,
-              outWidth,
-              outHeight,
-            );
-            const webglValidation = validateWarpCanvas(webglSnapshot, 'webgl');
-            if (webglValidation.accepted) {
-              tier = 'webgl';
-              outputCanvas = webglSnapshot;
-            } else if (webglValidation.validation) {
-              rejectionReason = webglValidation.validation.reason;
-              rejectionStage = 'webgl';
-              if (config.debug) {
-                console.warn(
-                  `[document-autocapture] WebGL warp rejected reason=${webglValidation.validation.reason} ` +
-                    `(var=${webglValidation.validation.warpedStats.variance.toFixed(1)}, ` +
-                    `range=${webglValidation.validation.warpedStats.dynamicRange.toFixed(1)}, ` +
-                    `blockiness=${webglValidation.validation.integrity.blockiness.toFixed(2)}, ` +
-                    `dominant=${(webglValidation.validation.integrity.dominantColorRatio * 100).toFixed(1)}%, ` +
-                    `nearBlack=${(webglValidation.validation.integrity.nearBlackRatio * 100).toFixed(1)}%), trying CPU warp`,
-                );
-              }
-            }
-          } else if (config.debug) {
-            console.warn(
-              '[document-autocapture] Could not snapshot WebGL warp canvas; trying CPU warp',
-            );
-          }
+      const cpuResult = warpPerspectiveCpu({
+        imageData,
+        quad: candidateQuad,
+        outputWidth: outWidth,
+        outputHeight: outHeight,
+        budgetMs: cpuWarpBudgetMs,
+      });
+      if (cpuResult.ok && cpuResult.imageData && cpuResult.elapsedMs <= cpuWarpBudgetMs) {
+        const cpuCanvas = document.createElement('canvas');
+        cpuCanvas.width = outWidth;
+        cpuCanvas.height = outHeight;
+        const cpuCtx = cpuCanvas.getContext('2d');
+        if (!cpuCtx) {
+          throw new Error('Could not create CPU output canvas');
         }
-      }
-
-      if (tier === 'raw') {
-        const cpuResult = warpPerspectiveCpu({
-          imageData,
-          quad: candidateQuad,
-          outputWidth: outWidth,
-          outputHeight: outHeight,
-          budgetMs: cpuWarpBudgetMs,
-        });
-        if (cpuResult.ok && cpuResult.imageData && cpuResult.elapsedMs <= cpuWarpBudgetMs) {
-          const cpuCanvas = document.createElement('canvas');
-          cpuCanvas.width = outWidth;
-          cpuCanvas.height = outHeight;
-          const cpuCtx = cpuCanvas.getContext('2d');
-          if (!cpuCtx) {
-            throw new Error('Could not create CPU output canvas');
-          }
-          cpuCtx.putImageData(cpuResult.imageData, 0, 0);
-          const cpuValidation = validateWarpCanvas(cpuCanvas, 'cpu');
-          if (cpuValidation.accepted) {
-            tier = 'cpu';
-            outputCanvas = cpuCanvas;
-            webglRecoveredOnCpu = rejectionStage === 'webgl';
-          } else if (cpuValidation.validation) {
-            rejectionReason = cpuValidation.validation.reason;
-            rejectionStage = 'cpu';
-            if (config.debug) {
-              console.warn(
-                `[document-autocapture] CPU warp rejected reason=${cpuValidation.validation.reason} ` +
-                  `(var=${cpuValidation.validation.warpedStats.variance.toFixed(1)}, ` +
-                  `range=${cpuValidation.validation.warpedStats.dynamicRange.toFixed(1)}, ` +
-                  `blockiness=${cpuValidation.validation.integrity.blockiness.toFixed(2)}, ` +
-                  `dominant=${(cpuValidation.validation.integrity.dominantColorRatio * 100).toFixed(1)}%, ` +
-                  `nearBlack=${(cpuValidation.validation.integrity.nearBlackRatio * 100).toFixed(1)}%), falling back to raw capture`,
-              );
-            }
+        cpuCtx.putImageData(cpuResult.imageData, 0, 0);
+        const cpuValidation = validateWarpCanvas(cpuCanvas, 'cpu');
+        if (cpuValidation.accepted) {
+          tier = 'cpu';
+          outputCanvas = cpuCanvas;
+        } else if (cpuValidation.validation) {
+          rejectionReason = cpuValidation.validation.reason;
+          rejectionStage = 'cpu';
+          if (config.debug) {
+            console.warn(
+              `[document-autocapture] CPU warp rejected reason=${cpuValidation.validation.reason} ` +
+                `(var=${cpuValidation.validation.warpedStats.variance.toFixed(1)}, ` +
+                `range=${cpuValidation.validation.warpedStats.dynamicRange.toFixed(1)}, ` +
+                `blockiness=${cpuValidation.validation.integrity.blockiness.toFixed(2)}, ` +
+                `dominant=${(cpuValidation.validation.integrity.dominantColorRatio * 100).toFixed(1)}%, ` +
+                `nearBlack=${(cpuValidation.validation.integrity.nearBlackRatio * 100).toFixed(1)}%), falling back to raw capture`,
+            );
           }
         }
       }
@@ -324,14 +260,10 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
       outputCanvas,
       rejectionReason,
       rejectionStage,
-      webglRecoveredOnCpu,
     };
   };
 
   let warpAttempt = attemptWarpForQuad(sourceQuad);
-  if (warpAttempt.webglRecoveredOnCpu) {
-    emitWarning('WebGL warp rejected; switched to CPU warp');
-  }
   if (postRefineApplied && warpAttempt.tier === 'raw' && warpAttempt.rejectionReason) {
     if (config.debug) {
       console.warn(
@@ -340,9 +272,6 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
     }
     sourceQuad = sourceQuadOriginal;
     const originalAttempt = attemptWarpForQuad(sourceQuadOriginal);
-    if (originalAttempt.webglRecoveredOnCpu) {
-      emitWarning('WebGL warp rejected; switched to CPU warp');
-    }
     warpAttempt = originalAttempt;
     postRefineApplied = false;
     postRefineReason = 'validation_reverted';

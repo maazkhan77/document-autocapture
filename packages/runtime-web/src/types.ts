@@ -21,7 +21,7 @@ export interface Capabilities {
   selectedMode: ExecutionMode;
 }
 
-export type WarpTierUsed = 'webgl' | 'cpu' | 'raw';
+export type WarpTierUsed = 'cpu' | 'raw';
 export type DetectorMode = 'cv' | 'hybrid' | 'ml';
 export type DebugOverlayLevel = 'off' | 'basic' | 'full';
 export type MlPipelineVersion = 'v1-heuristic' | 'v2-graph';
@@ -93,7 +93,10 @@ export interface ScannerConfig extends Partial<EngineConfig> {
   /** Enable COCO-SSD "book" detector for faster, more robust document detection. Downloads model from CDN (~5 MB) on first use. Default: `true`. */
   cocoSsd?: boolean;
 
-  /** Use GPU (WebGL) for perspective warp when available. Default: `true`. */
+  /**
+   * @deprecated No longer used. CPU warp is always used for reliability.
+   * Kept for backward compatibility — setting this has no effect.
+   */
   webglWarp?: boolean;
 
   /** Automatically capture when the document is stable. Default: `true`. */

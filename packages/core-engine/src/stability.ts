@@ -57,16 +57,17 @@ export class StabilityTracker {
     }
 
     const smoothedQuad = smoothQuad(this.previousSmoothed, args.quad, this.config.emaAlpha);
-    const movement = this.previousSmoothed
+    const rawMovement = this.previousSmoothed
       ? maxCornerDisplacement(this.previousSmoothed, smoothedQuad)
       : Number.POSITIVE_INFINITY;
+    const movement = Number.isFinite(rawMovement) ? rawMovement : Number.POSITIVE_INFINITY;
 
     const movementThreshold = args.movementThresholdPx ?? this.config.movementThresholdPx;
     if (movement <= movementThreshold || this.previousSmoothed === undefined) {
       if (this.stableSince === null) {
         this.stableSince = args.nowMs;
       }
-      this.accumulation += args.confidence;
+      this.accumulation = Math.min(this.accumulation + args.confidence, 1e9);
     } else {
       this.stableSince = args.nowMs;
       this.accumulation = args.confidence;

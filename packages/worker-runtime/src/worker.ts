@@ -332,6 +332,7 @@ function resetFallbackState(): void {
   fallbackTelemetryState = 'inactive';
   resetFrameTelemetry(frameTelemetry);
   mlRescueCounter = 0;
+  mlRescueBuffer = undefined;
 }
 
 async function waitForOpenCvRuntime(cvRuntime: OpenCvRuntime, timeoutMs: number): Promise<void> {
@@ -1381,6 +1382,10 @@ async function handleMessage(msg: WorkerRequest): Promise<void> {
           msg.detectorConfig?.mlWasmBaseUrl ||
           msg.detectorConfig?.mlPipelineVersion
         ) {
+          // Wait for any in-flight ML init to settle before resetting.
+          if (mlInitTask) {
+            await mlInitTask.catch(() => {});
+          }
           mlDisabled = false;
           mlReady = false;
           mlModelLoaded = false;
@@ -1424,6 +1429,15 @@ async function handleMessage(msg: WorkerRequest): Promise<void> {
         return;
       }
       case 'process-frame': {
+        const expectedSize = msg.width * msg.height * 4;
+        if (msg.rgbaBuffer.byteLength !== expectedSize) {
+          post({
+            type: 'error',
+            id: msg.id,
+            message: `Frame buffer size mismatch: expected ${expectedSize} bytes for ${msg.width}x${msg.height}, got ${msg.rgbaBuffer.byteLength}`,
+          });
+          return;
+        }
         const rgba = new Uint8ClampedArray(msg.rgbaBuffer);
         await processFrame(msg.id, rgba, msg.width, msg.height, msg.nowMs);
         return;

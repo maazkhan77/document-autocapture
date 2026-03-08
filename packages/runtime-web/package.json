@@ -18,7 +18,6 @@
   "dependencies": {
     "@document-autocapture/core-engine": "workspace:*",
     "@document-autocapture/warp-cpu": "workspace:*",
-    "@document-autocapture/warp-webgl": "workspace:*",
     "@document-autocapture/worker-runtime": "workspace:*"
   }
 }

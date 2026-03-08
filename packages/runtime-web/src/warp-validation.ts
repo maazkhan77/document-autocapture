@@ -151,9 +151,9 @@ export function assessWarpOutput(params: {
   sourceImageData: ImageData;
   isHoughAutoCapture: boolean;
   level: WarpValidationLevel;
-  warpTier?: 'webgl' | 'cpu';
+  warpTier?: 'cpu';
 }): WarpValidationResult {
-  const { warpedImageData, sourceImageData, isHoughAutoCapture, level, warpTier } = params;
+  const { warpedImageData, sourceImageData, isHoughAutoCapture, level } = params;
   const warpedStats = computeLumaStats(warpedImageData, 4);
   const sourceStats = computeLumaStats(sourceImageData, 8);
   const integrity = computeWarpIntegrityStats(warpedImageData, 2);
@@ -164,24 +164,6 @@ export function assessWarpOutput(params: {
     return {
       rejected: true,
       reason: 'degenerate_luma',
-      warpedStats,
-      sourceStats,
-      integrity,
-    };
-  }
-
-  const webglRisky =
-    warpTier === 'webgl' &&
-    (integrity.blockiness > (strict ? 1.52 : 1.8) ||
-      integrity.dominantColorRatio > (strict ? 0.24 : 0.3) ||
-      (integrity.nearBlackRatio > (strict ? 0.18 : 0.24) &&
-        integrity.dynamicRange < (strict ? 64 : 56)) ||
-      (warpedStats.variance < Math.max(1, sourceStats.variance) * (strict ? 0.16 : 0.12) &&
-        integrity.dominantColorRatio > (strict ? 0.18 : 0.22)));
-  if (webglRisky) {
-    return {
-      rejected: true,
-      reason: 'webgl_risky',
       warpedStats,
       sourceStats,
       integrity,

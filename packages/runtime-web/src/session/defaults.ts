@@ -201,9 +201,7 @@ export function buildScannerConfig(userConfig?: ScannerConfig): ScannerConfig {
   // cocoSsd → cocoBookEnabled
   merged.cocoBookEnabled = merged.cocoSsd ?? merged.cocoBookEnabled ?? true;
 
-  // webglWarp: false only disables WebGL-accelerated perspective warp at capture time.
-  // It should NOT downgrade the execution mode — Workers are still needed for ML detection.
-  // The capture pipeline already handles CPU warp fallback independently.
+  // webglWarp is deprecated (CPU warp only). Kept for backward compat — ignored.
 
   // postCaptureRefine (boolean) → postCaptureRefineMode
   if (typeof merged.postCaptureRefine === 'boolean') {

@@ -16,6 +16,7 @@ import {
 } from '@document-autocapture/worker-runtime';
 import { detectCapabilities, selectExecutionMode } from './capabilities';
 import { TypedEmitter } from './emitter';
+import { cleanupGuidance } from './guidance';
 import { captureWithWarp as runCaptureWithWarp } from './session/capture-pipeline';
 import {
   toEngineConfig,
@@ -87,6 +88,8 @@ class ScannerSessionImpl implements ScannerSession {
   private worker?: Worker;
 
   private workerReady = false;
+
+  private workerReadyTimeoutHandle = 0;
 
   private startTask?: Promise<void>;
 
@@ -228,7 +231,8 @@ class ScannerSessionImpl implements ScannerSession {
           typeof window !== 'undefined' &&
           !window.isSecureContext &&
           window.location.hostname !== 'localhost' &&
-          window.location.hostname !== '127.0.0.1'
+          window.location.hostname !== '127.0.0.1' &&
+          window.location.hostname !== '[::1]'
         ) {
           throw new Error(
             'Camera access requires a secure context (HTTPS). Open this app via HTTPS or localhost.',
@@ -261,6 +265,18 @@ class ScannerSessionImpl implements ScannerSession {
             ...(this.config.videoConstraints ?? {}),
           },
           audio: false,
+        }).catch((err: unknown) => {
+          if (err instanceof DOMException && err.name === 'NotAllowedError') {
+            throw new Error(
+              'Camera permission was denied. Please allow camera access and try again.',
+            );
+          }
+          if (err instanceof DOMException && err.name === 'NotFoundError') {
+            throw new Error(
+              'No camera found. Please connect a camera and try again.',
+            );
+          }
+          throw err;
         });
         this.assertLifecycleToken(startToken);
 
@@ -299,6 +315,13 @@ class ScannerSessionImpl implements ScannerSession {
               error instanceof Error ? error.message : 'Worker init postMessage failed',
             );
           }
+
+          // Timeout: if worker doesn't become ready within 8s, fall back.
+          this.workerReadyTimeoutHandle = window.setTimeout(() => {
+            if (!this.workerReady && this.worker) {
+              this.downgradeToFallback('Worker init timeout — falling back to main-thread processing');
+            }
+          }, 8000);
         }
 
         this.assertLifecycleToken(startToken);
@@ -362,6 +385,10 @@ class ScannerSessionImpl implements ScannerSession {
   async stop(): Promise<void> {
     this.lifecycleToken += 1;
     this.running = false;
+    if (this.workerReadyTimeoutHandle) {
+      clearTimeout(this.workerReadyTimeoutHandle);
+      this.workerReadyTimeoutHandle = 0;
+    }
     if (this.rafHandle) {
       cancelAnimationFrame(this.rafHandle);
       this.rafHandle = 0;
@@ -393,6 +420,7 @@ class ScannerSessionImpl implements ScannerSession {
 
   async destroy(): Promise<void> {
     await this.stop();
+    cleanupGuidance();
     this.emitter.clear();
   }
 
@@ -443,7 +471,11 @@ class ScannerSessionImpl implements ScannerSession {
     }
     this.ingestionCanvas.width = width;
     this.ingestionCanvas.height = height;
-    this.ingestionCtx.drawImage(this.video, 0, 0, width, height);
+    try {
+      this.ingestionCtx.drawImage(this.video, 0, 0, width, height);
+    } catch {
+      return this.createBlankFrame(width, height);
+    }
     const imageData = this.ingestionCtx.getImageData(0, 0, width, height);
     return this.fallbackEngine.processFrame({
       rgba: imageData.data,
@@ -696,6 +728,10 @@ class ScannerSessionImpl implements ScannerSession {
   private onWorkerMessage(message: WorkerResponse): void {
     if (message.type === 'ready') {
       this.workerReady = true;
+      if (this.workerReadyTimeoutHandle) {
+        clearTimeout(this.workerReadyTimeoutHandle);
+        this.workerReadyTimeoutHandle = 0;
+      }
       return;
     }
 

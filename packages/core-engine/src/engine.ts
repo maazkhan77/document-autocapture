@@ -72,6 +72,27 @@ export function createEngine(config?: Partial<EngineConfig>): Engine {
   return {
     config: finalConfig,
     processFrame(input: FrameInput): FrameProcessResult {
+      if (
+        !input.width ||
+        !input.height ||
+        !Number.isFinite(input.width) ||
+        !Number.isFinite(input.height) ||
+        !input.rgba?.length
+      ) {
+        return {
+          detection: {
+            status: 'not_found',
+            source: 'cv',
+            candidates: [],
+            rejectionReason: 'low_confidence',
+          },
+          stability: stability.update({
+            nowMs: input.nowMs ?? nowMs(),
+            confidence: 0,
+          }),
+          guidance: 'DOCUMENT_NOT_FOUND',
+        };
+      }
       const t0 = nowMs();
       let grayMs = 0;
       let blurMs = 0;
