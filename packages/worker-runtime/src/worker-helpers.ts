@@ -178,19 +178,13 @@ export function fuseMlResult({
   const area = quadArea(mlQuad);
   const areaFraction = area / Math.max(1, width * height);
   const aspect = calcAspect(mlQuad);
-  // ML models inherently clamp coordinates to [0, frameSize-1], producing corners
-  // near the frame edge even for legitimate detections. Use a tighter margin (2px)
-  // and higher threshold (3+ of 4 corners) to avoid false edge_touch rejections.
-  const mlEdgeMargin = Math.min(engineConfig.edgeTouchMarginPx, 2);
-  const borderPenaltyVal = borderPenalty(mlQuad, width, height, mlEdgeMargin);
+  const borderPenaltyVal = borderPenalty(mlQuad, width, height, engineConfig.edgeTouchMarginPx);
   const edgeSupport = sampleMlEdgeSupport(rgba, width, height, mlQuad);
 
   let rejectionReason: DetectionRejectionReason = 'none';
   const mlConfidenceGate = Math.min(engineConfig.confidenceThreshold, minCvConfidence);
   if (mlConfidence < mlConfidenceGate) {
     rejectionReason = 'low_confidence';
-  } else if (borderPenaltyVal > 0.6) {
-    rejectionReason = 'edge_touch';
   } else if (aspect < engineConfig.minAspectRatio || aspect > engineConfig.maxAspectRatio) {
     rejectionReason = 'aspect_invalid';
   }
