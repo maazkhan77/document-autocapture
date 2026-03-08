@@ -259,25 +259,25 @@ class ScannerSessionImpl implements ScannerSession {
         this.video.playsInline = true;
         this.video.autoplay = true;
 
-        this.stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: 'environment',
-            ...(this.config.videoConstraints ?? {}),
-          },
-          audio: false,
-        }).catch((err: unknown) => {
-          if (err instanceof DOMException && err.name === 'NotAllowedError') {
-            throw new Error(
-              'Camera permission was denied. Please allow camera access and try again.',
-            );
-          }
-          if (err instanceof DOMException && err.name === 'NotFoundError') {
-            throw new Error(
-              'No camera found. Please connect a camera and try again.',
-            );
-          }
-          throw err;
-        });
+        this.stream = await navigator.mediaDevices
+          .getUserMedia({
+            video: {
+              facingMode: 'environment',
+              ...(this.config.videoConstraints ?? {}),
+            },
+            audio: false,
+          })
+          .catch((err: unknown) => {
+            if (err instanceof DOMException && err.name === 'NotAllowedError') {
+              throw new Error(
+                'Camera permission was denied. Please allow camera access and try again.',
+              );
+            }
+            if (err instanceof DOMException && err.name === 'NotFoundError') {
+              throw new Error('No camera found. Please connect a camera and try again.');
+            }
+            throw err;
+          });
         this.assertLifecycleToken(startToken);
 
         this.video.srcObject = this.stream;
@@ -319,7 +319,9 @@ class ScannerSessionImpl implements ScannerSession {
           // Timeout: if worker doesn't become ready within 8s, fall back.
           this.workerReadyTimeoutHandle = window.setTimeout(() => {
             if (!this.workerReady && this.worker) {
-              this.downgradeToFallback('Worker init timeout — falling back to main-thread processing');
+              this.downgradeToFallback(
+                'Worker init timeout — falling back to main-thread processing',
+              );
             }
           }, 8000);
         }

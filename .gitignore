@@ -10,3 +10,4 @@ test-results
 apps/eval-harness/output
 apps/demo-react/.vite
 apps/demo-react/public/models
+.vercel

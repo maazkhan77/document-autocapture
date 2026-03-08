@@ -18,9 +18,6 @@ export default defineConfig([
     outDir: 'dist',
     dts: false,
     splitting: false,
-    noExternal: [
-      '@document-autocapture/core-engine',
-      '@document-autocapture/ml-tf-fallback',
-    ],
+    noExternal: ['@document-autocapture/core-engine', '@document-autocapture/ml-tf-fallback'],
   },
 ]);

@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { assessWarpOutput } from './warp-validation';
 
-function makeImageData(width: number, height: number, pixel: (x: number, y: number) => [number, number, number]): ImageData {
+function makeImageData(
+  width: number,
+  height: number,
+  pixel: (x: number, y: number) => [number, number, number],
+): ImageData {
   const data = new Uint8ClampedArray(width * height * 4);
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {

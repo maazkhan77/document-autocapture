@@ -84,7 +84,11 @@ function CaptureWidget() {
       <button onClick={() => void captureManual()}>Capture</button>
       <p>{guidance ?? 'Ready'}</p>
       {lastCapture && (
-        <img src={URL.createObjectURL(lastCapture.blob)} alt="Captured document" style={{ maxWidth: 320 }} />
+        <img
+          src={URL.createObjectURL(lastCapture.blob)}
+          alt="Captured document"
+          style={{ maxWidth: 320 }}
+        />
       )}
     </div>
   );
@@ -159,14 +163,14 @@ Modal for manually adjusting detected document corners after capture.
 
 **Props:**
 
-| Prop          | Type                   | Description                                          |
-| ------------- | ---------------------- | ---------------------------------------------------- |
-| `open`        | `boolean`              | Show/hide the modal                                  |
+| Prop          | Type                   | Description                                                      |
+| ------------- | ---------------------- | ---------------------------------------------------------------- |
+| `open`        | `boolean`              | Show/hide the modal                                              |
 | `imageUrl`    | `string`               | Image to display (use `URL.createObjectURL(captureResult.blob)`) |
-| `initialQuad` | `Quad`                 | Initial corner positions from capture                |
-| `autoRefined` | `boolean`              | Whether corners were auto-refined                    |
-| `onClose`     | `() => void`           | Called when user dismisses                           |
-| `onConfirm`   | `(quad: Quad) => void` | Called with adjusted corners                         |
+| `initialQuad` | `Quad`                 | Initial corner positions from capture                            |
+| `autoRefined` | `boolean`              | Whether corners were auto-refined                                |
+| `onClose`     | `() => void`           | Called when user dismisses                                       |
+| `onConfirm`   | `(quad: Quad) => void` | Called with adjusted corners                                     |
 
 ---
 

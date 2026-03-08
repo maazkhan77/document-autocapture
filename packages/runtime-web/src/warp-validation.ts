@@ -159,7 +159,10 @@ export function assessWarpOutput(params: {
   const integrity = computeWarpIntegrityStats(warpedImageData, 2);
 
   const strict = level === 'strict';
-  const minExpectedVariance = Math.max(strict ? 18 : 12, sourceStats.variance * (strict ? 0.08 : 0.05));
+  const minExpectedVariance = Math.max(
+    strict ? 18 : 12,
+    sourceStats.variance * (strict ? 0.08 : 0.05),
+  );
   if (warpedStats.variance < minExpectedVariance || warpedStats.dynamicRange < (strict ? 28 : 22)) {
     return {
       rejected: true,
@@ -188,7 +191,8 @@ export function assessWarpOutput(params: {
 
   const blockCorruption =
     integrity.blockiness > (strict ? 1.75 : 2.1) &&
-    (integrity.dominantColorRatio > (strict ? 0.28 : 0.34) || integrity.dynamicRange < (strict ? 42 : 34));
+    (integrity.dominantColorRatio > (strict ? 0.28 : 0.34) ||
+      integrity.dynamicRange < (strict ? 42 : 34));
   if (blockCorruption) {
     return {
       rejected: true,
@@ -200,7 +204,8 @@ export function assessWarpOutput(params: {
   }
 
   const outOfBoundsBlack =
-    integrity.nearBlackRatio > (strict ? 0.24 : 0.32) && integrity.dynamicRange < (strict ? 52 : 44);
+    integrity.nearBlackRatio > (strict ? 0.24 : 0.32) &&
+    integrity.dynamicRange < (strict ? 52 : 44);
   if (outOfBoundsBlack) {
     return {
       rejected: true,

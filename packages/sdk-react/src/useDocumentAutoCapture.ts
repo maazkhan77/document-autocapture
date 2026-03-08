@@ -116,15 +116,12 @@ export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoC
     });
   }, [config]);
 
-  const videoRef = useCallback(
-    (node: HTMLVideoElement | null) => {
-      videoRefObject.current = node;
-      if (sessionRef.current) {
-        sessionRef.current.updateConfig({ videoElement: node ?? undefined });
-      }
-    },
-    [],
-  );
+  const videoRef = useCallback((node: HTMLVideoElement | null) => {
+    videoRefObject.current = node;
+    if (sessionRef.current) {
+      sessionRef.current.updateConfig({ videoElement: node ?? undefined });
+    }
+  }, []);
 
   const start = useCallback(async () => {
     if (!sessionRef.current) {

@@ -1,0 +1,8 @@
+{
+  "buildCommand": "pnpm --filter @document-autocapture/demo-react build",
+  "outputDirectory": "apps/demo-react/dist",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "devCommand": "pnpm --filter @document-autocapture/demo-react dev",
+  "framework": null,
+  "regions": ["bom1", "iad1", "sfo1"]
+}
