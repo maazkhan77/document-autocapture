@@ -31,9 +31,20 @@ function drawCanvas(canvas: HTMLCanvasElement, image: HTMLImageElement, quad: Qu
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(image, 0, 0);
 
+  // Semi-transparent overlay outside the quad (evenodd leaves quad interior clear)
+  ctx.beginPath();
+  ctx.rect(0, 0, canvas.width, canvas.height);
+  ctx.moveTo(quad.topLeft.x, quad.topLeft.y);
+  ctx.lineTo(quad.topRight.x, quad.topRight.y);
+  ctx.lineTo(quad.bottomRight.x, quad.bottomRight.y);
+  ctx.lineTo(quad.bottomLeft.x, quad.bottomLeft.y);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+  ctx.fill('evenodd');
+
+  // Quad border
   ctx.strokeStyle = '#ff9f1c';
-  ctx.fillStyle = '#ff9f1c';
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(quad.topLeft.x, quad.topLeft.y);
   ctx.lineTo(quad.topRight.x, quad.topRight.y);
@@ -42,11 +53,47 @@ function drawCanvas(canvas: HTMLCanvasElement, image: HTMLImageElement, quad: Qu
   ctx.closePath();
   ctx.stroke();
 
-  for (const key of ['topLeft', 'topRight', 'bottomRight', 'bottomLeft'] as const) {
-    const p = quad[key];
+  // Draw L-bracket corner handles
+  const bracketLen = Math.max(18, Math.min(canvas.width, canvas.height) * 0.04);
+  const corners: Array<{ point: Point; towardA: Point; towardB: Point }> = [
+    { point: quad.topLeft, towardA: quad.topRight, towardB: quad.bottomLeft },
+    { point: quad.topRight, towardA: quad.topLeft, towardB: quad.bottomRight },
+    { point: quad.bottomRight, towardA: quad.bottomLeft, towardB: quad.topRight },
+    { point: quad.bottomLeft, towardA: quad.bottomRight, towardB: quad.topLeft },
+  ];
+
+  for (const { point, towardA, towardB } of corners) {
+    const dirAx = towardA.x - point.x;
+    const dirAy = towardA.y - point.y;
+    const lenA = Math.hypot(dirAx, dirAy) || 1;
+    const dirBx = towardB.x - point.x;
+    const dirBy = towardB.y - point.y;
+    const lenB = Math.hypot(dirBx, dirBy) || 1;
+
+    const armAx = point.x + (dirAx / lenA) * bracketLen;
+    const armAy = point.y + (dirAy / lenA) * bracketLen;
+    const armBx = point.x + (dirBx / lenB) * bracketLen;
+    const armBy = point.y + (dirBy / lenB) * bracketLen;
+
+    // White L-bracket with thick stroke
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+    ctx.moveTo(armAx, armAy);
+    ctx.lineTo(point.x, point.y);
+    ctx.lineTo(armBx, armBy);
+    ctx.stroke();
+
+    // Filled corner circle
+    ctx.fillStyle = '#ff9f1c';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, 12, 0, Math.PI * 2);
     ctx.fill();
+    ctx.stroke();
   }
 }
 
@@ -155,8 +202,8 @@ export function CornerAdjustModal(props: CornerAdjustModalProps) {
             </span>
           ) : null}
         </div>
-        <p style={{ fontSize: 13, color: '#333' }}>
-          Drag corner handles and confirm to re-run perspective warp.
+        <p style={{ fontSize: 13, color: '#555', margin: '6px 0 10px' }}>
+          Drag the orange circles to align with the document edges, then confirm.
         </p>
         <div
           style={{

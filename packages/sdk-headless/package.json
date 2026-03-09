@@ -1,6 +1,6 @@
 {
   "name": "js-document-autocapture",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "Free browser-native document auto-capture SDK with ML detection, perspective correction, and quality gates. No watermarks, no server uploads.",
   "type": "module",
   "main": "dist/index.js",

@@ -4,8 +4,8 @@ import { buildShareUrl, getPresetConfig } from './app-logic';
 describe('demo app logic', () => {
   it('provides deterministic preset configs', () => {
     const recommended = getPresetConfig('recommended');
-    expect(recommended.confidenceThreshold).toBe(0.42);
-    expect(recommended.minStableConfidence).toBe(0.36);
+    expect(recommended.confidenceThreshold).toBe(0.50);
+    expect(recommended.minStableConfidence).toBe(0.42);
     expect(recommended.stabilityWindowMs).toBe(320);
     expect(recommended.autoStableFrames).toBe(2);
     expect(recommended.detectionWidth).toBe(480);
@@ -29,7 +29,7 @@ describe('demo app logic', () => {
     const first = getPresetConfig('recommended');
     first.confidenceThreshold = 0.1;
     const second = getPresetConfig('recommended');
-    expect(second.confidenceThreshold).toBe(0.42);
+    expect(second.confidenceThreshold).toBe(0.50);
   });
 
   it('builds share URL with scanner controls encoded', () => {

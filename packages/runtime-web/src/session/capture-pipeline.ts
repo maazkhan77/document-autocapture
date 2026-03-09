@@ -105,9 +105,10 @@ export async function captureWithWarp(params: CaptureWithWarpParams): Promise<Ca
   const bestBorder = bestCandidate?.metrics.borderPenalty ?? 1;
   const bestAspect = bestCandidate?.quad ? quadAspectRatio(bestCandidate.quad) : 0;
   const stableNow = Boolean(latestResult?.stability?.stable);
+  const bestEdge = bestCandidate?.metrics.edgeContrast ?? 0;
   const sourceReliableForWarp =
     bestSource === 'ml'
-      ? bestScore >= 0.45 && bestArea >= 0.08 && bestBorder <= 0.3
+      ? bestScore >= 0.55 && bestArea >= 0.12 && bestBorder <= 0.3 && bestEdge >= 0.15
       : bestSource === 'hough'
         ? stableNow &&
           bestScore >= 0.58 &&

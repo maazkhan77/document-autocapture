@@ -10,6 +10,7 @@ interface CocoPrediction {
 
 interface CocoModelLike {
   detect: (input: ImageData, maxNumBoxes?: number, minScore?: number) => Promise<CocoPrediction[]>;
+  dispose?: () => void;
 }
 
 interface TfjsLike {
@@ -249,6 +250,13 @@ export function createCocoQuadProvider(): CocoQuadProvider {
         modelBase,
         lastError,
       };
+    },
+    dispose(): void {
+      if (model) {
+        try { model.dispose?.(); } catch { /* ignore */ }
+      }
+      model = undefined;
+      ready = false;
     },
   };
 }

@@ -121,10 +121,10 @@ scanner.on('complete', (result) => {
 await scanner.start();
 ```
 
-| Value                 | Behavior                                                                 |
-| --------------------- | ------------------------------------------------------------------------ |
-| `undefined` (default) | Unlimited captures — scanner never emits `complete`                      |
-| `0`                   | Unlimited (same as `undefined`)                                          |
+| Value                 | Behavior                                                                      |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `undefined` (default) | Unlimited captures — scanner never emits `complete`                           |
+| `0`                   | Unlimited (same as `undefined`)                                               |
 | `1`, `2`, `3`, …      | Captures up to N documents, then emits `complete` and blocks further captures |
 
 After reaching the limit, calling `captureManual()` will throw. Call `start()` again to reset the counter and begin a new session.

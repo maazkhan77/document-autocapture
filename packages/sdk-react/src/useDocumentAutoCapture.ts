@@ -80,7 +80,13 @@ function reducer(state: HookState, action: HookAction): HookState {
       return { ...state, error: action.value };
     case 'set-running':
       if (action.value) {
-        return { ...state, isRunning: true, captureCount: 0, isComplete: false, completeResult: undefined };
+        return {
+          ...state,
+          isRunning: true,
+          captureCount: 0,
+          isComplete: false,
+          completeResult: undefined,
+        };
       }
       return { ...state, isRunning: false };
     default:
@@ -89,11 +95,16 @@ function reducer(state: HookState, action: HookAction): HookState {
 }
 
 export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoCaptureState {
-  const [state, dispatch] = useReducer(reducer, { isRunning: false, captureCount: 0, isComplete: false });
+  const [state, dispatch] = useReducer(reducer, {
+    isRunning: false,
+    captureCount: 0,
+    isComplete: false,
+  });
 
   const videoRefObject = useRef<HTMLVideoElement | null>(null);
   const sessionRef = useRef<ScannerSession | undefined>(undefined);
   const lastAppliedConfigRef = useRef<Record<string, unknown>>({});
+  const lastFrameDispatchRef = useRef<number>(0);
 
   useEffect(() => {
     const session = createScanner({
@@ -104,8 +115,14 @@ export function useDocumentAutoCapture(config?: ScannerConfig): UseDocumentAutoC
 
     const unsubscribers = [
       session.on('capabilities', (value) => dispatch({ type: 'set-capabilities', value })),
-      // Frame payload already includes detection, stability, quality, and guidance.
-      session.on('frame', (value) => dispatch({ type: 'set-frame', value })),
+      // Throttle frame dispatches to ~20fps to avoid overwhelming React's update queue.
+      session.on('frame', (value) => {
+        const now = performance.now();
+        if (now - lastFrameDispatchRef.current >= 50) {
+          lastFrameDispatchRef.current = now;
+          dispatch({ type: 'set-frame', value });
+        }
+      }),
       session.on('capture', (value) => dispatch({ type: 'set-last-capture', value })),
       session.on('complete', (value) => dispatch({ type: 'set-complete', value })),
       session.on('warning', (value) => dispatch({ type: 'set-warning', value })),

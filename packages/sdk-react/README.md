@@ -72,14 +72,22 @@ import { useDocumentAutoCapture } from 'react-document-autocapture';
 
 function CaptureWidget() {
   const {
-    videoRef, start, stop, captureManual,
-    isRunning, detection, guidance, lastCapture,
-    captureCount, isComplete, completeResult,
+    videoRef,
+    start,
+    stop,
+    captureManual,
+    isRunning,
+    detection,
+    guidance,
+    lastCapture,
+    captureCount,
+    isComplete,
+    completeResult,
   } = useDocumentAutoCapture({
-      autoCapture: true,
-      quality: 'balanced',
-      maxCaptures: 1, // capture one document and stop
-    });
+    autoCapture: true,
+    quality: 'balanced',
+    maxCaptures: 1, // capture one document and stop
+  });
 
   return (
     <div>
@@ -152,7 +160,7 @@ Main hook. Accepts all [`ScannerConfig`](#configuration) fields.
 | `lastCapture`     | `CaptureResult \| undefined`               | Most recent capture result                                   |
 | `captureCount`    | `number`                                   | Number of captures completed in this session                 |
 | `isComplete`      | `boolean`                                  | `true` when `maxCaptures` limit has been reached             |
-| `completeResult`  | `CaptureCompleteResult \| undefined`       | Completion payload with all captures (set when `isComplete`)  |
+| `completeResult`  | `CaptureCompleteResult \| undefined`       | Completion payload with all captures (set when `isComplete`) |
 | `capabilities`    | `Capabilities \| undefined`                | Browser capability report                                    |
 | `frame`           | `FrameProcessResult \| undefined`          | Full frame payload (includes all above)                      |
 | `warning`         | `string \| undefined`                      | Latest non-fatal warning                                     |
@@ -164,14 +172,14 @@ Pre-built component with video preview, debug overlay, action buttons, and statu
 
 **Props** — extends `ScannerConfig`:
 
-| Prop                          | Type                              | Default   | Description                       |
-| ----------------------------- | --------------------------------- | --------- | --------------------------------- |
-| `autoStart`                   | `boolean`                         | `true`    | Start scanning on mount           |
-| `onCapture`                   | `(result: CaptureResult) => void` | —         | Called on each successful capture  |
-| `onComplete`                  | `(result: CaptureCompleteResult) => void` | — | Called when `maxCaptures` limit reached |
-| `className`                   | `string`                          | —         | CSS class for the container        |
-| `debugOverlay`                | `'off' \| 'basic' \| 'full'`      | `'basic'` | Corner overlay on video           |
-| _...all ScannerConfig fields_ |                                   |           | Passed to the underlying scanner  |
+| Prop                          | Type                                      | Default   | Description                             |
+| ----------------------------- | ----------------------------------------- | --------- | --------------------------------------- |
+| `autoStart`                   | `boolean`                                 | `true`    | Start scanning on mount                 |
+| `onCapture`                   | `(result: CaptureResult) => void`         | —         | Called on each successful capture       |
+| `onComplete`                  | `(result: CaptureCompleteResult) => void` | —         | Called when `maxCaptures` limit reached |
+| `className`                   | `string`                                  | —         | CSS class for the container             |
+| `debugOverlay`                | `'off' \| 'basic' \| 'full'`              | `'basic'` | Corner overlay on video                 |
+| _...all ScannerConfig fields_ |                                           |           | Passed to the underlying scanner        |
 
 ### `<CornerAdjustModal />`
 

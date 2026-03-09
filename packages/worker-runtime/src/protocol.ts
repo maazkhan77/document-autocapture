@@ -62,12 +62,17 @@ export type WorkerResetMessage = {
   type: 'reset-stability';
 };
 
+export type WorkerCleanupMessage = {
+  type: 'cleanup';
+};
+
 export type WorkerRequest =
   | WorkerInitMessage
   | WorkerProcessFrameMessage
   | WorkerProcessBitmapMessage
   | WorkerUpdateConfigMessage
-  | WorkerResetMessage;
+  | WorkerResetMessage
+  | WorkerCleanupMessage;
 
 export type WorkerReadyMessage = {
   type: 'ready';

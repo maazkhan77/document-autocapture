@@ -1179,7 +1179,33 @@ async function processFrame(
     });
 
     const winningProvider = pickWinningMlProvider(attempts);
-    if (winningProvider?.result) {
+
+    // ── COCO disagreement gate ──
+    // When graph wins but COCO was ready, attempted, and found nothing,
+    // the detected rectangle is likely NOT a document (e.g. picture frame,
+    // monitor, window). Reject the graph result unless confidence is very high.
+    const graphWon =
+      winningProvider?.result &&
+      (winningProvider.name === 'graph_v1' || winningProvider.name === 'graph_v2');
+    const cocoAttempt = attempts.find((a) => a.name === 'coco_book');
+    const cocoDisagreed =
+      graphWon &&
+      cocoAttempt?.attempted &&
+      cocoAttempt.ready &&
+      cocoAttempt.status === 'miss';
+    const graphScore = winningProvider?.result?.detection.bestCandidate?.score ?? 0;
+    const cocoSoftPenaltyThreshold = 0.65;
+    const cocoVetoed = cocoDisagreed && graphScore < cocoSoftPenaltyThreshold;
+
+    if (cocoVetoed && detectorConfig.debug) {
+      console.warn(
+        `[document-autocapture:worker] COCO disagreement penalty | ` +
+          `graph=${(graphScore * 100).toFixed(1)}% coco=${cocoAttempt?.status} ` +
+          `— rejecting graph detection (need ≥${(cocoSoftPenaltyThreshold * 100).toFixed(0)}% to override COCO miss)`,
+      );
+    }
+
+    if (winningProvider?.result && !cocoVetoed) {
       finalResult = winningProvider.result;
       frameTelemetry.providerUsed = winningProvider.name;
       frameTelemetry.cocoUsed = winningProvider.name === 'coco_book';
@@ -1188,15 +1214,16 @@ async function processFrame(
       }
       lastMlProviderUsed = winningProvider.name;
     } else {
-      const hadReject = attempts.some((attempt) => attempt.status === 'reject');
+      const hadReject = attempts.some((attempt) => attempt.status === 'reject') || cocoVetoed;
       const hadAttempt = attempts.some((attempt) => attempt.attempted);
       const hadAvailableProvider = attempts.some((attempt) => attempt.ready);
       const hadError = attempts.some((attempt) => attempt.status === 'error');
       const hadMiss = attempts.some((attempt) => attempt.status === 'miss');
       const firstReject = attempts.find((attempt) => attempt.status === 'reject');
       const firstError = attempts.find((attempt) => attempt.status === 'error');
-      frameTelemetry.providerRejectReason =
-        firstReject?.result?.detection.rejectionReason ?? firstError?.errorMessage ?? 'none';
+      frameTelemetry.providerRejectReason = cocoVetoed
+        ? 'coco_disagreement'
+        : (firstReject?.result?.detection.rejectionReason ?? firstError?.errorMessage ?? 'none');
 
       if (!hadAvailableProvider && !hadAttempt) {
         frameTelemetry.cvFallbackReason = 'ml_unavailable';
@@ -1420,6 +1447,36 @@ async function handleMessage(msg: WorkerRequest): Promise<void> {
       case 'reset-stability': {
         engine.resetStability();
         resetMlStabilityTrackers(mlStabilityByProvider);
+        return;
+      }
+      case 'cleanup': {
+        if (detectorConfig.debug) {
+          console.warn('[document-autocapture:worker] cleanup: disposing ML/COCO providers');
+        }
+        if (mlProvider) {
+          try {
+            mlProvider.dispose?.();
+          } catch { /* ignore */ }
+          mlProvider = undefined;
+        }
+        if (cocoProvider) {
+          try {
+            cocoProvider.dispose?.();
+          } catch { /* ignore */ }
+          cocoProvider = undefined;
+        }
+        // Release GPU-backed OffscreenCanvas used for bitmap ingestion.
+        if (ingestCanvas && 'close' in ingestCanvas) {
+          try { (ingestCanvas as OffscreenCanvas & { close(): void }).close(); } catch { /* ignore */ }
+        }
+        ingestCanvas = undefined;
+        ingestCtx = undefined;
+        mlReady = false;
+        mlModelLoaded = false;
+        cocoReady = false;
+        mlInitTask = undefined;
+        cocoInitTask = undefined;
+        resetFallbackState();
         return;
       }
       case 'process-frame': {

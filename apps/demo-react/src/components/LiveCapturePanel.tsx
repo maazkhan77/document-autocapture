@@ -1,5 +1,15 @@
 import type { StudioController } from '../useStudioController';
 
+const GUIDANCE_DISPLAY: Record<string, { icon: string; label: string }> = {
+  DOCUMENT_NOT_FOUND: { icon: '📄', label: 'Point camera at a document' },
+  HOLD_STEADY: { icon: '✋', label: 'Hold steady…' },
+  MOVE_CLOSER: { icon: '🔍', label: 'Move closer to the document' },
+  TOO_BLURRY: { icon: '🌀', label: 'Hold still — image is blurry' },
+  TOO_DARK_OR_BRIGHT: { icon: '💡', label: 'Adjust lighting' },
+  REDUCE_GLARE: { icon: '✨', label: 'Reduce glare — tilt slightly' },
+  READY: { icon: '✅', label: 'Capturing…' },
+};
+
 interface LiveCapturePanelProps {
   studio: StudioController;
 }
@@ -45,6 +55,18 @@ export function LiveCapturePanel({ studio }: LiveCapturePanelProps) {
       <div className="camera-stage">
         <video ref={studio.setVideoNode} muted playsInline autoPlay />
         <canvas ref={studio.overlayRef} />
+
+        {studio.isRunning && studio.statusLabel && studio.statusLabel !== 'Idle' && (
+          <div className="guidance-banner" aria-live="polite">
+            <span className="guidance-icon">
+              {GUIDANCE_DISPLAY[studio.statusLabel]?.icon ?? 'ℹ️'}
+            </span>
+            <span className="guidance-text">
+              {GUIDANCE_DISPLAY[studio.statusLabel]?.label ?? studio.statusLabel}
+            </span>
+          </div>
+        )}
+
         <div className="hud-strip">
           <span>{studio.statusLabel}</span>
           <span>Source {studio.detection?.source ?? 'n/a'}</span>

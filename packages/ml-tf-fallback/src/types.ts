@@ -4,6 +4,7 @@ import type { Quad } from '@document-autocapture/core-engine';
 export interface TfjsGraphModel {
   execute?: (input: any) => any | any[];
   executeAsync: (input: any) => Promise<any | any[]>;
+  dispose?: () => void;
 }
 
 export interface TfjsModule {
@@ -75,6 +76,7 @@ export interface MlQuadProvider {
   infer(input: MlQuadInferenceInput): Promise<MlQuadInferenceResult | undefined>;
   isReady(): boolean;
   getDiagnostics(): MlQuadProviderDiagnostics;
+  dispose?(): void;
 }
 
 export interface CornerArtifact {

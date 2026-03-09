@@ -419,6 +419,9 @@ class ScannerSessionImpl implements ScannerSession {
     }
 
     this.rejectPendingFrames(new Error('Scanner stopped'));
+    if (this.bestIngestionCanvas && 'close' in this.bestIngestionCanvas) {
+      try { (this.bestIngestionCanvas as OffscreenCanvas & { close(): void }).close(); } catch { /* ignore */ }
+    }
     this.bestIngestionCanvas = undefined;
     this.bestIngestionCtx = null;
     this.workerReady = false;
@@ -426,8 +429,17 @@ class ScannerSessionImpl implements ScannerSession {
     this.autoCaptureStableStreak = 0;
 
     if (this.worker) {
-      this.worker.terminate();
+      const w = this.worker;
       this.worker = undefined;
+      // Detach handlers so stale messages from the dying worker
+      // cannot affect a new session started immediately after stop().
+      w.onmessage = null;
+      w.onerror = null;
+      try { w.postMessage({ type: 'cleanup' }); } catch { /* ignore */ }
+      // Give the worker time to process the cleanup message (dispose models)
+      // before terminating. terminate() kills immediately and would discard
+      // any queued messages, so the short delay is necessary.
+      setTimeout(() => { try { w.terminate(); } catch { /* ignore */ } }, 50);
     }
     this.cleanupVideoStream();
     this.ingestionCanvas = undefined;
@@ -448,6 +460,10 @@ class ScannerSessionImpl implements ScannerSession {
       throw new Error('Capture limit reached. Call start() to begin a new session.');
     }
     const capture = await this.captureWithWarp('manual');
+    if (this.captureComplete) {
+      // Auto-capture reached the limit while captureWithWarp was in-flight.
+      return capture;
+    }
     this.emitter.emit('capture', capture);
     this.recordCapture(capture);
     return capture;
@@ -620,8 +636,8 @@ class ScannerSessionImpl implements ScannerSession {
     const id = ++this.frameId;
     this.frameBusy = true;
     const workerFrameTimeoutMs = Math.max(
-      350,
-      (this.engineConfig.workerHardCeilingMs ?? defaultEngineConfig.workerHardCeilingMs) * 6,
+      1500,
+      (this.engineConfig.workerHardCeilingMs ?? defaultEngineConfig.workerHardCeilingMs) * 18,
     );
 
     const promise = new Promise<FrameProcessResult>((resolve, reject) => {
@@ -669,6 +685,10 @@ class ScannerSessionImpl implements ScannerSession {
         }
       } else {
         this.frameBusy = false;
+        const pending = this.pendingFrames.get(id);
+        if (pending?.timeoutHandle) {
+          clearTimeout(pending.timeoutHandle);
+        }
         this.pendingFrames.delete(id);
         this.emitter.emit('error', new Error('Best mode bitmap transfer failed'));
         return this.fallbackProcessFromCurrentVideo(targetWidth, targetHeight);
@@ -919,6 +939,9 @@ class ScannerSessionImpl implements ScannerSession {
     this.autoCaptureStableStreak = 0;
     void this.captureWithWarp('auto')
       .then((capture) => {
+        if (this.captureComplete) {
+          return;
+        }
         if (this.config.debug) {
           console.warn(
             `[document-autocapture] Capture complete: warp=${capture.warpTierUsed} ` +

@@ -181,6 +181,14 @@ class TfjsCornerProvider implements MlQuadProvider {
     return { ...this.diagnostics };
   }
 
+  dispose(): void {
+    if (this.model && this.tf) {
+      try { this.model.dispose?.(); } catch { /* ignore */ }
+    }
+    this.model = undefined;
+    this.ready = false;
+  }
+
   async infer(input: MlQuadInferenceInput): Promise<MlQuadInferenceResult | undefined> {
     if (!this.ready || !this.tf) {
       return undefined;
