@@ -26,7 +26,7 @@ interface PresetConfig {
 
 const PRESETS: Record<PresetId, PresetConfig> = {
   recommended: {
-    confidenceThreshold: 0.50,
+    confidenceThreshold: 0.5,
     minStableConfidence: 0.42,
     stabilityWindowMs: 320,
     autoStableFrames: 2,

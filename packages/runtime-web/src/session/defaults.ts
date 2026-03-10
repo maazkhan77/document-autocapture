@@ -102,7 +102,7 @@ export const DEFAULT_SCANNER_CONFIG: ScannerConfig = {
   detectionWidth: 480,
   fallbackDetectionWidth: 320,
   fallbackFps: 9,
-  confidenceThreshold: 0.50,
+  confidenceThreshold: 0.5,
   minStableConfidence: 0.42,
   stabilityWindowMs: 320,
   emaAlpha: 0.25,

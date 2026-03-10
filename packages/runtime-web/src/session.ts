@@ -420,7 +420,11 @@ class ScannerSessionImpl implements ScannerSession {
 
     this.rejectPendingFrames(new Error('Scanner stopped'));
     if (this.bestIngestionCanvas && 'close' in this.bestIngestionCanvas) {
-      try { (this.bestIngestionCanvas as OffscreenCanvas & { close(): void }).close(); } catch { /* ignore */ }
+      try {
+        (this.bestIngestionCanvas as OffscreenCanvas & { close(): void }).close();
+      } catch {
+        /* ignore */
+      }
     }
     this.bestIngestionCanvas = undefined;
     this.bestIngestionCtx = null;
@@ -435,11 +439,21 @@ class ScannerSessionImpl implements ScannerSession {
       // cannot affect a new session started immediately after stop().
       w.onmessage = null;
       w.onerror = null;
-      try { w.postMessage({ type: 'cleanup' }); } catch { /* ignore */ }
+      try {
+        w.postMessage({ type: 'cleanup' });
+      } catch {
+        /* ignore */
+      }
       // Give the worker time to process the cleanup message (dispose models)
       // before terminating. terminate() kills immediately and would discard
       // any queued messages, so the short delay is necessary.
-      setTimeout(() => { try { w.terminate(); } catch { /* ignore */ } }, 50);
+      setTimeout(() => {
+        try {
+          w.terminate();
+        } catch {
+          /* ignore */
+        }
+      }, 50);
     }
     this.cleanupVideoStream();
     this.ingestionCanvas = undefined;

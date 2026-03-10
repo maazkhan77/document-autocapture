@@ -10,7 +10,7 @@ export const defaultEngineConfig: EngineConfig = {
   maxAreaFraction: 0.96,
   minAspectRatio: 0.6,
   maxAspectRatio: 1.9,
-  confidenceThreshold: 0.50,
+  confidenceThreshold: 0.5,
   movementThresholdPx: 0,
   movementThresholdRatio: 0.015,
   minStableConfidence: 0.42,

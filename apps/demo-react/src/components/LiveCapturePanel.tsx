@@ -76,13 +76,28 @@ export function LiveCapturePanel({ studio }: LiveCapturePanelProps) {
       </div>
 
       <div className="action-row">
-        <button type="button" className="btn btn-primary" onClick={() => void studio.start()} disabled={studio.isRunning}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => void studio.start()}
+          disabled={studio.isRunning}
+        >
           Start
         </button>
-        <button type="button" className="btn btn-ghost" onClick={() => void studio.stop()} disabled={!studio.isRunning}>
+        <button
+          type="button"
+          className="btn btn-ghost"
+          onClick={() => void studio.stop()}
+          disabled={!studio.isRunning}
+        >
           Stop
         </button>
-        <button type="button" className="btn btn-accent" onClick={() => void studio.handleManualCapture()} disabled={!studio.isRunning}>
+        <button
+          type="button"
+          className="btn btn-accent"
+          onClick={() => void studio.handleManualCapture()}
+          disabled={!studio.isRunning}
+        >
           Capture
         </button>
         <button type="button" className="btn btn-ghost" onClick={studio.clearGallery}>

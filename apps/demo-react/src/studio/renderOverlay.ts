@@ -1,7 +1,4 @@
-import type {
-  DetectionResult,
-  StabilityResult,
-} from '@document-autocapture/core-engine';
+import type { DetectionResult, StabilityResult } from '@document-autocapture/core-engine';
 import { clamp, drawQuad } from './helpers';
 import type { DebugOverlayLevel } from '../app-logic';
 
@@ -46,7 +43,9 @@ export function renderDetectionOverlay({
   }
 
   if (debugOverlayLevel === 'full') {
-    for (const candidate of detection.candidates.filter((candidate) => candidate !== primaryCandidate).slice(0, 4)) {
+    for (const candidate of detection.candidates
+      .filter((candidate) => candidate !== primaryCandidate)
+      .slice(0, 4)) {
       drawQuad(ctx, candidate.quad, 'rgba(123, 97, 255, 0.35)', 1.6);
     }
   }

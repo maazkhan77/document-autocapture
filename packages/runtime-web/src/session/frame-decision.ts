@@ -47,7 +47,7 @@ export function evaluateAutoCaptureReadiness(
   const captureEdgeContrast = result.detection.bestCandidate?.metrics.edgeContrast ?? 0;
   const captureSourceReady =
     captureSource === 'ml'
-      ? captureScore >= 0.58 && captureBorder <= 0.30 && captureEdgeContrast >= 0.18
+      ? captureScore >= 0.58 && captureBorder <= 0.3 && captureEdgeContrast >= 0.18
       : captureSource === 'hough'
         ? captureScore >= 0.58 && captureCorner >= 0.45 && captureBorder <= 0.24
         : captureScore >= 0.68 &&

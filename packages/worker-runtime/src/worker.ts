@@ -1189,10 +1189,7 @@ async function processFrame(
       (winningProvider.name === 'graph_v1' || winningProvider.name === 'graph_v2');
     const cocoAttempt = attempts.find((a) => a.name === 'coco_book');
     const cocoDisagreed =
-      graphWon &&
-      cocoAttempt?.attempted &&
-      cocoAttempt.ready &&
-      cocoAttempt.status === 'miss';
+      graphWon && cocoAttempt?.attempted && cocoAttempt.ready && cocoAttempt.status === 'miss';
     const graphScore = winningProvider?.result?.detection.bestCandidate?.score ?? 0;
     const cocoSoftPenaltyThreshold = 0.65;
     const cocoVetoed = cocoDisagreed && graphScore < cocoSoftPenaltyThreshold;
@@ -1456,18 +1453,26 @@ async function handleMessage(msg: WorkerRequest): Promise<void> {
         if (mlProvider) {
           try {
             mlProvider.dispose?.();
-          } catch { /* ignore */ }
+          } catch {
+            /* ignore */
+          }
           mlProvider = undefined;
         }
         if (cocoProvider) {
           try {
             cocoProvider.dispose?.();
-          } catch { /* ignore */ }
+          } catch {
+            /* ignore */
+          }
           cocoProvider = undefined;
         }
         // Release GPU-backed OffscreenCanvas used for bitmap ingestion.
         if (ingestCanvas && 'close' in ingestCanvas) {
-          try { (ingestCanvas as OffscreenCanvas & { close(): void }).close(); } catch { /* ignore */ }
+          try {
+            (ingestCanvas as OffscreenCanvas & { close(): void }).close();
+          } catch {
+            /* ignore */
+          }
         }
         ingestCanvas = undefined;
         ingestCtx = undefined;

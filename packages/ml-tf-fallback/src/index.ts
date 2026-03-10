@@ -183,7 +183,11 @@ class TfjsCornerProvider implements MlQuadProvider {
 
   dispose(): void {
     if (this.model && this.tf) {
-      try { this.model.dispose?.(); } catch { /* ignore */ }
+      try {
+        this.model.dispose?.();
+      } catch {
+        /* ignore */
+      }
     }
     this.model = undefined;
     this.ready = false;

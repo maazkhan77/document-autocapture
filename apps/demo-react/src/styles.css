@@ -226,8 +226,14 @@ body {
 }
 
 @keyframes guidance-fadein {
-  from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .hud-strip {
@@ -265,7 +271,10 @@ body {
   cursor: pointer;
   font-weight: 600;
   font-family: 'Space Grotesk', sans-serif;
-  transition: transform 140ms ease, filter 140ms ease, border-color 140ms ease;
+  transition:
+    transform 140ms ease,
+    filter 140ms ease,
+    border-color 140ms ease;
 }
 
 .btn:hover {

@@ -40,7 +40,7 @@ const DEFAULT_SCANNER_CONFIG: ScannerConfig = {
   autoCaptureMinAreaFraction: 0.14,
   autoCaptureCooldownMs: 1400,
   autoCaptureConsecutiveStableFrames: 2,
-  confidenceThreshold: 0.50,
+  confidenceThreshold: 0.5,
   minStableConfidence: 0.42,
   stabilityWindowMs: 320,
   emaAlpha: 0.25,

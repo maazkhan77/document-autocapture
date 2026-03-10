@@ -253,7 +253,11 @@ export function createCocoQuadProvider(): CocoQuadProvider {
     },
     dispose(): void {
       if (model) {
-        try { model.dispose?.(); } catch { /* ignore */ }
+        try {
+          model.dispose?.();
+        } catch {
+          /* ignore */
+        }
       }
       model = undefined;
       ready = false;
