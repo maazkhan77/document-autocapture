@@ -694,8 +694,8 @@ class ScannerSessionImpl implements ScannerSession {
         return this.fallbackProcessFromCurrentVideo(targetWidth, targetHeight);
       }
     } else {
-      this.ingestionCanvas.width = targetWidth;
-      this.ingestionCanvas.height = targetHeight;
+      if (this.ingestionCanvas.width !== targetWidth) this.ingestionCanvas.width = targetWidth;
+      if (this.ingestionCanvas.height !== targetHeight) this.ingestionCanvas.height = targetHeight;
       this.ingestionCtx.drawImage(this.video, 0, 0, targetWidth, targetHeight);
       const imageData = this.ingestionCtx.getImageData(0, 0, targetWidth, targetHeight);
 

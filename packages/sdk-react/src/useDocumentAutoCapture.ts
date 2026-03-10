@@ -65,7 +65,9 @@ function reducer(state: HookState, action: HookAction): HookState {
     case 'set-capabilities':
       return { ...state, capabilities: action.value };
     case 'set-frame':
-      return { ...state, frame: action.value };
+      return state.error
+        ? { ...state, frame: action.value, error: undefined }
+        : { ...state, frame: action.value };
     case 'set-last-capture':
       return {
         ...state,

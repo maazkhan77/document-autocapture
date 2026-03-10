@@ -202,8 +202,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(6, 10, 16, 0.82);
-  backdrop-filter: blur(6px);
+  background: rgba(6, 10, 16, 0.92);
   color: #fff;
   font-size: 15px;
   font-weight: 500;

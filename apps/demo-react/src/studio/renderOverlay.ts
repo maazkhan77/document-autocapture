@@ -31,8 +31,9 @@ export function renderDetectionOverlay({
 
   const width = detectionWidth;
   const aspectRatio = videoWidth > 0 && videoHeight > 0 ? videoHeight / videoWidth : 1.4;
-  canvas.width = width;
-  canvas.height = Math.round(width * aspectRatio);
+  const targetHeight = Math.round(width * aspectRatio);
+  if (canvas.width !== width) canvas.width = width;
+  if (canvas.height !== targetHeight) canvas.height = targetHeight;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   if (debugOverlayLevel === 'off' || !detection) {
